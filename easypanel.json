@@ -1,0 +1,41 @@
+{
+  "$schema": "https://easypanel.io/schemas/template.json",
+  "name": "basheer-app",
+  "description": "basheer.app — premium digital HQ for Ahmad Basheer",
+  "type": "app",
+  "source": {
+    "type": "dockerfile",
+    "dockerfile": "Dockerfile"
+  },
+  "ports": [
+    {
+      "published": 80,
+      "target": 3000,
+      "protocol": "http"
+    }
+  ],
+  "env": [
+    {
+      "key": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "key": "PORT",
+      "value": "3000"
+    },
+    {
+      "key": "HOSTNAME",
+      "value": "0.0.0.0"
+    },
+    {
+      "key": "NEXT_PUBLIC_SITE_URL",
+      "value": "https://basheer.app"
+    }
+  ],
+  "healthcheck": {
+    "path": "/",
+    "interval": 30,
+    "timeout": 5,
+    "retries": 3
+  }
+}

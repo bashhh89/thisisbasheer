@@ -1,0 +1,52 @@
+---
+title: "Proposal Engine for ANC"
+slug: "proposal-engine-anc"
+category: "Proposal Platform"
+client: "ANC"
+summary: "A custom proposal platform that replaced spreadsheet quoting with structured intake, configurable pricing, and signature-ready output."
+problem: "ANC's sales team was rebuilding proposals from scratch every week — spreadsheets, copy-paste pricing, inconsistent scope language. Deals slipped through gaps that nobody owned."
+solution: "A purpose-built proposal engine: a structured intake flow, a versioned product/service catalog, automatic pricing, and one-click generation of branded, client-ready proposals."
+status: "live"
+featured: true
+date: "2025-11-12"
+stack:
+  - "Next.js"
+  - "TypeScript"
+  - "PostgreSQL"
+  - "Prisma"
+  - "Tailwind"
+outcomes:
+  - "Proposal turnaround dropped from days to under an hour"
+  - "Single source of truth for pricing and scope"
+  - "Sales, ops, and finance now pull from the same data"
+---
+
+## Overview
+
+ANC needed to stop running its sales motion out of spreadsheets. Quotes were being assembled by hand for every opportunity, pricing drifted between reps, and there was no system of record once a proposal was sent.
+
+## The system
+
+The platform is built around three layers:
+
+- A **structured intake** that captures the shape of each opportunity in a way the engine can act on.
+- A **catalog** of services, packages, and pricing rules — versioned and centrally managed.
+- A **generator** that assembles proposals from intake + catalog, with consistent language and clean output.
+
+Everything lives in one Postgres-backed system. There is no copy-paste between tools.
+
+## Key capabilities
+
+- Configurable pricing rules per service line
+- Versioned templates so sent proposals stay reproducible
+- Role-based access for sales, ops, and finance
+- Client-ready PDF and shareable links
+- Audit trail for every change
+
+## What changed
+
+The team stopped negotiating with their own spreadsheets. Reps spend their time on the customer instead of the document. Finance trusts the numbers because they come from one place. Ops sees what's been promised before it lands in their queue.
+
+## Final outcome
+
+ANC now operates with a real proposal system. Onboarding a new offering is a configuration change, not a rebuild. The same engine is the foundation for everything that comes next — contracts, fulfillment handoffs, and the customer portal.
