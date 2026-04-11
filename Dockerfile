@@ -82,7 +82,11 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD wget --quiet --spider http://127.0.0.1:${PORT}/ || exit 1
 
-# `npm start` = `prisma migrate deploy && next start`
-# First boot runs the migration (creates ContactSubmission), subsequent boots
-# are no-ops. Next start then serves the standalone `server.js`.
-CMD ["npm", "start"]
+# First boot runs the migration (creates ContactSubmission); subsequent boots
+# are no-ops. Then the standalone Next.js server takes over.
+#
+# We call the prisma CLI by its real entrypoint instead of relying on the
+# `node_modules/.bin/prisma` symlink — standalone output doesn't carry `.bin`
+# over, so `npm start` → `prisma` → "not found". `node server.js` is the
+# correct way to run a Next.js standalone build (no `next start` needed).
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
