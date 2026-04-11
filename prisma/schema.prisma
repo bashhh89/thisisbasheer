@@ -1,0 +1,43 @@
+// Prisma schema for basheer.app
+//
+// Phase 1: just the ContactSubmission table (lead intake from /contact).
+// More models (Project, Article, User, etc.) will be added in later phases
+// as the file-based MDX CMS moves into the DB.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── ContactSubmission ────────────────────────────────────────────────────────
+// Every submission from /contact lands here. Status lets the admin mark a
+// lead as read / replied / closed later without deleting anything.
+
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  CLOSED
+  SPAM
+}
+
+model ContactSubmission {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  budget    String?
+  message   String        @db.Text
+  status    ContactStatus @default(NEW)
+  notes     String?       @db.Text
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([createdAt(sort: Desc)])
+  @@index([status])
+  @@index([email])
+}

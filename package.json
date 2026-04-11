@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p ${PORT:-3000}",
+    "build": "prisma generate && next build",
+    "start": "prisma migrate deploy && next start -p ${PORT:-3000}",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "next": "15.1.6",
@@ -21,7 +22,8 @@
     "class-variance-authority": "0.7.1",
     "framer-motion": "11.18.0",
     "lucide-react": "0.469.0",
-    "zod": "3.24.1"
+    "zod": "3.24.1",
+    "@prisma/client": "6.2.1"
   },
   "devDependencies": {
     "@types/node": "22.10.5",
@@ -33,7 +35,8 @@
     "autoprefixer": "10.4.20",
     "@tailwindcss/typography": "0.5.16",
     "eslint": "9.18.0",
-    "eslint-config-next": "15.1.6"
+    "eslint-config-next": "15.1.6",
+    "prisma": "6.2.1"
   },
   "engines": {
     "node": ">=20.11.0"
