@@ -4,12 +4,14 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { Container } from "@/components/layout/container";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CaseStudyTemplate } from "@/components/work/case-study-template";
 import { mdxComponents } from "@/components/common/mdx-components";
 import {
   getAllProjects,
   getProjectBySlug,
   getProjectSlugs,
 } from "@/lib/content/projects";
+import { getCaseStudyData } from "@/lib/content/case-studies";
 import { buildMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -42,6 +44,14 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  // Try structured case study data first
+  const caseStudy = getCaseStudyData(slug);
+  if (caseStudy) {
+    return <CaseStudyTemplate data={caseStudy} />;
+  }
+
+  // Fall back to MDX rendering for slugs without structured data
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
@@ -178,7 +188,7 @@ export default async function ProjectPage({
               </Link>
             </div>
             <Button href="/contact" variant="outline">
-              Start a project →
+              Start a project &rarr;
             </Button>
           </div>
         </Container>
