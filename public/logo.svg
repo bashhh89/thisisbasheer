@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#0A0A0A"/>
+  
+  <!-- AB monogram - geometric, systems-inspired -->
+  <!-- Letter A - built from angular system-like lines -->
+  <path d="M140 368 L210 168 L230 168 L300 368 L275 368 L257 312 L183 312 L165 368 Z M192 290 L248 290 L220 200 Z" fill="#FAFAFA"/>
+  
+  <!-- Letter B - system block style -->
+  <path d="M320 168 L320 368 L380 368 C410 368 430 350 430 325 C430 305 418 292 400 288 C414 284 424 272 424 255 C424 232 406 218 382 218 L340 218 L340 168 Z M340 240 L378 240 C392 240 400 248 400 260 C400 272 392 280 378 280 L340 280 Z M340 302 L382 302 C398 302 408 312 408 328 C408 342 398 350 382 350 L340 350 Z" fill="#FAFAFA"/>
+  
+  <!-- Accent dot - subtle systems indicator -->
+  <circle cx="256" cy="420" r="4" fill="#FAFAFA" opacity="0.4"/>
+</svg>
