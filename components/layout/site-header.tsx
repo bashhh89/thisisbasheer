@@ -29,9 +29,20 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-[88rem] items-center justify-between px-6 md:px-10 lg:px-16 h-20">
         <Link
           href="/"
-          className="font-serif text-xl tracking-tight text-ink-50 hover:text-accent transition-colors duration-300"
+          aria-label="Ahmad Basheer — home"
+          className="group flex items-center gap-3 text-ink-50 hover:text-accent transition-colors duration-300"
         >
-          Ahmad Basheer
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.svg"
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-md"
+          />
+          <span className="font-serif text-xl tracking-tight">
+            Ahmad Basheer
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
