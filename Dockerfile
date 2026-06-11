@@ -89,4 +89,9 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 # `node_modules/.bin/prisma` symlink — standalone output doesn't carry `.bin`
 # over, so `npm start` → `prisma` → "not found". `node server.js` is the
 # correct way to run a Next.js standalone build (no `next start` needed).
-CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]
+# If a previous rolling deploy killed a migration mid-apply, Prisma leaves a
+# failed-migration marker that blocks all future deploys (P3009). The resolve
+# call clears that marker for the cockpit migration (no-op otherwise); the
+# migration SQL itself is idempotent, so re-applying over a partial apply is
+# safe.
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate resolve --rolled-back 20260612000000_cockpit 2>/dev/null; node node_modules/prisma/build/index.js migrate deploy && node server.js"]

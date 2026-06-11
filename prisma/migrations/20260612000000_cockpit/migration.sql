@@ -1,5 +1,8 @@
+-- Idempotent on purpose: the first production apply was interrupted mid-flight
+-- by a rolling deploy, so this migration must survive a partial prior apply.
+
 -- CreateTable
-CREATE TABLE "SiteSetting" (
+CREATE TABLE IF NOT EXISTS "SiteSetting" (
     "key" TEXT NOT NULL,
     "value" JSONB NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -8,7 +11,7 @@ CREATE TABLE "SiteSetting" (
 );
 
 -- CreateTable
-CREATE TABLE "AiConversation" (
+CREATE TABLE IF NOT EXISTS "AiConversation" (
     "id" TEXT NOT NULL,
     "title" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -18,7 +21,7 @@ CREATE TABLE "AiConversation" (
 );
 
 -- CreateTable
-CREATE TABLE "AiMessage" (
+CREATE TABLE IF NOT EXISTS "AiMessage" (
     "id" TEXT NOT NULL,
     "conversationId" TEXT NOT NULL,
     "role" TEXT NOT NULL,
@@ -30,11 +33,20 @@ CREATE TABLE "AiMessage" (
 );
 
 -- CreateIndex
-CREATE INDEX "AiConversation_updatedAt_idx" ON "AiConversation"("updatedAt" DESC);
+CREATE INDEX IF NOT EXISTS "AiConversation_updatedAt_idx" ON "AiConversation"("updatedAt" DESC);
 
 -- CreateIndex
-CREATE INDEX "AiMessage_conversationId_createdAt_idx" ON "AiMessage"("conversationId", "createdAt");
+CREATE INDEX IF NOT EXISTS "AiMessage_conversationId_createdAt_idx" ON "AiMessage"("conversationId", "createdAt");
 
--- AddForeignKey
-ALTER TABLE "AiMessage" ADD CONSTRAINT "AiMessage_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "AiConversation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
+-- AddForeignKey (guarded — Postgres has no IF NOT EXISTS for constraints)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'AiMessage_conversationId_fkey'
+  ) THEN
+    ALTER TABLE "AiMessage"
+      ADD CONSTRAINT "AiMessage_conversationId_fkey"
+      FOREIGN KEY ("conversationId") REFERENCES "AiConversation"("id")
+      ON DELETE CASCADE ON UPDATE CASCADE;
+  END IF;
+END $$;
