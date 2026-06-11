@@ -3,7 +3,7 @@ export const siteConfig = {
   shortName: "basheer.app",
   title: "Ahmad Basheer — Systems builder",
   description:
-    "I design and build custom platforms for operations, sales, service, and automation — end-to-end systems that run companies.",
+    "I design, build, and operate custom platforms for operations, sales, and service — end-to-end systems that run companies.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://basheer.app",
   email: "ahmad@basheer.app",
   location: "Operating worldwide",

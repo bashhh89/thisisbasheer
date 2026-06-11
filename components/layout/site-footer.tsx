@@ -2,9 +2,11 @@ import Link from "next/link";
 import { Container } from "./container";
 import { footerNav } from "@/data/navigation";
 import { siteConfig } from "@/data/site";
+import { getSetting } from "@/lib/admin/settings";
 
-export function SiteFooter() {
+export async function SiteFooter() {
   const year = new Date().getFullYear();
+  const availability = await getSetting("site.availability");
 
   return (
     <footer className="border-t border-ink-800/80 mt-32">
@@ -18,12 +20,11 @@ export function SiteFooter() {
               Ahmad Basheer
             </Link>
             <p className="mt-6 max-w-md text-ink-400 leading-relaxed">
-              I design and build custom platforms for operations, sales, service,
-              and automation — end-to-end systems that run companies.
+              {siteConfig.description}
             </p>
             <div className="mt-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-eyebrow text-ink-500">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              <span>Available for new engagements</span>
+              <span>{availability}</span>
             </div>
           </div>
 

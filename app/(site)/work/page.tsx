@@ -28,8 +28,9 @@ export default async function WorkIndexPage() {
             <span className="text-ink-500">infrastructure.</span>
           </h1>
           <p className="mt-12 max-w-2xl text-lg text-ink-300 leading-relaxed">
-            A selection of systems built end-to-end — from intake and pricing to
-            operations cockpits and CRM platforms tuned to a single business.
+            Systems built and operated end-to-end — proposal engines, venue
+            operations platforms, and CRM systems tuned to a single business.
+            Every one of them is live, running a real operation today.
           </p>
         </Container>
       </section>

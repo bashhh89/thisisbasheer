@@ -8,7 +8,7 @@ export function Capabilities() {
     <Section bordered>
       <Container>
         <SectionHeader
-          number="02"
+          number="03"
           eyebrow="Capabilities"
           title={
             <>
@@ -19,17 +19,18 @@ export function Capabilities() {
           }
         />
 
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {/* Editorial index — full-width ledger rows */}
+        <div className="mt-20 border-t border-ink-800/80">
           {capabilities.map((cap, i) => (
-            <Reveal key={cap.id} delay={i * 0.06}>
-              <div className="border-t border-ink-800/80 lg:[&:nth-child(-n+3)]:border-t md:[&:nth-child(-n+2)]:lg:border-t md:border-l-0 lg:border-l lg:[&:nth-child(3n+1)]:border-l-0 lg:border-ink-800/80 px-0 lg:px-8 py-10">
-                <div className="font-mono text-[10px] uppercase tracking-eyebrow text-accent mb-6">
+            <Reveal key={cap.id} delay={i * 0.04}>
+              <div className="group grid grid-cols-12 gap-4 md:gap-8 items-baseline border-b border-ink-800/80 py-8 md:py-10 transition-colors duration-300 hover:border-ink-600">
+                <div className="col-span-2 md:col-span-1 font-mono text-[10px] uppercase tracking-eyebrow text-accent">
                   {(i + 1).toString().padStart(2, "0")}
                 </div>
-                <h3 className="font-serif text-2xl text-ink-50 mb-4 leading-tight">
+                <h3 className="col-span-10 md:col-span-4 font-serif text-2xl md:text-3xl text-ink-50 leading-tight tracking-tight group-hover:text-accent transition-colors duration-500">
                   {cap.title}
                 </h3>
-                <p className="text-ink-400 leading-relaxed text-[15px]">
+                <p className="col-span-12 col-start-3 md:col-span-7 md:col-start-6 text-ink-400 leading-relaxed text-[15px] max-w-2xl">
                   {cap.description}
                 </p>
               </div>

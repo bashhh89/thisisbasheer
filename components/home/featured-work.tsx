@@ -15,7 +15,7 @@ export async function FeaturedWork() {
       <Container>
         <div className="flex items-end justify-between flex-wrap gap-8 mb-16">
           <SectionHeader
-            number="03"
+            number="02"
             eyebrow="Selected work"
             title={
               <>

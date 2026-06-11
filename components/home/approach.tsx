@@ -5,7 +5,7 @@ import { Reveal } from "@/components/common/reveal";
 const principles = [
   {
     title: "Direct collaboration",
-    body: "No account managers, no layers. You work with the person building the system.",
+    body: "You work with the person building the system. No account managers, no translation layers, no hand-offs.",
   },
   {
     title: "Clear scope",
@@ -28,12 +28,12 @@ export function Approach() {
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 md:col-span-5 mb-12 md:mb-0">
             <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-eyebrow text-ink-400 mb-8">
-              <span className="text-accent">04</span>
+              <span className="text-accent">05</span>
               <span className="h-px w-8 bg-ink-700" />
               <span>Approach</span>
             </div>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink-50">
-              I don't take on volume.
+              I don&apos;t take on volume.
               <br />
               <span className="text-ink-500">I take on systems.</span>
             </h2>

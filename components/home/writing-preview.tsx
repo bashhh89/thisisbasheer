@@ -14,7 +14,7 @@ export async function WritingPreview() {
       <Container>
         <div className="flex items-end justify-between flex-wrap gap-8 mb-16">
           <SectionHeader
-            number="05"
+            number="06"
             eyebrow="Writing"
             title={
               <>

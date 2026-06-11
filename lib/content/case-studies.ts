@@ -38,9 +38,9 @@ export interface CaseStudyData {
   prevProject?: { title: string; slug: string };
 }
 
-import { caseStudy as crmCaseStudy } from "@/data/case-studies/crm-platform-extension";
-import { caseStudy as proposalCaseStudy } from "@/data/case-studies/proposal-engine-anc";
-import { caseStudy as opsCaseStudy } from "@/data/case-studies/operations-cockpit";
+import { caseStudy as crmCaseStudy } from "@/data/case-studies/crm-platform";
+import { caseStudy as proposalCaseStudy } from "@/data/case-studies/proposal-engine";
+import { caseStudy as opsCaseStudy } from "@/data/case-studies/venue-operations";
 
 const caseStudyRegistry: Record<string, CaseStudyData> = {
   [crmCaseStudy.slug]: crmCaseStudy,

@@ -17,7 +17,7 @@ export function Positioning() {
           <div className="col-span-12 md:col-span-9">
             <Reveal>
               <p className="font-serif text-3xl md:text-4xl lg:text-5xl leading-[1.2] tracking-tight text-ink-100 max-w-4xl">
-                Most businesses don't need more tools.
+                Most businesses don&apos;t need more tools.
                 <br />
                 <span className="text-ink-500">
                   They need one system that makes the whole operation make sense.
@@ -25,9 +25,9 @@ export function Positioning() {
               </p>
               <p className="mt-12 max-w-2xl text-lg text-ink-300 leading-relaxed">
                 I design and build internal platforms that replace fragmented
-                workflows with a connected operational backbone — the kind of
-                system a company can run on for years, not the kind that gets
-                replaced every other quarter.
+                workflows with a connected operational backbone — then I run
+                them. Not handed off, not outgrown in two quarters. The kind of
+                system a company operates on for years.
               </p>
             </Reveal>
           </div>
