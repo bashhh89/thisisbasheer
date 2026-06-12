@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ANC Customer Portal — Arena Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0E1116;
+    --bg-2:#11161D;
+    --panel:#151B24;
+    --panel-2:#1A222D;
+    --line:rgba(255,255,255,.07);
+    --line-strong:rgba(255,255,255,.12);
+    --txt:#F4F7FB;
+    --txt-2:#A7B2C0;
+    --txt-3:#697585;
+    --accent:#2E7DF6;
+    --accent-soft:rgba(46,125,246,.14);
+    --accent-glow:rgba(46,125,246,.45);
+    --open:#2E7DF6;
+    --progress:#F5A524;
+    --resolved:#3FB66E;
+    --danger:#F2546B;
+    --radius:16px;
+    --radius-sm:11px;
+    --shadow:0 24px 60px -28px rgba(0,0,0,.9);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Sora',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg);
+    color:var(--txt);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 540px at 78% -8%, rgba(46,125,246,.16), transparent 60%),
+      radial-gradient(760px 620px at -6% 12%, rgba(46,125,246,.07), transparent 55%),
+      linear-gradient(180deg, #0E1116 0%, #0B0E13 100%);
+  }
+  ::selection{background:var(--accent-glow);color:#fff}
+
+  .app{position:relative;z-index:1;display:grid;grid-template-columns:268px 1fr;min-height:100vh}
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    border-right:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(21,27,36,.7),rgba(14,17,22,.4));
+    backdrop-filter:blur(8px);
+    display:flex;flex-direction:column;
+    padding:26px 20px;
+    position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:13px;padding:0 6px 4px}
+  .brand-mark{
+    width:42px;height:42px;border-radius:11px;flex-shrink:0;
+    background:linear-gradient(145deg,#2E7DF6,#1C5CCB);
+    display:grid;place-items:center;
+    font-family:'Archivo';font-weight:900;font-size:18px;letter-spacing:-.5px;color:#fff;
+    box-shadow:0 8px 22px -6px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .brand-txt b{font-family:'Archivo';font-weight:800;font-size:18px;letter-spacing:.5px;display:block;line-height:1}
+  .brand-txt span{font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--txt-3);font-weight:600}
+
+  .nav{margin-top:30px;display:flex;flex-direction:column;gap:4px}
+  .nav-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--txt-3);padding:6px 12px;font-weight:700}
+  .nav-item{
+    display:flex;align-items:center;gap:13px;
+    padding:11px 13px;border-radius:11px;
+    color:var(--txt-2);font-size:14.5px;font-weight:500;
+    cursor:pointer;border:1px solid transparent;
+    transition:all .18s var(--ease);position:relative;
+  }
+  .nav-item svg{width:19px;height:19px;flex-shrink:0;stroke:currentColor}
+  .nav-item:hover{background:var(--panel);color:var(--txt)}
+  .nav-item.active{
+    background:linear-gradient(100deg,var(--accent-soft),rgba(46,125,246,.04));
+    color:#fff;border-color:rgba(46,125,246,.28);
+  }
+  .nav-item.active::before{
+    content:"";position:absolute;left:-20px;top:50%;transform:translateY(-50%);
+    width:3px;height:22px;border-radius:0 3px 3px 0;background:var(--accent);
+    box-shadow:0 0 14px var(--accent-glow);
+  }
+  .nav-item .badge{margin-left:auto;background:var(--accent);color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:6px;display:grid;place-items:center;padding:0 6px}
+
+  .side-foot{margin-top:auto;padding-top:20px;border-top:1px solid var(--line)}
+  .side-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:14px;
+  }
+  .side-card .sc-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--resolved);box-shadow:0 0 0 0 rgba(63,182,110,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(63,182,110,.5)}70%{box-shadow:0 0 0 8px rgba(63,182,110,0)}100%{box-shadow:0 0 0 0 rgba(63,182,110,0)}}
+  .side-card .sc-top b{font-size:12.5px;font-weight:600}
+  .side-card p{font-size:11.5px;color:var(--txt-3);line-height:1.5}
+  .user-chip{display:flex;align-items:center;gap:11px;padding:4px 2px}
+  .avatar{width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#26303d,#161d27);border:1px solid var(--line-strong);display:grid;place-items:center;font-family:'Archivo';font-weight:700;font-size:14px;color:var(--txt)}
+  .user-chip .ui b{font-size:13px;font-weight:600;display:block;line-height:1.2}
+  .user-chip .ui span{font-size:11px;color:var(--txt-3)}
+
+  /* ---------- MAIN ---------- */
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    display:flex;align-items:center;gap:18px;
+    padding:18px 38px;
+    background:rgba(14,17,22,.78);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .crumbs{font-size:13px;color:var(--txt-3);font-weight:500}
+  .crumbs b{color:var(--txt);font-weight:600}
+  .topbar .search{
+    margin-left:auto;display:flex;align-items:center;gap:10px;
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:9px 14px;width:300px;color:var(--txt-3);
+  }
+  .topbar .search input{background:none;border:none;outline:none;color:var(--txt);font-family:inherit;font-size:13px;width:100%}
+  .topbar .search svg{width:16px;height:16px;flex-shrink:0}
+  .icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--txt-2);display:grid;place-items:center;cursor:pointer;transition:all .18s var(--ease);position:relative}
+  .icon-btn:hover{color:#fff;border-color:var(--line-strong)}
+  .icon-btn svg{width:18px;height:18px}
+  .icon-btn .dot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--progress);border:2px solid var(--bg)}
+
+  .content{padding:34px 38px 60px;max-width:1400px;width:100%}
+
+  /* ---------- TAB PANELS ---------- */
+  .panel{display:none;animation:fade .4s var(--ease)}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    border:1px solid var(--line-strong);border-radius:var(--radius);
+    background:
+      radial-gradient(640px 320px at 88% -30%, rgba(46,125,246,.28), transparent 65%),
+      linear-gradient(120deg,#13202F 0%,#101620 60%,#0E1116 100%);
+    padding:38px 40px;margin-bottom:30px;
+    box-shadow:var(--shadow);
+  }
+  .hero::after{
+    content:"";position:absolute;right:-40px;bottom:-60px;width:360px;height:360px;
+    background:radial-gradient(circle, rgba(46,125,246,.2), transparent 62%);pointer-events:none;
+  }
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:16px;background:var(--accent-soft);border:1px solid rgba(46,125,246,.3);padding:6px 12px;border-radius:30px}
+  .hero h1{font-family:'Archivo';font-weight:800;font-size:clamp(28px,3.4vw,44px);line-height:1.04;letter-spacing:-1.2px;max-width:660px}
+  .hero h1 em{font-style:normal;color:var(--accent);position:relative}
+  .hero p{color:var(--txt-2);font-size:15px;margin-top:14px;max-width:560px}
+  .hero-actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:'Sora';font-weight:600;font-size:14px;
+    padding:12px 20px;border-radius:11px;cursor:pointer;border:1px solid transparent;
+    transition:all .18s var(--ease);
+  }
+  .btn svg{width:17px;height:17px}
+  .btn-primary{background:linear-gradient(145deg,#2E7DF6,#1F62D4);color:#fff;box-shadow:0 12px 26px -10px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px var(--accent-glow)}
+  .btn-ghost{background:rgba(255,255,255,.04);color:var(--txt);border-color:var(--line-strong)}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
+
+  /* ---------- STAT TILES ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px}
+  .stat{
+    background:linear-gradient(160deg,var(--panel),var(--bg-2));
+    border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:20px 20px 18px;position:relative;overflow:hidden;
+    transition:all .2s var(--ease);
+  }
+  .stat:hover{border-color:var(--line-strong);transform:translateY(-3px)}
+  .stat .s-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:16px}
+  .stat .s-ico svg{width:19px;height:19px}
+  .stat .s-num{font-family:'Archivo';font-weight:800;font-size:38px;letter-spacing:-1.5px;line-height:1}
+  .stat .s-lbl{font-size:12.5px;color:var(--txt-2);margin-top:6px;font-weight:500}
+  .stat .s-trend{position:absolute;top:20px;right:18px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;color:var(--txt-3)}
+  .stat .s-trend svg{width:13px;height:13px}
+  .s-blue .s-ico{background:var(--accent-soft);color:var(--accent)}
+  .s-amber .s-ico{background:rgba(245,165,36,.14);color:var(--progress)}
+  .s-green .s-ico{background:rgba(63,182,110,.14);color:var(--resolved)}
+  .s-white .s-ico{background:rgba(255,255,255,.07);color:var(--txt)}
+
+  /* ---------- LAYOUT GRID ---------- */
+  .cols{display:grid;grid-template-columns:1.55fr 1fr;gap:24px}
+  .block{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .block-head{display:flex;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid var(--line)}
+  .block-head h3{font-family:'Archivo';font-weight:700;font-size:16px;letter-spacing:-.3px}
+  .block-head .bh-sub{font-size:11.5px;color:var(--txt-3);margin-top:2px}
+  .block-head .link{margin-left:auto;font-size:12.5px;color:var(--accent);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px}
+  .block-head .link svg{width:14px;height:14px}
+  .block-head .link:hover{text-decoration:underline}
+
+  /* ---------- STATUS BOARD (venues) ---------- */
+  .venue-row{
+    display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:16px;
+    padding:17px 22px;border-bottom:1px solid var(--line);transition:background .15s var(--ease);cursor:pointer;
+  }
+  .venue-row:last-child{border-bottom:none}
+  .venue-row:hover{background:var(--panel-2)}
+  .v-name{display:flex;align-items:center;gap:14px}
+  .v-thumb{width:46px;height:46px;border-radius:11px;flex-shrink:0;display:grid;place-items:center;background:linear-gradient(150deg,#1d2733,#141b24);border:1px solid var(--line-strong);color:var(--accent)}
+  .v-thumb svg{width:21px;height:21px}
+  .v-name b{font-size:14.5px;font-weight:600;display:block}
+  .v-name span{font-size:12px;color:var(--txt-3)}
+  .v-meta{text-align:right}
+  .v-meta .vm-num{font-family:'Archivo';font-weight:700;font-size:15px}
+  .v-meta .vm-lbl{font-size:10.5px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.6px}
+  .status-pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;padding:7px 13px;border-radius:30px;white-space:nowrap}
+  .led{width:8px;height:8px;border-radius:50%;flex-shrink:0;position:relative}
+  .led::after{content:"";position:absolute;inset:-3px;border-radius:50%;opacity:.5;animation:blink 2.4s infinite}
+  @keyframes blink{0%,100%{opacity:.18}50%{opacity:.55}}
+  .led-blue{background:var(--open);box-shadow:0 0 10px var(--open)}.led-blue::after{background:var(--open)}
+  .led-amber{background:var(--progress);box-shadow:0 0 10px var(--progress)}.led-amber::after{background:var(--progress)}
+  .led-green{background:var(--resolved);box-shadow:0 0 10px var(--resolved)}.led-green::after{background:var(--resolved)}
+  .pill-blue{background:var(--accent-soft);color:#8db8fb}
+  .pill-amber{background:rgba(245,165,36,.13);color:#f7bd5b}
+  .pill-green{background:rgba(63,182,110,.13);color:#62cb8c}
+  .pill-grey{background:rgba(255,255,255,.06);color:var(--txt-2)}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{padding:8px 22px 18px}
+  .tl-item{display:flex;gap:15px;padding:14px 0;position:relative}
+  .tl-item:not(:last-child)::before{content:"";position:absolute;left:7px;top:30px;bottom:-14px;width:1.5px;background:var(--line-strong)}
+  .tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:2px;border:3px solid var(--bg);display:grid;place-items:center}
+  .tl-dot.b{background:var(--open)}.tl-dot.a{background:var(--progress)}.tl-dot.g{background:var(--resolved)}.tl-dot.w{background:var(--txt-3)}
+  .tl-body b{font-size:13.5px;font-weight:600;display:block}
+  .tl-body p{font-size:12.5px;color:var(--txt-2);margin-top:2px;line-height:1.5}
+  .tl-time{font-size:11px;color:var(--txt-3);margin-top:5px;display:flex;align-items:center;gap:6px}
+  .tl-time .tag{background:var(--panel-2);border:1px solid var(--line);padding:2px 8px;border-radius:5px;color:var(--txt-2);font-weight:500}
+
+  /* ---------- TICKETS TABLE ---------- */
+  .filters{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+  .chip{
+    font-size:13px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;
+    background:var(--panel);border:1px solid var(--line);color:var(--txt-2);
+    transition:all .16s var(--ease);display:inline-flex;align-items:center;gap:8px;
+  }
+  .chip .cnt{font-size:11px;background:rgba(255,255,255,.08);padding:1px 7px;border-radius:20px;color:var(--txt-3)}
+  .chip:hover{color:#fff;border-color:var(--line-strong)}
+  .chip.active{background:var(--accent-soft);border-color:rgba(46,125,246,.4);color:#fff}
+  .chip.active .cnt{background:var(--accent);color:#fff}
+  .filters .spacer{margin-left:auto}
+
+  .ticket-table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .ticket-table thead th{
+    text-align:left;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--txt-3);
+    font-weight:700;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--bg-2);
+  }
+  .ticket-table tbody td{padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .ticket-table tbody tr{transition:background .14s var(--ease);cursor:pointer}
+  .ticket-table tbody tr:hover{background:var(--panel-2)}
+  .t-id{font-family:'Archivo';font-weight:700;color:var(--txt);font-size:13.5px}
+  .t-title{font-weight:600;color:var(--txt)}
+  .t-venue{color:var(--txt-2);font-size:12.5px}
+  .t-date{color:var(--txt-3);font-size:12.5px;white-space:nowrap}
+  .t-prio{font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px}
+  .prio-high{background:rgba(242,84,107,.14);color:#f47a8c}
+  .prio-med{background:rgba(245,165,36,.13);color:#f7bd5b}
+  .prio-low{background:rgba(255,255,255,.06);color:var(--txt-2)}
+
+  /* ---------- DISPLAYS GRID ---------- */
+  .disp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+  .disp-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    transition:all .2s var(--ease);
+  }
+  .disp-card:hover{border-color:var(--line-strong);transform:translateY(-3px)}
+  .disp-visual{
+    height:120px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#16202D,#0F1620);
+    display:grid;place-items:center;border-bottom:1px solid var(--line);
+  }
+  .disp-visual .grid-bg{position:absolute;inset:0;opacity:.5;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:18px 18px;}
+  .disp-visual .px{position:relative;display:flex;gap:5px}
+  .disp-visual .px i{width:9px;height:9px;border-radius:2px;background:var(--accent);box-shadow:0 0 8px var(--accent-glow);animation:flick 1.6s infinite}
+  .disp-visual .px i:nth-child(2){animation-delay:.2s;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.5)}
+  .disp-visual .px i:nth-child(3){animation-delay:.4s}
+  .disp-visual .px i:nth-child(4){animation-delay:.6s;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.5)}
+  .disp-visual .px i:nth-child(5){animation-delay:.8s}
+  @keyframes flick{0%,100%{opacity:1}50%{opacity:.3}}
+  .disp-visual .corner{position:absolute;top:12px;right:12px}
+  .disp-body{padding:17px 18px}
+  .disp-body h4{font-family:'Archivo';font-weight:700;font-size:15px;letter-spacing:-.2px}
+  .disp-body .dv{font-size:12px;color:var(--txt-3);margin-top:3px}
+  .disp-specs{display:flex;gap:18px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .disp-specs div{flex:1}
+  .disp-specs .ds-n{font-family:'Archivo';font-weight:700;font-size:14px}
+  .disp-specs .ds-l{font-size:10.5px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+  /* ---------- DOCUMENTS ---------- */
+  .doc-list{display:flex;flex-direction:column;gap:10px}
+  .doc-item{
+    display:flex;align-items:center;gap:16px;padding:16px 20px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;cursor:pointer;
+    transition:all .16s var(--ease);
+  }
+  .doc-item:hover{border-color:var(--line-strong);background:var(--panel-2);transform:translateX(3px)}
+  .doc-ico{width:44px;height:44px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+  .doc-ico svg{width:21px;height:21px}
+  .doc-ico.pdf{background:rgba(242,84,107,.13);color:#f47a8c}
+  .doc-ico.xls{background:rgba(63,182,110,.13);color:#62cb8c}
+  .doc-info b{font-size:14px;font-weight:600;display:block}
+  .doc-info span{font-size:12px;color:var(--txt-3)}
+  .doc-item .dl-btn{margin-left:auto;width:38px;height:38px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;color:var(--txt-2)}
+  .doc-item:hover .dl-btn{color:var(--accent);border-color:rgba(46,125,246,.4)}
+  .doc-item .dl-btn svg{width:17px;height:17px}
+
+  .section-title{font-family:'Archivo';font-weight:800;font-size:22px;letter-spacing:-.5px;margin-bottom:6px}
+  .section-sub{font-size:13.5px;color:var(--txt-3);margin-bottom:24px}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:100;background:rgba(7,9,13,.72);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:24px;animation:fade .25s var(--ease);
+  }
+  .modal-overlay.open{display:flex}
+  .modal{
+    width:560px;max-width:100%;max-height:92vh;overflow-y:auto;
+    background:linear-gradient(180deg,#161D27,#11161D);
+    border:1px solid var(--line-strong);border-radius:18px;box-shadow:var(--shadow);
+    animation:rise .3s var(--ease);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+  .modal-head{padding:24px 26px 20px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:14px}
+  .modal-head .mh-ico{width:42px;height:42px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
+  .modal-head .mh-ico svg{width:20px;height:20px}
+  .modal-head h3{font-family:'Archivo';font-weight:800;font-size:19px;letter-spacing:-.4px}
+  .modal-head p{font-size:12.5px;color:var(--txt-3);margin-top:3px}
+  .modal-head .x{margin-left:auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--txt-2);display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+  .modal-head .x:hover{color:#fff}
+  .modal-head .x svg{width:16px;height:16px}
+  .modal-body{padding:22px 26px}
+  .field{margin-bottom:18px}
+  .field label{font-size:12px;font-weight:600;color:var(--txt-2);display:block;margin-bottom:8px;letter-spacing:.2px}
+  .field input,.field select,.field textarea{
+    width:100%;background:var(--bg-2);border:1px solid var(--line-strong);border-radius:10px;
+    padding:12px 14px;color:var(--txt);font-family:'Sora';font-size:14px;outline:none;transition:border .15s var(--ease);
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .field textarea{resize:vertical;min-height:92px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .prio-opts{display:flex;gap:9px}
+  .prio-opt{flex:1;text-align:center;padding:11px;border-radius:9px;border:1px solid var(--line-strong);background:var(--bg-2);font-size:13px;font-weight:600;cursor:pointer;color:var(--txt-2);transition:all .15s var(--ease)}
+  .prio-opt:hover{border-color:var(--line-strong);color:#fff}
+  .prio-opt.sel{background:var(--accent-soft);border-color:var(--accent);color:#fff}
+  .modal-foot{padding:18px 26px 24px;display:flex;gap:12px;justify-content:flex-end;border-top:1px solid var(--line)}
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed;bottom:28px;right:28px;z-index:200;
+    background:linear-gradient(150deg,#16202D,#11161D);border:1px solid rgba(63,182,110,.4);border-radius:13px;
+    padding:15px 19px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);
+    transform:translateY(140%);transition:transform .4s var(--ease);max-width:360px;
+  }
+  .toast.show{transform:none}
+  .toast .t-ico{width:36px;height:36px;border-radius:9px;background:rgba(63,182,110,.16);color:var(--resolved);display:grid;place-items:center;flex-shrink:0}
+  .toast .t-ico svg{width:19px;height:19px}
+  .toast b{font-size:13.5px;font-weight:600;display:block}
+  .toast span{font-size:12px;color:var(--txt-3)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:1080px){
+    .stat-grid{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+  }
+  @media (max-width:860px){
+    .app{grid-template-columns:1fr}
+    .sidebar{display:none}
+    .content{padding:24px 18px 50px}
+    .topbar{padding:16px 18px}
+    .topbar .search{display:none}
+    .field-row{grid-template-columns:1fr}
+    .hero{padding:28px 24px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div class="brand-txt"><b>ANC</b><span>Arena Control</span></div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">Portal</div>
+      <div class="nav-item active" data-tab="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Overview
+      </div>
+      <div class="nav-item" data-tab="requests">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        Requests
+        <span class="badge">2</span>
+      </div>
+      <div class="nav-item" data-tab="displays">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Displays
+      </div>
+      <div class="nav-item" data-tab="documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M8 13h8M8 17h6"/></svg>
+        Documents
+      </div>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-card">
+        <div class="sc-top"><span class="pulse-dot"></span><b>All systems nominal</b></div>
+        <p>3 venues under active service. Next scheduled visit — Riverside Arena, Jun 18.</p>
+      </div>
+      <div class="user-chip">
+        <div class="avatar">RV</div>
+        <div class="ui"><b>Riverside Group</b><span>Operations · Client</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+    <header class="topbar">
+      <div class="crumbs">Portal / <b id="crumb">Overview</b></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" placeholder="Search tickets, displays, venues…" />
+      </div>
+      <button class="icon-btn" onclick="showNotifications()"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+        New request
+      </button>
+    </header>
+
+    <div class="content">
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="panel active" id="overview">
+        <div class="hero">
+          <span class="hero-tag"><span class="pulse-dot"></span> Live · 3 venues monitored</span>
+          <h1>Everything under service, <em>in one place.</em></h1>
+          <p>Your displays, your tickets, your documents — one operational view of every screen ANC keeps game-ready for you.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="openModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+              Raise a service request
+            </button>
+            <button class="btn btn-ghost" onclick="switchTab('displays')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8"/></svg>
+              View my displays
+            </button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat s-blue">
+            <div class="s-trend">live</div>
+            <div class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
+            <div class="s-num">2</div>
+            <div class="s-lbl">Open requests</div>
+          </div>
+          <div class="stat s-green">
+            <div class="s-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m18 15-6-6-6 6"/></svg>+3</div>
+            <div class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <div class="s-num">14</div>
+            <div class="s-lbl">Resolved this season</div>
+          </div>
+          <div class="stat s-white">
+            <div class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+            <div class="s-num">3</div>
+            <div class="s-lbl">Venues under service</div>
+          </div>
+          <div class="stat s-amber">
+            <div class="s-trend">avg</div>
+            <div class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <div class="s-num">4.2<span style="font-size:18px;letter-spacing:0">h</span></div>
+            <div class="s-lbl">Avg. response time</div>
+          </div>
+        </div>
+
+        <div class="cols">
+          <!-- VENUE STATUS BOARD -->
+          <div class="block">
+            <div class="block-head">
+              <div>
+                <h3>Service status board</h3>
+                <div class="bh-sub">Per-venue display health, updated continuously</div>
+              </div>
+              <span class="link" onclick="switchTab('displays')">All displays <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+            </div>
+
+            <div class="venue-row" onclick="switchTab('displays')">
+              <div class="v-name">
+                <div class="v-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+                <div><b>Riverside Arena</b><span>6 displays · 1 attention needed</span></div>
+              </div>
+              <div class="v-meta"><div class="vm-num">98.6%</div><div class="vm-lbl">Uptime</div></div>
+              <span class="status-pill pill-amber"><span class="led led-amber"></span> In progress</span>
+            </div>
+
+            <div class="venue-row" onclick="switchTab('displays')">
+              <div class="v-name">
+                <div class="v-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+                <div><b>Metro Civic Center</b><span>5 displays · all operational</span></div>
+              </div>
+              <div class="v-meta"><div class="vm-num">100%</div><div class="vm-lbl">Uptime</div></div>
+              <span class="status-pill pill-green"><span class="led led-green"></span> Operational</span>
+            </div>
+
+            <div class="venue-row" onclick="switchTab('displays')">
+              <div class="v-name">
+                <div class="v-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+                <div><b>Lakeside Stadium</b><span>4 displays · 1 new request</span></div>
+              </div>
+              <div class="v-meta"><div class="vm-num">99.1%</div><div class="vm-lbl">Uptime</div></div>
+              <span class="status-pill pill-blue"><span class="led led-blue"></span> Open ticket</span>
+            </div>
+          </div>
+
+          <!-- ACTIVITY TIMELINE -->
+          <div class="block">
+            <div class="block-head">
+              <div>
+                <h3>Recent activity</h3>
+                <div class="bh-sub">Last 7 days</div>
+              </div>
+            </div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot a"></div>
+                <div class="tl-body">
+                  <b>Technician dispatched</b>
+                  <p>Ribbon board pixel fault — Riverside Arena is now in progress.</p>
+                  <div class="tl-time"><span class="tag">#2041</span> · 2 hours ago</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot g"></div>
+                <div class="tl-body">
+                  <b>Request resolved</b>
+                  <p>Scoreboard feed dropout at Metro Civic Center closed after firmware sync.</p>
+                  <div class="tl-time"><span class="tag">#2038</span> · Yesterday</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot b"></div>
+                <div class="tl-body">
+                  <b>New request opened</b>
+                  <p>Concourse menu board brightness — Lakeside Stadium logged by your team.</p>
+                  <div class="tl-time"><span class="tag">#2043</span> · 2 days ago</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot g"></div>
+                <div class="tl-body">
+                  <b>Maintenance complete</b>
+                  <p>Quarterly inspection signed off across all Metro Civic Center displays.</p>
+                  <div class="tl-time"><span class="tag">Q2 visit</span> · 4 days ago</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot w"></div>
+                <div class="tl-body">
+                  <b>Document shared</b>
+                  <p>Q1 maintenance report added to your Documents library.</p>
+                  <div class="tl-time"><span class="tag">PDF</span> · 6 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ REQUESTS ============ -->
+      <section class="panel" id="requests">
+        <h2 class="section-title">Service requests</h2>
+        <p class="section-sub">Every ticket you've raised with ANC, with live status across all venues.</p>
+
+        <div class="filters">
+          <div class="chip active" data-filter="all" onclick="filterTickets(this,'all')">All <span class="cnt">16</span></div>
+          <div class="chip" data-filter="open" onclick="filterTickets(this,'open')"><span class="led led-blue"></span> Open <span class="cnt">1</span></div>
+          <div class="chip" data-filter="progress" onclick="filterTickets(this,'progress')"><span class="led led-amber"></span> In progress <span class="cnt">1</span></div>
+          <div class="chip" data-filter="resolved" onclick="filterTickets(this,'resolved')"><span class="led led-green"></span> Resolved <span class="cnt">14</span></div>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" onclick="openModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+            New request
+          </button>
+        </div>
+
+        <div class="block">
+          <table class="ticket-table">
+            <thead>
+              <tr>
+                <th style="width:90px">Ticket</th>
+                <th>Issue</th>
+                <th>Venue</th>
+                <th style="width:120px">Priority</th>
+                <th style="width:150px">Status</th>
+                <th style="width:120px">Updated</th>
+              </tr>
+            </thead>
+            <tbody id="ticket-body">
+              <tr data-status="progress">
+                <td class="t-id">#2041</td>
+                <td class="t-title">Ribbon board pixel fault</td>
+                <td class="t-venue">Riverside Arena</td>
+                <td><span class="t-prio prio-high">High</span></td>
+                <td><span class="status-pill pill-amber"><span class="led led-amber"></span> In progress</span></td>
+                <td class="t-date">2h ago</td>
+              </tr>
+              <tr data-status="open">
+                <td class="t-id">#2043</td>
+                <td class="t-title">Concourse menu board brightness</td>
+                <td class="t-venue">Lakeside Stadium</td>
+                <td><span class="t-prio prio-med">Medium</span></td>
+                <td><span class="status-pill pill-blue"><span class="led led-blue"></span> Open</span></td>
+                <td class="t-date">2d ago</td>
+              </tr>
+              <tr data-status="resolved">
+                <td class="t-id">#2038</td>
+                <td class="t-title">Scoreboard feed dropout</td>
+                <td class="t-venue">Metro Civic Center</td>
+                <td><span class="t-prio prio-high">High</span></td>
+                <td><span class="status-pill pill-green"><span class="led led-green"></span> Resolved</span></td>
+                <td class="t-date">Yesterday</td>
+              </tr>
+              <tr data-status="resolved">
+                <td class="t-id">#2035</td>
+                <td class="t-title">North ribbon board flicker</td>
+                <td class="t-venue">Riverside Arena</td>
+                <td><span class="t-prio prio-med">Medium</span></td>
+                <td><span class="status-pill pill-green"><span class="led led-green"></span> Resolved</span></td>
+                <td class="t-date">Jun 04</td>
+              </tr>
+              <tr data-status="resolved">
+                <td class="t-id">#2031</td>
+                <td class="t-title">Main scoreboard color calibration</td>
+                <td class="t-venue">Lakeside Stadium</td>
+                <td><span class="t-prio prio-low">Low</span></td>
+                <td><span class="status-pill pill-green"><span class="led led-green"></span> Resolved</span></td>
+                <td class="t-date">May 28</td>
+              </tr>
+              <tr data-status="resolved">
+                <td class="t-id">#2027</td>
+                <td class="t-title">Control room signal sync</td>
+                <td class="t-venue">Metro Civic Center</td>
+                <td><span class="t-prio prio-med">Medium</span></td>
+                <td><span class="status-pill pill-green"><span class="led led-green"></span> Resolved</span></td>
+                <td class="t-date">May 19</td>
+              </tr>
+              <tr data-status="resolved">
+                <td class="t-id">#2022</td>
+                <td class="t-title">Courtside display power cycling</td>
+                <td class="t-venue">Riverside Arena</td>
+                <td><span class="t-prio prio-high">High</span></td>
+                <td><span class="status-pill pill-green"><span class="led led-green"></span> Resolved</span></td>
+                <td class="t-date">May 11</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ DISPLAYS ============ -->
+      <section class="panel" id="displays">
+        <h2 class="section-title">Displays under service</h2>
+        <p class="section-sub">Every screen ANC maintains for you, across all three venues.</p>
+
+        <div class="disp-grid">
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-green"><span class="led led-green"></span> Operational</span></div></div>
+            <div class="disp-body">
+              <h4>Main scoreboard</h4>
+              <div class="dv">Riverside Arena · Center-hung</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">6mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">100%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-amber"><span class="led led-amber"></span> Servicing</span></div></div>
+            <div class="disp-body">
+              <h4>North ribbon board</h4>
+              <div class="dv">Riverside Arena · Fascia</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">10mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">98.6%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-green"><span class="led led-green"></span> Operational</span></div></div>
+            <div class="disp-body">
+              <h4>Concourse menu boards</h4>
+              <div class="dv">Metro Civic Center · 12 panels</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">2.5mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">100%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-green"><span class="led led-green"></span> Operational</span></div></div>
+            <div class="disp-body">
+              <h4>End-zone video wall</h4>
+              <div class="dv">Lakeside Stadium · Endzone</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">8mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">99.1%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-blue"><span class="led led-blue"></span> Open ticket</span></div></div>
+            <div class="disp-body">
+              <h4>Concourse menu boards</h4>
+              <div class="dv">Lakeside Stadium · 8 panels</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">2.5mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">97.4%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="disp-card">
+            <div class="disp-visual"><div class="grid-bg"></div><div class="px"><i></i><i></i><i></i><i></i><i></i></div><div class="corner"><span class="status-pill pill-green"><span class="led led-green"></span> Operational</span></div></div>
+            <div class="disp-body">
+              <h4>Marquee entrance display</h4>
+              <div class="dv">Metro Civic Center · Exterior</div>
+              <div class="disp-specs">
+                <div><div class="ds-n">16mm</div><div class="ds-l">Pixel pitch</div></div>
+                <div><div class="ds-n">100%</div><div class="ds-l">Uptime 90d</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DOCUMENTS ============ -->
+      <section class="panel" id="documents">
+        <h2 class="section-title">Documents</h2>
+        <p class="section-sub">Agreements, reports, and reference materials shared by your ANC service team.</p>
+
+        <div class="doc-list">
+          <div class="doc-item">
+            <div class="doc-ico pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+            <div class="doc-info"><b>Service agreement 2026</b><span>PDF · 1.4 MB · Updated Jan 12, 2026</span></div>
+            <div class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+          </div>
+
+          <div class="doc-item">
+            <div class="doc-ico xls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="m9 13 3 4m0-4-3 4"/></svg></div>
+            <div class="doc-info"><b>Q1 maintenance report</b><span>PDF · 880 KB · Updated Apr 02, 2026</span></div>
+            <div class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+          </div>
+
+          <div class="doc-item">
+            <div class="doc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M8 13h8M8 17h6"/></svg></div>
+            <div class="doc-info"><b>Display inventory schedule</b><span>PDF · 612 KB · Updated May 20, 2026</span></div>
+            <div class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+          </div>
+
+          <div class="doc-item">
+            <div class="doc-ico pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+            <div class="doc-info"><b>Preventive maintenance plan</b><span>PDF · 1.1 MB · Updated Feb 28, 2026</span></div>
+            <div class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+          </div>
+
+          <div class="doc-item">
+            <div class="doc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M8 13h8M8 17h6"/></svg></div>
+            <div class="doc-info"><b>Warranty &amp; coverage summary</b><span>PDF · 540 KB · Updated Jan 12, 2026</span></div>
+            <div class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= NEW REQUEST MODAL ================= -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14h6M9 17h4"/></svg></div>
+      <div><h3>Raise a service request</h3><p>Your ANC team is notified the moment you submit.</p></div>
+      <div class="x" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Venue</label>
+          <select id="f-venue">
+            <option>Riverside Arena</option>
+            <option>Metro Civic Center</option>
+            <option>Lakeside Stadium</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Display</label>
+          <select id="f-display">
+            <option>Main scoreboard</option>
+            <option>North ribbon board</option>
+            <option>Concourse menu boards</option>
+            <option>End-zone video wall</option>
+            <option>Marquee entrance display</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Issue summary</label>
+        <input type="text" id="f-title" placeholder="e.g. Pixel block out on lower ribbon section" />
+      </div>
+      <div class="field">
+        <label>Priority</label>
+        <div class="prio-opts">
+          <div class="prio-opt" onclick="selPrio(this)">Low</div>
+          <div class="prio-opt sel" onclick="selPrio(this)">Medium</div>
+          <div class="prio-opt" onclick="selPrio(this)">High</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Details</label>
+        <textarea id="f-details" placeholder="When did it start? Which section? Any game-day impact?"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitRequest()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+        Submit request
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div class="toast" id="toast">
+  <div class="t-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg></div>
+  <div><b>Request submitted</b><span id="toast-sub">Ticket #2044 created — your ANC team is on it.</span></div>
+</div>
+
+<script>
+  /* ---- TAB SWITCHING ---- */
+  function switchTab(tab){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===tab));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===tab));
+    document.getElementById('crumb').textContent = tab.charAt(0).toUpperCase()+tab.slice(1);
+    document.querySelector('.content').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>switchTab(n.dataset.tab)));
+
+  /* ---- TICKET FILTERS ---- */
+  function filterTickets(el, f){
+    document.querySelectorAll('#requests .chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#ticket-body tr').forEach(r=>{
+      r.style.display = (f==='all' || r.dataset.status===f) ? '' : 'none';
+    });
+  }
+
+  /* ---- MODAL ---- */
+  function openModal(){ document.getElementById('modal').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(){ document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+  function selPrio(el){
+    document.querySelectorAll('.prio-opt').forEach(p=>p.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+
+  let ticketNum = 2044;
+  function submitRequest(){
+    const title = document.getElementById('f-title').value.trim() || 'Display service request';
+    const venue = document.getElementById('f-venue').value;
+    const prio  = document.querySelector('.prio-opt.sel').textContent;
+    const prioClass = prio==='High'?'prio-high':prio==='Low'?'prio-low':'prio-med';
+    const id = '#'+ticketNum;
+
+    // inject new open ticket at top of table
+    const tbody = document.getElementById('ticket-body');
+    const tr = document.createElement('tr');
+    tr.dataset.status = 'open';
+    tr.innerHTML = `
+      <td class="t-id">${id}</td>
+      <td class="t-title">${title.replace(/</g,'&lt;')}</td>
+      <td class="t-venue">${venue}</td>
+      <td><span class="t-prio ${prioClass}">${prio}</span></td>
+      <td><span class="status-pill pill-blue"><span class="led led-blue"></span> Open</span></td>
+      <td class="t-date">just now</td>`;
+    tbody.insertBefore(tr, tbody.firstChild);
+
+    ticketNum++;
+    closeModal();
+    // reset form
+    document.getElementById('f-title').value='';
+    document.getElementById('f-details').value='';
+
+    flashToast('Request submitted', `Ticket ${id} created — your ANC team is on it.`);
+  }
+
+  /* ---- TOAST HELPER ---- */
+  function flashToast(title, sub){
+    const toast = document.getElementById('toast');
+    toast.querySelector('b').textContent = title;
+    document.getElementById('toast-sub').textContent = sub;
+    toast.classList.add('show');
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(()=>toast.classList.remove('show'), 3800);
+  }
+
+  /* ---- NOTIFICATIONS ---- */
+  function showNotifications(){
+    flashToast('You’re all caught up', 'No new alerts — 2 requests are being worked on.');
+  }
+
+  /* ---- TICKET ROW DETAIL ---- */
+  document.getElementById('ticket-body').addEventListener('click', e=>{
+    const row = e.target.closest('tr');
+    if(!row) return;
+    const id = row.querySelector('.t-id') ? row.querySelector('.t-id').textContent : 'this ticket';
+    const issue = row.querySelector('.t-title') ? row.querySelector('.t-title').textContent : '';
+    flashToast('Ticket '+id, issue ? issue+' — details opened.' : 'Details opened.');
+  });
+
+  /* ---- DOCUMENT DOWNLOAD ---- */
+  document.querySelectorAll('.doc-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const name = item.querySelector('.doc-info b') ? item.querySelector('.doc-info b').textContent : 'Document';
+      flashToast('Preparing download', name+' — your file is being readied.');
+    });
+  });
+
+  /* ---- ESC closes modal ---- */
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;left:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

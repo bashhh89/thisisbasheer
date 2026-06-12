@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 08 — Retro · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder & operator. Custom platforms for operations, sales, and service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --orange:#D9551F;
+    --mustard:#E0A526;
+    --cream:#F5E9D6;
+    --brown:#2B1D14;
+    --brown-2:#3A2A1D;
+    --cream-dim:rgba(245,233,214,.62);
+    --line:rgba(43,29,20,.16);
+    --line-cream:rgba(245,233,214,.18);
+    --max:1180px;
+    --radius:22px;
+    --display:'Sora',sans-serif;
+    --mono:'Space Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--display);
+    background:var(--cream);
+    color:var(--brown);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+  ::selection{background:var(--orange);color:var(--cream)}
+
+  /* ---------- grain overlay ---------- */
+  .grain{
+    position:fixed;inset:-50%;width:200%;height:200%;
+    pointer-events:none;z-index:999;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 7s steps(8) infinite;
+  }
+  @keyframes grain{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-4%,3%)}
+    40%{transform:translate(3%,-4%)}
+    60%{transform:translate(-3%,-2%)}
+    80%{transform:translate(4%,2%)}
+  }
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+  @media(max-width:640px){.wrap{padding:0 20px}}
+
+  /* ---------- mono label ---------- */
+  .tag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;
+  }
+  .tag::before{content:'';width:26px;height:2px;background:currentColor;border-radius:2px}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(245,233,214,.88);backdrop-filter:blur(12px);
+    border-bottom:2px solid var(--brown);
+  }
+  .nav-inner{
+    max-width:var(--max);margin:0 auto;padding:0 32px;
+    height:64px;display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-mark{
+    display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--brown);
+  }
+  .nav-mark .dot{
+    width:30px;height:30px;border-radius:50%;
+    background:conic-gradient(var(--orange) 0 50%, var(--mustard) 50% 75%, var(--brown) 75% 100%);
+    border:2px solid var(--brown);flex:none;
+  }
+  .nav-mark span{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--brown);text-decoration:none;position:relative;
+  }
+  .nav-links a:not(.nav-cta)::after{
+    content:'';position:absolute;left:0;bottom:-4px;width:0;height:2px;
+    background:var(--orange);transition:width .25s ease;border-radius:2px;
+  }
+  .nav-links a:not(.nav-cta):hover::after{width:100%}
+  .nav-cta{
+    background:var(--brown);color:var(--cream)!important;
+    padding:9px 18px;border-radius:999px;border:2px solid var(--brown);
+    transition:background .2s,color .2s;
+  }
+  .nav-cta:hover{background:var(--orange);border-color:var(--orange)}
+  @media(max-width:760px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* ---------- hero ---------- */
+  header{
+    position:relative;min-height:100svh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:140px 0 0;overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;
+  }
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr}
+    .patch{order:-1;margin-top:-20px}
+    header{padding-top:110px}
+  }
+  h1{
+    font-size:clamp(44px,7.4vw,104px);font-weight:800;line-height:1.02;
+    letter-spacing:-.025em;margin:26px 0 28px;max-width:13ch;
+  }
+  h1 .accent{color:var(--orange)}
+  .hero-sub{
+    font-size:clamp(16px,1.6vw,20px);max-width:46ch;color:rgba(43,29,20,.78);
+    font-weight:400;margin-bottom:40px;
+  }
+  .hero-name{
+    font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--orange);
+  }
+  .btn-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .btn{
+    font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;text-decoration:none;
+    padding:16px 30px;border-radius:999px;display:inline-flex;align-items:center;gap:10px;
+    transition:transform .2s ease,box-shadow .2s ease,background .2s,color .2s;
+  }
+  .btn-primary{
+    background:var(--orange);color:var(--cream);border:2px solid var(--brown);
+    box-shadow:4px 4px 0 var(--brown);
+  }
+  .btn-primary:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--brown)}
+  .btn-ghost{
+    background:transparent;color:var(--brown);border:2px solid var(--brown);
+  }
+  .btn-ghost:hover{background:var(--brown);color:var(--cream)}
+
+  /* mission patch badge */
+  .patch{
+    width:clamp(190px,21vw,260px);height:clamp(190px,21vw,260px);
+    position:relative;flex:none;
+  }
+  .patch svg{width:100%;height:100%;animation:spin 36s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .patch .core{
+    position:absolute;inset:21%;border-radius:50%;
+    background:var(--brown);border:3px solid var(--brown);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .patch .core::before{
+    content:'';position:absolute;left:-10%;right:-10%;bottom:0;height:52%;
+    background:
+      linear-gradient(to top,
+        var(--orange) 0 22%,
+        var(--mustard) 22% 38%,
+        rgba(224,165,38,.55) 38% 50%,
+        rgba(217,85,31,.35) 50% 64%,
+        transparent 64%);
+    border-radius:50% 50% 0 0/100% 100% 0 0;
+  }
+  .patch .core::after{
+    content:'';position:absolute;top:18%;left:50%;transform:translateX(-50%);
+    width:26%;aspect-ratio:1;border-radius:50%;
+    background:var(--mustard);
+    box-shadow:0 0 0 4px rgba(224,165,38,.25),0 0 26px rgba(224,165,38,.5);
+  }
+
+  /* horizon stripes at hero bottom */
+  .horizon{
+    margin-top:auto;padding-top:70px;
+  }
+  .horizon .stripe{height:14px}
+  .horizon .s1{background:var(--mustard)}
+  .horizon .s2{background:var(--orange);height:20px}
+  .horizon .s3{background:#B23E12;height:28px}
+  .horizon .s4{background:var(--brown);height:38px}
+
+  /* curved divider */
+  .curve{display:block;width:100%;height:80px;margin-bottom:-1px}
+  .curve.flip{transform:scaleY(-1);margin-bottom:0;margin-top:-1px}
+
+  /* ---------- mission readout (stats) ---------- */
+  .readout{
+    background:var(--brown);color:var(--cream);
+    padding:30px 0 110px;
+  }
+  .readout-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;margin-bottom:50px;
+  }
+  .readout-head .tag{color:var(--mustard)}
+  .readout-head .sys{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--cream-dim);display:flex;align-items:center;gap:8px;
+  }
+  .blink{
+    width:8px;height:8px;border-radius:50%;background:var(--mustard);
+    animation:blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .panel{
+    border:2px solid var(--line-cream);border-radius:var(--radius);
+    overflow:hidden;
+    display:grid;grid-template-columns:repeat(3,1fr);
+  }
+  .cell{
+    padding:36px 32px 32px;
+    border-right:2px solid var(--line-cream);
+    border-bottom:2px solid var(--line-cream);
+    position:relative;
+  }
+  .cell:nth-child(3n){border-right:none}
+  .cell:nth-child(n+4){border-bottom:none}
+  .cell .idx{
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+    color:rgba(245,233,214,.4);position:absolute;top:14px;right:18px;
+  }
+  .cell .num{
+    font-size:clamp(34px,4vw,52px);font-weight:800;letter-spacing:-.02em;
+    color:var(--mustard);line-height:1.05;font-variant-numeric:tabular-nums;
+  }
+  .cell .num .unit{font-size:.5em;font-weight:700;color:var(--orange)}
+  .cell .lbl{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--cream-dim);margin-top:12px;line-height:1.7;
+  }
+  @media(max-width:880px){
+    .panel{grid-template-columns:repeat(2,1fr)}
+    .cell:nth-child(3n){border-right:2px solid var(--line-cream)}
+    .cell:nth-child(2n){border-right:none}
+    .cell:nth-child(n+4){border-bottom:2px solid var(--line-cream)}
+    .cell:nth-child(n+5){border-bottom:none}
+  }
+  @media(max-width:540px){
+    .panel{grid-template-columns:1fr}
+    .cell{border-right:none!important;border-bottom:2px solid var(--line-cream)!important}
+    .cell:last-child{border-bottom:none!important}
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:110px 0}
+  .sec-head{margin-bottom:64px}
+  .sec-head .tag{color:var(--orange)}
+  h2{
+    font-size:clamp(32px,4.6vw,58px);font-weight:800;letter-spacing:-.02em;
+    line-height:1.08;margin-top:22px;max-width:18ch;
+  }
+
+  /* ---------- work / missions ---------- */
+  .missions{display:flex;flex-direction:column;gap:34px}
+  .mission{
+    border:2px solid var(--brown);border-radius:var(--radius);
+    background:var(--cream);overflow:hidden;
+    display:grid;grid-template-columns:200px 1fr;
+    transition:transform .25s ease,box-shadow .25s ease;
+    box-shadow:0 0 0 var(--brown);
+  }
+  .mission:hover{transform:translate(-4px,-4px);box-shadow:8px 8px 0 var(--brown)}
+  .mission-side{
+    background:var(--brown);color:var(--cream);
+    padding:30px 24px;display:flex;flex-direction:column;justify-content:space-between;
+    gap:24px;position:relative;
+  }
+  .mission:nth-child(2) .mission-side{background:var(--orange)}
+  .mission:nth-child(3) .mission-side{background:#B23E12}
+  .mission-no{
+    font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    opacity:.75;
+  }
+  .mission-num{
+    font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1;
+  }
+  .mission-side .bars{display:flex;gap:5px}
+  .mission-side .bars i{width:18px;height:5px;border-radius:3px;background:var(--mustard)}
+  .mission-side .bars i:nth-child(2){background:var(--cream);opacity:.7}
+  .mission-side .bars i:nth-child(3){background:var(--cream);opacity:.35}
+  .mission-body{padding:36px 40px 34px}
+  .mission-body h3{
+    font-size:clamp(21px,2.4vw,28px);font-weight:700;letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .mission-body p{
+    color:rgba(43,29,20,.75);max-width:62ch;margin-bottom:22px;font-size:15.5px;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    border:2px solid var(--brown);border-radius:999px;padding:6px 14px;
+    background:transparent;font-weight:700;
+  }
+  .chip.hot{background:var(--mustard);border-color:var(--brown)}
+  @media(max-width:720px){
+    .mission{grid-template-columns:1fr}
+    .mission-side{flex-direction:row;align-items:center;padding:20px 24px}
+    .mission-num{font-size:36px}
+    .mission-body{padding:28px 24px}
+  }
+
+  /* ---------- capabilities ---------- */
+  .caps-sec{background:var(--mustard);position:relative}
+  .caps-sec .sec-head .tag{color:var(--brown)}
+  .caps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    border:2px solid var(--brown);border-radius:var(--radius);overflow:hidden;
+    background:var(--mustard);
+  }
+  .cap{
+    padding:38px 32px;border-right:2px solid var(--brown);border-bottom:2px solid var(--brown);
+    position:relative;transition:background .25s ease,color .25s ease;
+    cursor:default;
+  }
+  .cap:nth-child(3n){border-right:none}
+  .cap:nth-child(n+4){border-bottom:none}
+  .cap:hover{background:var(--brown);color:var(--cream)}
+  .cap .cap-no{
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+    opacity:.55;display:block;margin-bottom:18px;
+  }
+  .cap h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .cap .arrow{
+    position:absolute;top:34px;right:28px;font-size:18px;
+    opacity:0;transform:translate(-6px,6px);transition:.25s ease;
+  }
+  .cap:hover .arrow{opacity:1;transform:translate(0,0)}
+  @media(max-width:880px){
+    .caps{grid-template-columns:repeat(2,1fr)}
+    .cap:nth-child(3n){border-right:2px solid var(--brown)}
+    .cap:nth-child(2n){border-right:none}
+    .cap:nth-child(n+4){border-bottom:2px solid var(--brown)}
+    .cap:nth-child(n+5){border-bottom:none}
+  }
+  @media(max-width:540px){
+    .caps{grid-template-columns:1fr}
+    .cap{border-right:none!important;border-bottom:2px solid var(--brown)!important}
+    .cap:last-child{border-bottom:none!important}
+  }
+
+  /* ---------- principle band ---------- */
+  .band{
+    background:var(--orange);color:var(--cream);
+    padding:26px 0;border-top:2px solid var(--brown);border-bottom:2px solid var(--brown);
+    overflow:hidden;white-space:nowrap;
+  }
+  .band-track{display:inline-flex;gap:0;animation:marquee 30s linear infinite}
+  .band-track span{
+    font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.22em;
+    text-transform:uppercase;padding:0 28px;display:inline-flex;align-items:center;gap:28px;
+  }
+  .band-track span::after{content:'✦';color:var(--mustard)}
+  @keyframes marquee{to{transform:translateX(-50%)}}
+
+  /* ---------- CTA ---------- */
+  .cta-sec{
+    background:var(--brown);color:var(--cream);text-align:center;
+    padding:130px 0 120px;position:relative;overflow:hidden;
+  }
+  .cta-sec::before{
+    content:'';position:absolute;left:50%;bottom:-32vw;transform:translateX(-50%);
+    width:120vw;height:60vw;border-radius:50% 50% 0 0/100% 100% 0 0;
+    background:
+      radial-gradient(ellipse at 50% 100%,
+        rgba(217,85,31,.5) 0 30%,
+        rgba(224,165,38,.28) 30% 52%,
+        rgba(224,165,38,.1) 52% 72%,
+        transparent 72%);
+    pointer-events:none;
+  }
+  .cta-sec .wrap{position:relative;z-index:1}
+  .cta-sec .tag{color:var(--mustard);justify-content:center}
+  .cta-sec h2{
+    margin:24px auto 18px;max-width:16ch;
+  }
+  .cta-sec p{
+    color:var(--cream-dim);max-width:44ch;margin:0 auto 44px;font-size:17px;
+  }
+  .cta-mail{
+    font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--cream-dim);margin-top:26px;display:block;
+  }
+  .cta-mail a{color:var(--mustard);text-decoration:none;border-bottom:2px solid rgba(224,165,38,.4);padding-bottom:2px}
+  .cta-mail a:hover{border-bottom-color:var(--mustard)}
+
+  /* ---------- footer ---------- */
+  footer{
+    background:var(--brown);color:var(--cream-dim);
+    border-top:2px solid var(--line-cream);padding:30px 0;
+  }
+  .foot{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  }
+  .foot .stripes{display:flex;gap:5px}
+  .foot .stripes i{width:22px;height:6px;border-radius:3px}
+  .foot .stripes i:nth-child(1){background:var(--orange)}
+  .foot .stripes i:nth-child(2){background:var(--mustard)}
+  .foot .stripes i:nth-child(3){background:var(--cream)}
+
+  /* ---------- reveal ---------- */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none}
+    .patch svg,.band-track,.grain,.blink{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-mark" href="#top">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Basheer&nbsp;Systems</span>
+    </a>
+    <div class="nav-links">
+      <a href="#readout">Readout</a>
+      <a href="#work">Missions</a>
+      <a href="#capabilities">Capabilities</a>
+      <a class="nav-cta" href="mailto:ahmad@basheer.app">Start a project</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-name tag">Ahmad Basheer — Systems Builder &amp; Operator</span>
+        <h1>I build systems that <span class="accent">run companies.</span></h1>
+        <p class="hero-sub">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="mailto:ahmad@basheer.app">Start a project →</a>
+          <a class="btn btn-ghost" href="#work">View missions</a>
+        </div>
+      </div>
+      <div class="patch" aria-label="Basheer Systems — Est. Operations Division mission badge">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <path id="ring" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/>
+          </defs>
+          <circle cx="100" cy="100" r="96" fill="none" stroke="#2B1D14" stroke-width="3"/>
+          <circle cx="100" cy="100" r="62" fill="none" stroke="#2B1D14" stroke-width="3"/>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#D9551F" stroke-width="2" stroke-dasharray="2 6"/>
+          <text font-family="'Space Mono',monospace" font-size="11" font-weight="700" letter-spacing="2.6" fill="#2B1D14">
+            <textPath href="#ring">BASHEER SYSTEMS&#160;&#160;✦&#160;&#160;EST. OPERATIONS DIVISION&#160;&#160;✦&#160;&#160;</textPath>
+          </text>
+        </svg>
+        <div class="core" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon" aria-hidden="true">
+    <div class="stripe s1"></div>
+    <div class="stripe s2"></div>
+    <div class="stripe s3"></div>
+    <div class="stripe s4"></div>
+  </div>
+</header>
+
+<!-- ============ MISSION READOUT ============ -->
+<div class="readout" id="readout">
+  <div class="wrap">
+    <div class="readout-head rv">
+      <span class="tag">Mission Readout</span>
+      <span class="sys"><span class="blink" aria-hidden="true"></span>All systems operational</span>
+    </div>
+    <div class="panel rv">
+      <div class="cell">
+        <span class="idx">R-01</span>
+        <div class="num" data-count="100" data-suffix="+">0</div>
+        <div class="lbl">Containers in production</div>
+      </div>
+      <div class="cell">
+        <span class="idx">R-02</span>
+        <div class="num" data-count="43" data-suffix="+">0</div>
+        <div class="lbl">Venues live</div>
+      </div>
+      <div class="cell">
+        <span class="idx">R-03</span>
+        <div class="num" data-count="150">0</div>
+        <div class="lbl">Field technicians</div>
+      </div>
+      <div class="cell">
+        <span class="idx">R-04</span>
+        <div class="num"><span class="unit">&lt;</span>1<span class="unit">&nbsp;hr</span></div>
+        <div class="lbl">Proposal turnaround — from days</div>
+      </div>
+      <div class="cell">
+        <span class="idx">R-05</span>
+        <div class="num" data-count="30000" data-suffix="+">0</div>
+        <div class="lbl">CRM records</div>
+      </div>
+      <div class="cell">
+        <span class="idx">R-06</span>
+        <div class="num" data-count="250" data-suffix="+">0</div>
+        <div class="lbl">Events per season</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<svg class="curve" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+  <rect width="1440" height="80" fill="#F5E9D6"/>
+  <path d="M0,0 Q720,80 1440,0 Z" fill="#2B1D14"/>
+</svg>
+
+<!-- ============ WORK / MISSIONS ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Flight Log — Selected Work</span>
+      <h2>Three systems. All in production. All operated daily.</h2>
+    </div>
+    <div class="missions">
+      <article class="mission rv">
+        <div class="mission-side">
+          <div>
+            <div class="mission-no">Mission</div>
+            <div class="mission-num">01</div>
+          </div>
+          <div class="bars" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+        <div class="mission-body">
+          <h3>Proposal Engine</h3>
+          <p>Proposal turnaround taken from days to under an hour. Versioned pricing, structured inputs, and reproducible output — every proposal can be rebuilt, audited, and explained line by line.</p>
+          <div class="chips">
+            <span class="chip hot">Days → under 1 hr</span>
+            <span class="chip">Versioned pricing</span>
+            <span class="chip">Reproducible proposals</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mission rv">
+        <div class="mission-side">
+          <div>
+            <div class="mission-no">Mission</div>
+            <div class="mission-num">02</div>
+          </div>
+          <div class="bars" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+        <div class="mission-body">
+          <h3>Venue Operations Platform</h3>
+          <p>Live operations across 43+ venues, 150 field technicians, and 15 markets. Scheduling, coverage, and reporting on one screen — replacing four separate reports.</p>
+          <div class="chips">
+            <span class="chip hot">43+ venues</span>
+            <span class="chip">150 technicians</span>
+            <span class="chip">15 markets</span>
+            <span class="chip">1 screen, was 4 reports</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mission rv">
+        <div class="mission-side">
+          <div>
+            <div class="mission-no">Mission</div>
+            <div class="mission-num">03</div>
+          </div>
+          <div class="bars" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+        <div class="mission-body">
+          <h3>CRM Platform Extension</h3>
+          <p>A sales and account system extended with 13 custom objects, 30,000+ records migrated and reconciled against the source, and 16 live dashboards the team actually checks.</p>
+          <div class="chips">
+            <span class="chip hot">13 custom objects</span>
+            <span class="chip">30,000+ records reconciled</span>
+            <span class="chip">16 live dashboards</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE BAND ============ -->
+<div class="band" aria-hidden="true">
+  <div class="band-track" id="bandTrack">
+    <span>Designed</span><span>Built</span><span>Operated</span><span>End-to-End</span>
+    <span>Designed</span><span>Built</span><span>Operated</span><span>End-to-End</span>
+  </div>
+</div>
+
+<!-- ============ CAPABILITIES ============ -->
+<section class="caps-sec" id="capabilities">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="tag">Systems Catalog</span>
+      <h2>What I build.</h2>
+    </div>
+    <div class="caps rv">
+      <div class="cap"><span class="cap-no">C-01</span><h3>CRM Platforms</h3><span class="arrow">→</span></div>
+      <div class="cap"><span class="cap-no">C-02</span><h3>Proposal Engines</h3><span class="arrow">→</span></div>
+      <div class="cap"><span class="cap-no">C-03</span><h3>Operations Platforms</h3><span class="arrow">→</span></div>
+      <div class="cap"><span class="cap-no">C-04</span><h3>Automation Systems</h3><span class="arrow">→</span></div>
+      <div class="cap"><span class="cap-no">C-05</span><h3>Platform Integrations</h3><span class="arrow">→</span></div>
+      <div class="cap"><span class="cap-no">C-06</span><h3>AI Inside the Workflow</h3><span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-sec" id="contact">
+  <div class="wrap">
+    <span class="tag rv">Open Channel</span>
+    <h2 class="rv">Have a system that should exist?</h2>
+    <p class="rv">One conversation is enough to know whether it's worth building. If it is, I design it, build it, and run it.</p>
+    <div class="rv">
+      <a class="btn btn-primary" href="mailto:ahmad@basheer.app">Start a project →</a>
+      <span class="cta-mail">Direct line — <a href="mailto:ahmad@basheer.app">ahmad@basheer.app</a></span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>Ahmad Basheer · Systems Builder &amp; Operator</span>
+    <span class="stripes" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>Basheer Systems — Operations Division</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // scroll reveal
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  // counter animation for readout numbers
+  function animate(el){
+    var target = parseInt(el.getAttribute('data-count'),10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1400, start = null;
+    function fmt(n){ return n >= 1000 ? n.toLocaleString('en-US') : String(n); }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur,1);
+      var eased = 1 - Math.pow(1-p,3);
+      el.textContent = fmt(Math.round(target*eased)) + (p===1 ? suffix : '');
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cio = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var el = e.target;
+        if(reduce){
+          var t = parseInt(el.getAttribute('data-count'),10);
+          el.textContent = (t>=1000 ? t.toLocaleString('en-US') : t) + (el.getAttribute('data-suffix')||'');
+        } else { animate(el); }
+        cio.unobserve(el);
+      }
+    });
+  },{threshold:.4});
+  document.querySelectorAll('.num[data-count]').forEach(function(el){ cio.observe(el); });
+})();
+</script>
+</body>
+</html>

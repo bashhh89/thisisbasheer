@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 14 — Concrete · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder &amp; operator. Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONCEPT 14 — CONCRETE
+   Béton brut. Poured slabs. One safety-orange accent.
+   ============================================================ */
+:root{
+  --c-light:#b6b2aa;        /* cured surface */
+  --c-mid:#a8a49c;          /* second pour */
+  --c-card:#b1ada5;         /* lifted slab */
+  --c-deep:#8f8b84;         /* shadow pour */
+  --slab-dark:#1b1a18;      /* wet pour / night slab */
+  --ink:#171614;            /* cast iron */
+  --bone:#d9d5cd;           /* exposed aggregate */
+  --orange:#ff4d00;         /* safety marking */
+  --joint:rgba(20,18,16,.55);
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --body:'Archivo',sans-serif;
+  --display:'Anton','Archivo Black',sans-serif;
+  --drop:16px 16px 0 rgba(14,13,11,.40);
+  --drop-big:26px 26px 0 rgba(14,13,11,.44);
+  --pad:clamp(20px,4vw,72px);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{
+  background:var(--c-light);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:var(--orange);color:var(--ink)}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+
+/* scrollbar as rebar */
+::-webkit-scrollbar{width:12px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--c-deep);border:2px solid var(--ink)}
+::-webkit-scrollbar-thumb:hover{background:var(--orange)}
+
+/* ---- global aggregate grain ------------------------------- */
+body::after{
+  content:"";
+  position:fixed;inset:0;
+  z-index:60;
+  pointer-events:none;
+  opacity:.5;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+/* ---- slab surface: formwork board lines + pour shading ----- */
+.slab{position:relative}
+.slab > .surface{
+  content:"";
+  position:absolute;inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, rgba(20,18,16,.055) 0 1px, transparent 1px 168px),
+    repeating-linear-gradient(180deg, rgba(255,255,255,.05) 0 1px, transparent 1px 96px),
+    linear-gradient(180deg, rgba(255,255,255,.10), transparent 14%, transparent 84%, rgba(0,0,0,.14));
+}
+.slab--dark > .surface{
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.028) 0 1px, transparent 1px 168px),
+    repeating-linear-gradient(180deg, rgba(255,255,255,.025) 0 1px, transparent 1px 96px),
+    linear-gradient(180deg, rgba(255,255,255,.05), transparent 14%, transparent 84%, rgba(0,0,0,.32));
+}
+.slab > .inner{position:relative;z-index:2}
+
+/* ---- form-tie holes (board-formed concrete) ---------------- */
+.tie{
+  background-image:
+    radial-gradient(circle 7px at 22px 22px,            rgba(12,11,10,.34) 0 4px, rgba(255,255,255,.20) 4.5px 5.5px, transparent 7px),
+    radial-gradient(circle 7px at calc(100% - 22px) 22px, rgba(12,11,10,.34) 0 4px, rgba(255,255,255,.20) 4.5px 5.5px, transparent 7px),
+    radial-gradient(circle 7px at 22px calc(100% - 22px), rgba(12,11,10,.34) 0 4px, rgba(255,255,255,.20) 4.5px 5.5px, transparent 7px),
+    radial-gradient(circle 7px at calc(100% - 22px) calc(100% - 22px), rgba(12,11,10,.34) 0 4px, rgba(255,255,255,.20) 4.5px 5.5px, transparent 7px);
+}
+
+/* ---- cast marks -------------------------------------------- */
+.castmark{
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px;
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  border-top:8px solid currentColor;
+  padding-top:14px;
+}
+.castmark .cm-right{opacity:.6;text-align:right}
+
+/* ---- vertical edge stamp ----------------------------------- */
+.edge-stamp{
+  position:fixed;left:10px;top:50%;transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--ink);opacity:.5;z-index:50;pointer-events:none;
+}
+@media(max-width:1180px){.edge-stamp{display:none}}
+
+/* ---- ghost cast numbers ------------------------------------ */
+.ghost{
+  position:absolute;z-index:1;
+  font-family:var(--display);
+  font-size:clamp(220px,32vw,460px);
+  line-height:.8;
+  right:-.04em;top:-.06em;
+  opacity:.055;
+  pointer-events:none;user-select:none;
+  letter-spacing:-.02em;
+}
+.slab--dark .ghost{opacity:.07;color:var(--bone)}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-head{
+  position:relative;z-index:5;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding:18px var(--pad);
+  border-bottom:4px solid var(--ink);
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+}
+.site-head nav{display:flex;gap:clamp(16px,3vw,44px)}
+.site-head a{text-decoration:none}
+.site-head nav a{position:relative;padding-bottom:2px}
+.site-head nav a::after{
+  content:"";position:absolute;left:0;bottom:-2px;height:3px;width:0;
+  background:var(--orange);transition:width .18s steps(4);
+}
+.site-head nav a:hover::after{width:100%}
+.head-mail{font-weight:600}
+.head-mail:hover{color:var(--orange)}
+@media(max-width:760px){.site-head nav{display:none}}
+@media(max-width:480px){.site-head{font-size:9.5px;letter-spacing:.12em;flex-wrap:wrap}}
+
+/* ============================================================
+   SLAB 01 — HERO
+   ============================================================ */
+.hero{padding:0 0 clamp(48px,7vh,96px)}
+.hero .inner{padding:clamp(24px,4vh,48px) var(--pad) 0}
+.hero-h{
+  font-family:var(--display);
+  font-weight:400;
+  text-transform:uppercase;
+  line-height:.82;
+  letter-spacing:-.005em;
+  margin:clamp(28px,5vh,64px) 0 clamp(36px,6vh,72px);
+}
+.hero-h .line{
+  display:block;
+  font-size:clamp(76px,15.5vw,212px);
+  text-shadow:10px 10px 0 rgba(14,13,11,.16);
+}
+.hero-h .lw{display:block;overflow:hidden}
+/* the monolith word — deliberately poured past the formwork */
+.hero-h .line--bleed{
+  font-size:31vw;
+  margin-left:-.04em;
+  white-space:nowrap;
+  letter-spacing:-.012em;
+}
+.hero-h .dot{color:var(--orange);text-shadow:none}
+
+@keyframes settle{from{transform:translateY(108%)}to{transform:translateY(0)}}
+@keyframes thud{0%,100%{transform:translateY(0)}45%{transform:translateY(3px)}}
+.js .hero-h .line{transform:translateY(108%);animation:settle .72s cubic-bezier(.18,.9,.18,1) forwards}
+.js .hero-h .lw:nth-child(1) .line{animation-delay:.05s}
+.js .hero-h .lw:nth-child(2) .line{animation-delay:.16s}
+.js .hero-h .lw:nth-child(3) .line{animation-delay:.27s}
+.js .hero-h .lw:nth-child(4) .line{animation-delay:.38s}
+.js .page{animation:thud .14s linear 1.05s 1}
+
+.hero-foot{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;
+  align-items:flex-end;
+}
+.hero-sub{
+  max-width:46ch;
+  font-size:clamp(17px,1.6vw,21px);
+  font-weight:500;
+  line-height:1.45;
+  border-left:8px solid var(--orange);
+  padding-left:20px;
+}
+.hero-specs{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  text-align:right;opacity:.7;line-height:2.1;
+}
+@media(max-width:760px){.hero-specs{text-align:left}}
+
+/* ============================================================
+   BAND — safety marquee
+   ============================================================ */
+.band{
+  background:var(--ink);
+  border-top:4px solid var(--ink);
+  border-bottom:4px solid var(--ink);
+  overflow:hidden;
+  position:relative;z-index:3;
+}
+.band-track{
+  display:flex;width:max-content;
+  animation:roll 26s linear infinite;
+}
+.band-track span{
+  display:block;white-space:nowrap;
+  font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--orange);
+  padding:12px 0;
+}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   SLAB 02 — PROOF (stats)
+   ============================================================ */
+.proof{background:var(--slab-dark);color:var(--bone)}
+.proof .inner{padding:clamp(48px,7vh,96px) var(--pad)}
+.stat-grid{
+  margin-top:clamp(32px,5vh,64px);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(217,213,205,.22);
+  border:1px solid rgba(217,213,205,.22);
+}
+.stat{
+  background:var(--slab-dark);
+  padding:clamp(24px,3vw,44px);
+  min-height:clamp(160px,22vh,240px);
+  display:flex;flex-direction:column;justify-content:space-between;gap:18px;
+  position:relative;
+}
+.stat .n{
+  font-family:var(--display);
+  font-size:clamp(52px,6.4vw,104px);
+  line-height:.9;letter-spacing:-.01em;
+  text-transform:uppercase;
+}
+.stat .l{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  opacity:.65;
+}
+.stat--hot{background:var(--orange);color:var(--ink)}
+.stat--hot .l{opacity:.85}
+@media(max-width:920px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.stat-grid{grid-template-columns:1fr}.stat{min-height:0}}
+
+/* ============================================================
+   SLAB 03 — WORK
+   ============================================================ */
+.work-s{background:var(--c-mid)}
+.work-s .inner{padding:clamp(48px,7vh,96px) var(--pad)}
+.work-stack{margin-top:clamp(36px,5vh,72px);display:grid;gap:clamp(36px,5vh,64px)}
+.work{
+  background:var(--c-card);
+  border:1px solid var(--joint);
+  box-shadow:var(--drop);
+  padding:clamp(28px,4vw,56px);
+  display:grid;
+  grid-template-columns:minmax(72px,.7fr) 3fr 1.6fr;
+  gap:clamp(20px,3vw,56px);
+  transition:transform .22s cubic-bezier(.2,.9,.2,1),box-shadow .22s cubic-bezier(.2,.9,.2,1);
+}
+.work:hover{transform:translate(-8px,-8px);box-shadow:var(--drop-big)}
+.work .idx{
+  font-family:var(--display);
+  font-size:clamp(28px,3vw,46px);
+  line-height:1;
+  transition:color .15s steps(2);
+}
+.work:hover .idx{color:var(--orange)}
+.work .idx small{
+  display:block;margin-top:14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.55;
+}
+.work h3{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(34px,5vw,84px);
+  line-height:.9;letter-spacing:-.005em;
+  margin-bottom:18px;
+  text-shadow:6px 6px 0 rgba(14,13,11,.12);
+}
+.work p{max-width:58ch;font-size:clamp(15px,1.4vw,18px);font-weight:500}
+.work dl{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  align-self:end;
+  border-top:3px solid var(--ink);
+}
+.work dl > div{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--joint);
+}
+.work dt{opacity:.6}
+.work dd{font-weight:600;text-align:right}
+@media(max-width:920px){
+  .work{grid-template-columns:1fr}
+  .work .idx{display:flex;align-items:baseline;gap:16px}
+  .work .idx small{margin-top:0}
+  .work dl{width:100%;margin-top:8px}
+}
+
+/* ============================================================
+   SLAB 04 — CAPABILITIES
+   ============================================================ */
+.caps{background:var(--c-deep)}
+.caps .inner{padding:clamp(48px,7vh,96px) var(--pad)}
+.cap-grid{
+  margin-top:clamp(36px,5vh,72px);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:4px;background:var(--ink);
+  border:4px solid var(--ink);
+}
+.cap{
+  background:var(--c-deep);
+  padding:clamp(22px,2.6vw,40px);
+  min-height:clamp(140px,18vh,210px);
+  display:flex;flex-direction:column;justify-content:space-between;gap:24px;
+  transition:background .14s steps(2),color .14s steps(2);
+  cursor:crosshair;
+}
+.cap .ci{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em}
+.cap .cn{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(24px,2.6vw,44px);line-height:.95;letter-spacing:0;
+}
+.cap:hover{background:var(--ink);color:var(--bone)}
+.cap:hover .ci{color:var(--orange)}
+@media(max-width:920px){.cap-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.cap-grid{grid-template-columns:1fr}.cap{min-height:0}}
+
+/* ============================================================
+   HAZARD TAPE + SLAB 05 — CONTACT
+   ============================================================ */
+.hazard{
+  height:14px;
+  background:repeating-linear-gradient(45deg,var(--orange) 0 18px,var(--ink) 18px 36px);
+  border-top:3px solid var(--ink);
+  border-bottom:3px solid var(--ink);
+}
+.contact{background:var(--slab-dark);color:var(--bone)}
+.contact .inner{padding:clamp(56px,9vh,128px) var(--pad)}
+.contact-h{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  line-height:.84;letter-spacing:-.005em;
+  font-size:clamp(58px,11vw,176px);
+  margin:clamp(28px,5vh,56px) 0 clamp(28px,5vh,48px);
+  text-shadow:10px 10px 0 rgba(0,0,0,.45);
+}
+.contact-h .arrow{color:var(--orange);text-shadow:none}
+.mail{
+  display:inline-block;
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(24px,5vw,96px);
+  line-height:1;
+  color:var(--orange);
+  text-decoration:none;
+  border-bottom:6px solid var(--orange);
+  padding:6px 10px 10px 0;
+  transition:background .12s steps(2),color .12s steps(2),padding .12s steps(2);
+  word-break:break-word;
+}
+.mail:hover{background:var(--orange);color:var(--ink);padding-left:10px}
+.contact-note{
+  margin-top:clamp(28px,5vh,48px);
+  font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  opacity:.6;line-height:2.2;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-foot{
+  background:var(--ink);color:var(--bone);
+  border-top:1px solid rgba(217,213,205,.25);
+  padding:26px var(--pad);
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+}
+.site-foot span:nth-child(2){opacity:.55}
+.site-foot a{text-decoration:none}
+.site-foot a:hover{color:var(--orange)}
+
+/* ============================================================
+   REVEAL — slabs settle into place
+   ============================================================ */
+.js .reveal{opacity:0;transform:translateY(46px)}
+.js .reveal.set{
+  opacity:1;transform:none;
+  transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .35s linear;
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .band-track{animation:none}
+  .js .hero-h .line{animation:none;transform:none}
+  .js .page{animation:none}
+  .js .reveal{opacity:1;transform:none}
+  .work,.cap,.mail{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <span class="edge-stamp" aria-hidden="true">BÉTON BRUT — FORM 14 — CAST 2026 — AHMAD BASHEER</span>
+
+  <!-- HEADER ================================================== -->
+  <header class="site-head">
+    <a href="#top" style="text-decoration:none;font-weight:600">AHMAD&nbsp;BASHEER&nbsp;—&nbsp;FORM&nbsp;14</a>
+    <nav aria-label="Sections">
+      <a href="#proof">PROOF</a>
+      <a href="#work">WORK</a>
+      <a href="#capabilities">CAPABILITIES</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+    <a class="head-mail" href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+  </header>
+
+  <!-- SLAB 01 — HERO ========================================== -->
+  <section class="slab hero" id="top">
+    <div class="surface" aria-hidden="true"></div>
+    <div class="inner">
+      <div class="castmark">
+        <span>SLAB 01 — IDENTITY</span>
+        <span class="cm-right">SYSTEMS BUILDER &amp; OPERATOR · CAST IN PLACE</span>
+      </div>
+
+      <h1 class="hero-h">
+        <span class="lw"><span class="line">I BUILD</span></span>
+        <span class="lw"><span class="line line--bleed">SYSTEMS</span></span>
+        <span class="lw"><span class="line">THAT RUN</span></span>
+        <span class="lw"><span class="line">COMPANIES<span class="dot">.</span></span></span>
+      </h1>
+
+      <div class="hero-foot">
+        <p class="hero-sub">Custom platforms for operations, sales, and service — designed, built, and operated end&#8209;to&#8209;end.</p>
+        <div class="hero-specs" aria-hidden="true">
+          MIX — OPERATIONS / SALES / SERVICE<br>
+          CURE — RUNNING IN PRODUCTION<br>
+          REINFORCEMENT — OPERATED DAILY
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BAND ==================================================== -->
+  <div class="band" aria-hidden="true">
+    <div class="band-track">
+      <span>DESIGNED. BUILT. OPERATED. END-TO-END.&nbsp;&nbsp;▪&nbsp;&nbsp;NO HANDOFFS. NO BLACK BOXES.&nbsp;&nbsp;▪&nbsp;&nbsp;POURED IN PLACE — LOAD-BEARING SOFTWARE.&nbsp;&nbsp;▪&nbsp;&nbsp;</span>
+      <span>DESIGNED. BUILT. OPERATED. END-TO-END.&nbsp;&nbsp;▪&nbsp;&nbsp;NO HANDOFFS. NO BLACK BOXES.&nbsp;&nbsp;▪&nbsp;&nbsp;POURED IN PLACE — LOAD-BEARING SOFTWARE.&nbsp;&nbsp;▪&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- SLAB 02 — PROOF ========================================= -->
+  <section class="slab slab--dark proof" id="proof">
+    <div class="surface" aria-hidden="true"></div>
+    <span class="ghost" aria-hidden="true">02</span>
+    <div class="inner">
+      <div class="castmark">
+        <span>SLAB 02 — PROOF</span>
+        <span class="cm-right">MEASURED IN PRODUCTION, NOT IN DECKS</span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat reveal">
+          <span class="n">100+</span>
+          <span class="l">Containers in production</span>
+        </div>
+        <div class="stat reveal">
+          <span class="n">43+</span>
+          <span class="l">Venues live</span>
+        </div>
+        <div class="stat reveal">
+          <span class="n">150</span>
+          <span class="l">Field technicians</span>
+        </div>
+        <div class="stat stat--hot reveal">
+          <span class="n">&lt;1 HR</span>
+          <span class="l">Proposal turnaround — from days</span>
+        </div>
+        <div class="stat reveal">
+          <span class="n">30,000+</span>
+          <span class="l">CRM records</span>
+        </div>
+        <div class="stat reveal">
+          <span class="n">250+</span>
+          <span class="l">Events per season</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLAB 03 — WORK ========================================== -->
+  <section class="slab work-s" id="work">
+    <div class="surface" aria-hidden="true"></div>
+    <span class="ghost" aria-hidden="true">03</span>
+    <div class="inner">
+      <div class="castmark">
+        <span>SLAB 03 — WORK</span>
+        <span class="cm-right">THREE POURS · ALL STILL STANDING</span>
+      </div>
+
+      <div class="work-stack">
+
+        <article class="work tie reveal">
+          <div class="idx">001<small>CAST — ANC</small></div>
+          <div>
+            <h3>Proposal Engine</h3>
+            <p>Proposal turnaround went from days to under an hour. Versioned pricing, reproducible output — every number traceable back to the rule that produced it.</p>
+          </div>
+          <dl>
+            <div><dt>Turnaround</dt><dd>Days → &lt;1 hr</dd></div>
+            <div><dt>Pricing</dt><dd>Versioned</dd></div>
+            <div><dt>Proposals</dt><dd>Reproducible</dd></div>
+          </dl>
+        </article>
+
+        <article class="work tie reveal">
+          <div class="idx">002<small>CAST — FIELD OPS</small></div>
+          <div>
+            <h3>Venue Operations Platform</h3>
+            <p>Scheduling, coverage, and field operations for a national venue network. One screen replaced four reports.</p>
+          </div>
+          <dl>
+            <div><dt>Venues</dt><dd>43+ live</dd></div>
+            <div><dt>Technicians</dt><dd>150</dd></div>
+            <div><dt>Markets</dt><dd>15</dd></div>
+          </dl>
+        </article>
+
+        <article class="work tie reveal">
+          <div class="idx">003<small>CAST — CRM</small></div>
+          <div>
+            <h3>CRM Platform Extension</h3>
+            <p>A custom data model on a live CRM. 30,000+ records migrated and reconciled — nothing dropped, everything audited.</p>
+          </div>
+          <dl>
+            <div><dt>Custom objects</dt><dd>13</dd></div>
+            <div><dt>Records</dt><dd>30,000+</dd></div>
+            <div><dt>Dashboards</dt><dd>16 live</dd></div>
+          </dl>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SLAB 04 — CAPABILITIES ================================== -->
+  <section class="slab caps" id="capabilities">
+    <div class="surface" aria-hidden="true"></div>
+    <span class="ghost" aria-hidden="true">04</span>
+    <div class="inner">
+      <div class="castmark">
+        <span>SLAB 04 — CAPABILITIES</span>
+        <span class="cm-right">WHAT GETS POURED</span>
+      </div>
+
+      <div class="cap-grid">
+        <div class="cap reveal"><span class="ci">C/01</span><span class="cn">CRM Platforms</span></div>
+        <div class="cap reveal"><span class="ci">C/02</span><span class="cn">Proposal Engines</span></div>
+        <div class="cap reveal"><span class="ci">C/03</span><span class="cn">Operations Platforms</span></div>
+        <div class="cap reveal"><span class="ci">C/04</span><span class="cn">Automation Systems</span></div>
+        <div class="cap reveal"><span class="ci">C/05</span><span class="cn">Platform Integrations</span></div>
+        <div class="cap reveal"><span class="ci">C/06</span><span class="cn">AI Inside the Workflow</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLAB 05 — CONTACT ======================================= -->
+  <div class="hazard" aria-hidden="true"></div>
+  <section class="slab slab--dark contact" id="contact">
+    <div class="surface" aria-hidden="true"></div>
+    <span class="ghost" aria-hidden="true">05</span>
+    <div class="inner">
+      <div class="castmark">
+        <span>SLAB 05 — CONTACT</span>
+        <span class="cm-right">ONE EMAIL. NO INTAKE FORMS.</span>
+      </div>
+
+      <h2 class="contact-h reveal">START<br>A PROJECT&nbsp;<span class="arrow">→</span></h2>
+
+      <a class="mail reveal" href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+
+      <p class="contact-note">
+        DESCRIBE THE PROBLEM. I SCOPE IT, BUILD IT, AND RUN IT.<br>
+        IF IT SHOULDN'T BE BUILT, I'LL SAY SO.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER ================================================== -->
+  <footer class="site-foot">
+    <span>© <span id="yr">2026</span> AHMAD BASHEER</span>
+    <span>CAST IN PLACE — NO TEMPLATES</span>
+    <a href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  document.body.classList.add('js');
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var slabs = document.querySelectorAll('.reveal');
+  if (reduced || !('IntersectionObserver' in window)) {
+    slabs.forEach(function(el){ el.classList.add('set'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('set'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
+  slabs.forEach(function(el){ io.observe(el); });
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

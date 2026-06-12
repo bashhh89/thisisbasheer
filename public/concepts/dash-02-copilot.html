@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Cockpit Concept — Copilot Deck · Ahmad Basheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090c;
+  --panel:#0e1016;
+  --panel-2:#12141c;
+  --rail:#0b0d12;
+  --line:rgba(255,255,255,.065);
+  --line-2:rgba(255,255,255,.10);
+  --txt:#e9ebf3;
+  --mut:#8b90a3;
+  --dim:#565b6e;
+  --accent:#6f7bff;
+  --accent-soft:rgba(111,123,255,.13);
+  --accent-line:rgba(111,123,255,.38);
+  --green:#3dd68c;
+  --green-soft:rgba(61,214,140,.12);
+  --red:#ff6b6b;
+  --amber:#ffc24b;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r:13px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Inter Tight',system-ui,sans-serif;
+  font-size:14px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+::selection{background:var(--accent-soft);color:var(--txt)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.14)}
+::-webkit-scrollbar-track{background:transparent}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit;color:inherit}
+
+.app{
+  display:grid;
+  grid-template-columns:228px minmax(0,1fr) 352px;
+  height:100vh;
+}
+
+/* ============ SIDEBAR ============ */
+.side{
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+  padding:18px 12px 14px;
+  background:linear-gradient(180deg,#0a0c10,#08090c);
+}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
+.mark{
+  width:32px;height:32px;border-radius:9px;flex:none;
+  background:linear-gradient(135deg,var(--accent),#3a44b8);
+  display:grid;place-items:center;
+  font-weight:700;font-size:12px;letter-spacing:.04em;color:#fff;
+  box-shadow:0 0 18px rgba(111,123,255,.35),inset 0 1px 0 rgba(255,255,255,.25);
+}
+.brand b{display:block;font-size:13.5px;font-weight:600}
+.brand span{display:block;font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:.06em}
+.nav{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.nav-label{font-size:10.5px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:14px 10px 6px}
+.nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:7.5px 10px;border-radius:8px;
+  color:var(--mut);text-decoration:none;font-weight:500;font-size:13.5px;
+  position:relative;transition:color .15s,background .15s;
+}
+.nav a svg{width:15px;height:15px;flex:none;opacity:.75}
+.nav a:hover{color:var(--txt);background:rgba(255,255,255,.04)}
+.nav a.on{color:var(--txt);background:rgba(255,255,255,.055)}
+.nav a.on::before{
+  content:'';position:absolute;left:-12px;top:7px;bottom:7px;width:2px;
+  background:var(--accent);border-radius:2px;box-shadow:0 0 8px var(--accent);
+}
+.nav .count{
+  margin-left:auto;font-family:var(--mono);font-size:10.5px;
+  background:var(--accent-soft);color:var(--accent);
+  border:1px solid var(--accent-line);
+  padding:1px 7px;border-radius:99px;
+}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.concept-tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--dim);
+  border:1px dashed rgba(255,255,255,.12);border-radius:8px;
+  padding:7px 10px;line-height:1.5;
+}
+.concept-tag b{color:var(--mut);font-weight:500}
+.me{display:flex;align-items:center;gap:10px;padding:8px 8px;border-top:1px solid var(--line)}
+.ava{
+  width:28px;height:28px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,#2a2e44,#171a28);
+  border:1px solid var(--line-2);
+  display:grid;place-items:center;font-size:10.5px;font-weight:600;color:var(--mut);
+}
+.me b{display:block;font-size:12.5px;font-weight:600}
+.me span{display:block;font-size:11px;color:var(--dim)}
+
+/* ============ MAIN ============ */
+.main{overflow-y:auto;padding:26px 30px 60px;min-width:0}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.topbar h1{font-size:21px;font-weight:600;letter-spacing:-.015em}
+.topbar .sub{color:var(--mut);font-size:13px;margin-top:3px}
+.sub .live-chip{
+  display:inline-flex;align-items:center;gap:5px;margin-left:8px;
+  font-family:var(--mono);font-size:10.5px;color:var(--green);
+  background:var(--green-soft);border:1px solid rgba(61,214,140,.25);
+  padding:2px 8px;border-radius:99px;vertical-align:1px;
+}
+.live-chip i{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2.2s infinite}
+.searchbox{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--line);background:var(--panel);
+  border-radius:9px;padding:7px 12px;color:var(--dim);font-size:13px;
+  min-width:200px;cursor:text;
+}
+.searchbox kbd{
+  margin-left:auto;font-family:var(--mono);font-size:10px;
+  border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;color:var(--dim);
+}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
+.tile{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 15px 12px;cursor:pointer;text-align:left;
+  transition:border-color .15s,transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden;
+  animation:fadeUp .5s both;
+}
+.tile:nth-child(2){animation-delay:.04s}.tile:nth-child(3){animation-delay:.08s}
+.tile:nth-child(4){animation-delay:.12s}.tile:nth-child(5){animation-delay:.16s}
+.tile:hover{border-color:var(--accent-line);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.tile .t-label{font-size:11.5px;color:var(--mut);font-weight:500;display:flex;align-items:center;gap:6px}
+.tile .t-num{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-top:6px;font-feature-settings:'tnum'}
+.tile .t-meta{font-size:11px;color:var(--dim);margin-top:2px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.tile .delta{color:var(--green);font-family:var(--mono);font-size:10.5px}
+.tile svg{display:block}
+.tile .ask{
+  position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:6px;
+  display:grid;place-items:center;font-size:10px;color:var(--accent);
+  background:var(--accent-soft);opacity:0;transition:opacity .15s;
+  font-family:var(--mono);
+}
+.tile:hover .ask{opacity:1}
+
+/* panels */
+.grid2{display:grid;grid-template-columns:1.65fr 1fr;gap:10px;margin-bottom:10px}
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;animation:fadeUp .55s .1s both;min-width:0;
+}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.panel-head h2{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.panel-head .ph-meta{font-size:11px;color:var(--dim);font-family:var(--mono)}
+
+/* traffic chart */
+.traffic{cursor:pointer;transition:border-color .15s}
+.traffic:hover{border-color:var(--accent-line)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:118px;padding-top:8px}
+.bar{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;
+  justify-content:flex-end;min-width:0;
+}
+.bar i{
+  width:100%;max-width:38px;border-radius:6px 6px 3px 3px;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  border:1px solid rgba(255,255,255,.06);
+  transition:transform .2s;transform-origin:bottom;
+  animation:grow .7s cubic-bezier(.2,.8,.2,1) both;
+}
+.bar:nth-child(1) i{animation-delay:.15s}.bar:nth-child(2) i{animation-delay:.2s}
+.bar:nth-child(3) i{animation-delay:.25s}.bar:nth-child(4) i{animation-delay:.3s}
+.bar:nth-child(5) i{animation-delay:.35s}.bar:nth-child(6) i{animation-delay:.4s}
+.bar:nth-child(7) i{animation-delay:.45s}
+.bar.hot i{
+  background:linear-gradient(180deg,var(--accent),#4a55d6);
+  border-color:var(--accent-line);
+  box-shadow:0 0 22px rgba(111,123,255,.4);
+}
+.bar span{font-family:var(--mono);font-size:9.5px;color:var(--dim)}
+.bar.hot span{color:var(--accent)}
+.bar .val{
+  font-family:var(--mono);font-size:10px;color:var(--accent);
+  opacity:0;transform:translateY(3px);transition:.2s;
+}
+.bar.hot .val{opacity:1;transform:none}
+.traffic:hover .bar i{transform:scaleY(1.015)}
+
+/* site controls */
+.ctl-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 2px;border-bottom:1px solid var(--line);
+}
+.ctl-row:last-child{border-bottom:0}
+.ctl-row .ico{
+  width:26px;height:26px;border-radius:8px;flex:none;
+  background:var(--panel-2);border:1px solid var(--line);
+  display:grid;place-items:center;color:var(--mut);
+}
+.ctl-row .ico svg{width:13px;height:13px}
+.ctl-row b{display:block;font-size:12.5px;font-weight:600}
+.ctl-row span{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+.ctl-row .edit{
+  margin-left:auto;font-size:11px;color:var(--dim);
+  border:1px solid var(--line);border-radius:7px;padding:4px 10px;
+  transition:.15s;flex:none;
+}
+.ctl-row .edit:hover{color:var(--txt);border-color:var(--line-2)}
+.switch{
+  margin-left:auto;width:34px;height:19px;border-radius:99px;flex:none;
+  background:var(--accent);position:relative;transition:background .2s;
+  border:1px solid transparent;
+}
+.switch::after{
+  content:'';position:absolute;top:2px;left:17px;width:13px;height:13px;border-radius:50%;
+  background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+.switch.off{background:rgba(255,255,255,.12);border-color:var(--line-2)}
+.switch.off::after{left:2px}
+
+/* inbox */
+.inbox{padding:0;overflow:hidden}
+.inbox .panel-head{padding:15px 18px 0;margin-bottom:10px}
+.rows{display:flex;flex-direction:column}
+.row-h,.lead{
+  display:grid;
+  grid-template-columns:minmax(170px,1.2fr) minmax(0,2fr) 92px 64px 26px;
+  gap:14px;align-items:center;
+  padding:10px 18px;
+}
+.row-h{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);border-bottom:1px solid var(--line);padding-top:0;padding-bottom:8px;
+}
+.lead{
+  border-bottom:1px solid var(--line);cursor:pointer;
+  transition:background .12s;position:relative;text-align:left;width:100%;
+}
+.lead:last-child{border-bottom:0}
+.lead:hover{background:rgba(255,255,255,.025)}
+.lead.sel{background:var(--accent-soft)}
+.lead.sel::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--accent);box-shadow:0 0 10px var(--accent);
+}
+.lead .who b{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lead .who span{display:block;font-size:11px;color:var(--dim);margin-top:1px}
+.lead .snip{
+  color:var(--mut);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.lead .when{font-family:var(--mono);font-size:10.5px;color:var(--dim);text-align:right}
+.lead .chev{color:var(--dim);font-size:12px;opacity:0;transition:.15s;text-align:center}
+.lead:hover .chev{opacity:1;color:var(--accent)}
+.pill{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+  padding:3px 8px;border-radius:99px;text-align:center;
+  border:1px solid;width:fit-content;
+}
+.pill.new{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
+.pill.read{color:var(--amber);background:rgba(255,194,75,.09);border-color:rgba(255,194,75,.3)}
+.pill.replied{color:var(--green);background:var(--green-soft);border-color:rgba(61,214,140,.3)}
+.pill.closed{color:var(--dim);background:rgba(255,255,255,.04);border-color:var(--line-2)}
+.pill.spam{color:var(--red);background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.28)}
+.inbox-foot{
+  padding:10px 18px;font-size:11.5px;color:var(--dim);font-family:var(--mono);
+  display:flex;justify-content:space-between;border-top:1px solid var(--line);
+}
+.inbox-foot em{font-style:normal;color:var(--accent)}
+
+/* ============ COPILOT RAIL ============ */
+.rail{
+  border-left:1px solid var(--line);
+  background:var(--rail);
+  display:flex;flex-direction:column;
+  min-width:0;
+}
+.rail-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:16px 16px 12px;border-bottom:1px solid var(--line);
+}
+.cp-id{display:flex;align-items:center;gap:8px}
+.cp-id strong{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.dot{
+  width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;
+  box-shadow:0 0 8px var(--green);animation:pulse 2.6s infinite;
+}
+.dot.think{background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse .9s infinite}
+.model-chip{
+  font-family:var(--mono);font-size:10px;color:var(--mut);
+  border:1px solid var(--line-2);border-radius:99px;padding:2.5px 9px;
+  transition:.15s;
+}
+.model-chip:hover{color:var(--txt);border-color:var(--accent-line)}
+.queue-badge{
+  font-family:var(--mono);font-size:10px;letter-spacing:.02em;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-line);border-radius:99px;
+  padding:3px 10px;white-space:nowrap;transition:.2s;
+}
+.queue-badge.clear{color:var(--green);background:var(--green-soft);border-color:rgba(61,214,140,.3)}
+.queue-badge.pop{animation:pop .35s}
+.ctx-strip{
+  font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.04em;
+  padding:8px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ctx-strip::before{content:'◉';color:var(--accent);font-size:8px}
+.ctx-strip.hot{color:var(--accent)}
+.rail-scroll{flex:1;overflow-y:auto;padding:14px 14px 18px;display:flex;flex-direction:column;gap:10px}
+.queue-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);padding:8px 2px 0;
+}
+
+/* copilot cards */
+.cp-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:13px 14px;animation:fadeUp .35s both;
+}
+.cp-card.active{
+  border-color:var(--accent-line);
+  box-shadow:0 0 0 1px rgba(111,123,255,.08),0 10px 32px rgba(0,0,0,.45),0 0 30px rgba(111,123,255,.07);
+  background:linear-gradient(180deg,rgba(111,123,255,.05),transparent 50%),var(--panel);
+}
+.cp-card-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.cp-kind{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);
+  padding:2px 8px;border-radius:99px;
+}
+.cp-kind.green{color:var(--green);background:var(--green-soft);border-color:rgba(61,214,140,.3)}
+.cp-ctx{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tones{display:flex;gap:5px;margin-bottom:10px}
+.tones button{
+  font-size:11px;font-weight:500;color:var(--mut);
+  border:1px solid var(--line);border-radius:7px;padding:3.5px 11px;
+  transition:.15s;
+}
+.tones button:hover{color:var(--txt);border-color:var(--line-2)}
+.tones button.on{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.cp-body{font-size:12.8px;line-height:1.6;color:#c6c9d6;min-height:18px;white-space:pre-wrap}
+.cp-body .caret{
+  display:inline-block;width:7px;height:13px;margin-left:1px;
+  background:var(--accent);border-radius:1.5px;vertical-align:-2px;
+  animation:blink .8s steps(1) infinite;box-shadow:0 0 8px var(--accent);
+}
+.thinking{display:flex;align-items:center;gap:9px;color:var(--mut);font-size:12px;padding:2px 0}
+.thinking .dots{display:flex;gap:3px}
+.thinking .dots i{
+  width:4.5px;height:4.5px;border-radius:50%;background:var(--accent);
+  animation:thinkdot 1.1s infinite;
+}
+.thinking .dots i:nth-child(2){animation-delay:.18s}
+.thinking .dots i:nth-child(3){animation-delay:.36s}
+.cp-actions{display:flex;gap:7px;margin-top:12px;align-items:center}
+.do-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(180deg,#7d88ff,#5a66f0);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;font-weight:600;font-size:12px;
+  border-radius:8px;padding:6.5px 13px;
+  box-shadow:0 2px 10px rgba(111,123,255,.3),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:.15s;white-space:nowrap;
+}
+.do-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(111,123,255,.45),inset 0 1px 0 rgba(255,255,255,.2)}
+.do-btn:disabled{cursor:default;transform:none}
+.do-btn.busy{opacity:.85}
+.do-btn.busy::before{
+  content:'';width:11px;height:11px;border-radius:50%;flex:none;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  animation:spin .6s linear infinite;
+}
+.do-btn.done{
+  background:var(--green-soft);border-color:rgba(61,214,140,.35);
+  color:var(--green);box-shadow:none;
+}
+.ghost-btn{
+  font-size:12px;font-weight:500;color:var(--mut);
+  border:1px solid var(--line);border-radius:8px;padding:6px 12px;transition:.15s;
+}
+.ghost-btn:hover{color:var(--txt);border-color:var(--line-2)}
+
+/* queue cards */
+.q-card{position:relative;transition:opacity .3s,transform .3s}
+.q-card.gone{opacity:0;transform:translateX(14px);pointer-events:none}
+.q-card .q-title{font-size:12.8px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:7px}
+.q-card .q-title::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);flex:none}
+.q-card .q-meta{font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-bottom:7px}
+.q-card .q-body{font-size:12px;line-height:1.55;color:var(--mut)}
+.q-card .cp-actions{margin-top:10px}
+.q-card .do-btn{padding:5px 11px;font-size:11.5px}
+.q-card .ghost-btn{padding:4.5px 10px;font-size:11.5px}
+
+/* composer */
+.composer{
+  border-top:1px solid var(--line);padding:12px 14px;
+  display:flex;gap:8px;align-items:center;background:var(--rail);
+}
+.composer input{
+  flex:1;background:var(--panel);border:1px solid var(--line);
+  border-radius:9px;padding:9px 13px;font-size:13px;color:var(--txt);
+  outline:none;transition:border-color .15s;min-width:0;
+}
+.composer input::placeholder{color:var(--dim)}
+.composer input:focus{border-color:var(--accent-line);box-shadow:0 0 0 3px rgba(111,123,255,.08)}
+.composer .send{
+  width:34px;height:34px;border-radius:9px;flex:none;
+  background:linear-gradient(180deg,#7d88ff,#5a66f0);
+  border:1px solid rgba(255,255,255,.18);color:#fff;
+  display:grid;place-items:center;font-size:14px;
+  box-shadow:0 2px 10px rgba(111,123,255,.3);transition:.15s;
+}
+.composer .send:hover{transform:translateY(-1px)}
+.user-msg{
+  align-self:flex-end;max-width:85%;
+  background:var(--accent-soft);border:1px solid var(--accent-line);
+  border-radius:11px 11px 3px 11px;padding:8px 12px;
+  font-size:12.5px;color:#cdd2ff;animation:fadeUp .3s both;
+}
+
+/* toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);
+  background:#171a23;border:1px solid var(--line-2);
+  border-radius:10px;padding:10px 16px;font-size:12.5px;font-weight:500;
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  opacity:0;pointer-events:none;transition:.25s cubic-bezier(.2,.8,.2,1);z-index:99;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast::before{content:'✓';color:var(--green);font-weight:700}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes blink{0%,60%{opacity:1}61%,100%{opacity:0}}
+@keyframes thinkdot{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-2.5px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+@media (max-width:1280px){
+  .tiles{grid-template-columns:repeat(3,1fr)}
+  .app{grid-template-columns:200px minmax(0,1fr) 320px}
+}
+@media (max-width:1020px){
+  body{overflow:auto}
+  .app{display:flex;flex-direction:column;height:auto}
+  .side{flex-direction:row;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:10px 16px;gap:12px}
+  .brand{padding:0}
+  .nav{flex-direction:row;margin:0 auto;overflow-x:auto}
+  .nav-label,.side-foot{display:none}
+  .nav a.on::before{display:none}
+  .main{padding:20px 16px 30px}
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .row-h{display:none}
+  .lead{grid-template-columns:1fr 90px;gap:8px}
+  .lead .snip,.lead .when,.lead .chev{display:none}
+  .rail{border-left:0;border-top:1px solid var(--line);max-height:none}
+  .rail-scroll{max-height:520px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="side">
+    <div class="brand">
+      <span class="mark">AB</span>
+      <div><b>basheer.app</b><span>cockpit</span></div>
+    </div>
+    <nav class="nav">
+      <span class="nav-label">Operate</span>
+      <a href="#" class="on" data-nav="overview">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.5"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.5"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.5"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.5"/></svg>
+        Overview
+      </a>
+      <a href="#" data-nav="inbox">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 9.5h3.6l1.2 2h3.4l1.2-2h3.6"/><path d="M3 2.5h10l1.5 7v4h-13v-4l1.5-7z"/></svg>
+        Inbox <span class="count">4</span>
+      </a>
+      <a href="#" data-nav="controls">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5h12M2 8h12M2 11.5h12"/><circle cx="6" cy="4.5" r="1.6" fill="var(--rail)"/><circle cx="11" cy="8" r="1.6" fill="var(--rail)"/><circle cx="5" cy="11.5" r="1.6" fill="var(--rail)"/></svg>
+        Site Controls
+      </a>
+      <a href="#" data-nav="assistant">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5l1.6 3.9 3.9 1.6-3.9 1.6L8 12.5 6.4 8.6 2.5 7l3.9-1.6L8 1.5z"/><path d="M13 11l.6 1.4L15 13l-1.4.6L13 15l-.6-1.4L11 13l1.4-.6L13 11z"/></svg>
+        Assistant
+      </a>
+      <span class="nav-label">Publish</span>
+      <a href="#" data-nav="work">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="9.5" rx="1.5"/><path d="M5.5 4V2.5h5V4"/></svg>
+        Case studies
+      </a>
+      <a href="#" data-nav="writing">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13.5h10M3.5 10.5L11 3l2 2-7.5 7.5-2.6.6.6-2.6z"/></svg>
+        Writing
+      </a>
+    </nav>
+    <div class="side-foot">
+      <div class="concept-tag"><b>Concept 02 — Copilot Deck</b><br>the deck you know, with a senior operator beside it</div>
+      <div class="me">
+        <div class="ava">AB</div>
+        <div><b>A. Basheer</b><span>operator · sole admin</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Overview</h1>
+        <p class="sub">Wednesday, June 11 <span class="live-chip"><i></i>edits go live · no deploy</span></p>
+      </div>
+      <div class="searchbox">Search leads, pages, stats… <kbd>⌘K</kbd></div>
+    </header>
+
+    <section class="tiles">
+      <button class="tile" data-insight="leads" aria-label="New leads insight">
+        <span class="ask">?</span>
+        <span class="t-label">New leads</span>
+        <span class="t-num">4</span>
+        <span class="t-meta"><span class="delta">+3 this wk</span>
+          <svg width="58" height="20" viewBox="0 0 58 20"><polyline points="1,16 11,14 21,15 31,9 41,11 51,4 57,6" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <button class="tile" data-insight="subs" aria-label="Submissions insight">
+        <span class="ask">?</span>
+        <span class="t-label">Total submissions</span>
+        <span class="t-num">23</span>
+        <span class="t-meta"><span class="delta">9 this qtr</span>
+          <svg width="58" height="20" viewBox="0 0 58 20"><polyline points="1,17 11,16 21,13 31,13 41,10 51,8 57,5" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <button class="tile" data-insight="cases" aria-label="Case studies insight">
+        <span class="ask">?</span>
+        <span class="t-label">Case studies</span>
+        <span class="t-num">3</span>
+        <span class="t-meta"><span style="color:var(--dim);font-family:var(--mono);font-size:10.5px">64% on one</span>
+          <svg width="58" height="20" viewBox="0 0 58 20"><polyline points="1,14 11,12 21,15 31,7 41,9 51,10 57,8" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <button class="tile" data-insight="articles" aria-label="Articles insight">
+        <span class="ask">?</span>
+        <span class="t-label">Articles</span>
+        <span class="t-num">3</span>
+        <span class="t-meta"><span style="color:var(--amber);font-family:var(--mono);font-size:10.5px">5 wks stale</span>
+          <svg width="58" height="20" viewBox="0 0 58 20"><polyline points="1,8 11,10 21,9 31,12 41,13 51,15 57,16" fill="none" stroke="rgba(255,194,75,.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <button class="tile" data-insight="ai" aria-label="AI conversations insight">
+        <span class="ask">?</span>
+        <span class="t-label">AI conversations</span>
+        <span class="t-num">12</span>
+        <span class="t-meta"><span class="delta">+5 this wk</span>
+          <svg width="58" height="20" viewBox="0 0 58 20"><polyline points="1,15 11,13 21,14 31,10 41,12 51,6 57,4" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+    </section>
+
+    <section class="grid2">
+      <div class="panel traffic" id="trafficPanel" role="button" tabindex="0" aria-label="Traffic this week — click for copilot insight">
+        <div class="panel-head">
+          <h2>Visits this week — 1,240</h2>
+          <span class="ph-meta">click any bar → copilot explains</span>
+        </div>
+        <div class="chart">
+          <div class="bar"><i style="height:23%"></i><span>Mon</span></div>
+          <div class="bar hot"><b class="val">412</b><i style="height:100%"></i><span>Tue</span></div>
+          <div class="bar"><i style="height:45%"></i><span>Wed</span></div>
+          <div class="bar"><i style="height:34%"></i><span>Thu</span></div>
+          <div class="bar"><i style="height:40%"></i><span>Fri</span></div>
+          <div class="bar"><i style="height:29%"></i><span>Sat</span></div>
+          <div class="bar"><i style="height:27%"></i><span>Sun</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Site Controls</h2>
+          <span class="ph-meta">live · no deploy</span>
+        </div>
+        <div class="ctl-row">
+          <span class="ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13h12M4 13V6l4-3.5L12 6v7"/></svg></span>
+          <div><b>Hero copy</b><span id="heroCopy">"Systems builder. Booking May."</span></div>
+          <button class="edit" data-edit="hero">Edit</button>
+        </div>
+        <div class="ctl-row">
+          <span class="ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg></span>
+          <div><b>Availability</b><span id="availTxt">Open — taking Q3 work</span></div>
+          <button class="switch" id="availSwitch" role="switch" aria-checked="true" aria-label="Availability toggle"></button>
+        </div>
+        <div class="ctl-row">
+          <span class="ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12.5l3.5-4 3 2.5 5-6"/><path d="M10.5 5H13.5V8"/></svg></span>
+          <div><b>Stats ledger</b><span>8 entries · updated 2d ago</span></div>
+          <button class="edit" data-edit="ledger">Edit</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel inbox" id="inboxPanel">
+      <div class="panel-head">
+        <h2>Inbox — contact submissions</h2>
+        <span class="ph-meta">hover a row · copilot reads along</span>
+      </div>
+      <div class="rows">
+        <div class="row-h"><span>From</span><span>Message</span><span>Status</span><span style="text-align:right">When</span><span></span></div>
+
+        <button class="lead" data-lead="l1">
+          <span class="who"><b>Venue group — Midwest</b><span>Multi-site operations</span></span>
+          <span class="snip">We operate six venues across two states and want one ops view — schedules, staffing, incident reports…</span>
+          <span class="pill new">NEW</span>
+          <span class="when">2h</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l2">
+          <span class="who"><b>Sports facility operator</b><span>Pricing & quoting</span></span>
+          <span class="snip">Read the proposal case study. We hand-build 40+ quotes a month and it's eating our estimators alive…</span>
+          <span class="pill new">NEW</span>
+          <span class="when">5h</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l3">
+          <span class="who"><b>Event production co — Austin</b><span>Intake flow</span></span>
+          <span class="snip">Your contact flow doesn't feel like a form. We want that for our intake — clients describe the event, we get structure…</span>
+          <span class="pill new">NEW</span>
+          <span class="when">9h</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l4">
+          <span class="who"><b>Boutique gym chain — 9 sites</b><span>Reporting</span></span>
+          <span class="snip">Nine locations, zero shared reporting. Heard you do operator-grade internal tools…</span>
+          <span class="pill new">NEW</span>
+          <span class="when">12m</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l5">
+          <span class="who"><b>Agency — NYC</b><span>White-label partnership</span></span>
+          <span class="snip">Looking for a white-label build partner for client dashboards. Volume could be steady if quality holds…</span>
+          <span class="pill read">READ</span>
+          <span class="when">3d</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l6">
+          <span class="who"><b>Equipment distributor — SE</b><span>Inventory tooling</span></span>
+          <span class="snip">Following up on the scoping questions you sent — pulling our SKU counts together now…</span>
+          <span class="pill replied">REPLIED</span>
+          <span class="when">2d</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l7">
+          <span class="who"><b>University athletics dept</b><span>Ops dashboard</span></span>
+          <span class="snip">Budget cycle pushed to next FY — circling back when planning reopens…</span>
+          <span class="pill closed">CLOSED</span>
+          <span class="when">1w</span>
+          <span class="chev">›</span>
+        </button>
+
+        <button class="lead" data-lead="l8">
+          <span class="who"><b>(no name)</b><span>token-promo · disposable domain</span></span>
+          <span class="snip">🚀🚀 Exclusive partnership opportunity — guaranteed 40x returns for your audience…</span>
+          <span class="pill spam">SPAM</span>
+          <span class="when">1d</span>
+          <span class="chev">›</span>
+        </button>
+      </div>
+      <div class="inbox-foot">
+        <span>Showing 8 of 23</span>
+        <span><em>4 need attention</em></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== COPILOT RAIL ===== -->
+  <aside class="rail">
+    <header class="rail-head">
+      <div class="cp-id">
+        <span class="dot" id="cpDot"></span>
+        <strong>Copilot</strong>
+        <button class="model-chip" id="modelChip" title="Cycle model">model: fast</button>
+      </div>
+      <button class="queue-badge" id="queueBadge">3 drafts waiting</button>
+    </header>
+    <div class="ctx-strip" id="ctxStrip">watching: overview</div>
+
+    <div class="rail-scroll" id="railScroll">
+      <div id="activeSlot"></div>
+
+      <div class="queue-label">Suggestion queue</div>
+      <div id="queueList" style="display:flex;flex-direction:column;gap:10px">
+
+        <div class="cp-card q-card" data-q="q1">
+          <div class="q-title">Send 3 drafted replies</div>
+          <div class="q-meta">INBOX · 3 NEW LEADS</div>
+          <div class="q-body">Replies drafted for the venue group, the facility operator, and the Austin event co — tone-matched to how each one wrote in. Click a row to review, or send all three.</div>
+          <div class="cp-actions">
+            <button class="do-btn" data-act="q1">Do it — send all 3</button>
+            <button class="ghost-btn" data-dismiss="q1">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="cp-card q-card" data-q="q2">
+          <div class="q-title">Hero copy is stale</div>
+          <div class="q-meta">SITE CONTROLS · LIVE EDIT</div>
+          <div class="q-body">The hero still says "Booking May." It's June 11. "Open for Q3 — one slot" is prepared and goes live without a deploy.</div>
+          <div class="cp-actions">
+            <button class="do-btn" data-act="q2">Do it — update hero</button>
+            <button class="ghost-btn" data-dismiss="q2">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="cp-card q-card" data-q="q3">
+          <div class="q-title">Tuesday spike → follow-up post</div>
+          <div class="q-meta">WRITING · TRAFFIC</div>
+          <div class="q-body">The referral thread that drove Tuesday is still active. A short build-notes piece on the same system, shipped this week, rides the same current. Outline is ready.</div>
+          <div class="cp-actions">
+            <button class="do-btn" data-act="q3">Do it — open outline</button>
+            <button class="ghost-btn" data-dismiss="q3">Dismiss</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="composer">
+      <input id="composerInput" placeholder="Ask the copilot…" aria-label="Ask the copilot">
+      <button class="send" id="composerSend" aria-label="Send">↑</button>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast">Done</div>
+
+<script>
+/* ============================================================
+   Copilot Deck — concept interactions (all client-side, mocked)
+   ============================================================ */
+
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+const cpDot      = $('#cpDot');
+const ctxStrip   = $('#ctxStrip');
+const activeSlot = $('#activeSlot');
+const railScroll = $('#railScroll');
+const queueBadge = $('#queueBadge');
+const toast      = $('#toast');
+
+/* ---------- mock data ---------- */
+
+const LEADS = {
+  l1:{ name:'Venue group — Midwest', kind:'draft', drafts:{
+    default:`Hi — thanks for the detail. Six venues on one ops view is exactly the shape of work I take on. The way I'd start: a short discovery call, then a working skeleton wired to one venue's real data within two weeks — so you judge it on substance, not slides. If that pace suits, send a couple of times that work this week.`,
+    shorter:`Hi — six venues, one ops view: squarely my lane. Short call this week, then a working skeleton on one venue's real data within two weeks. Send a time.`,
+    firmer:`Hi — appreciate the detail, so I'll be direct. This is a scoped, fixed-fee build — not an open-ended retainer. Send your current tooling list before we talk and I'll come back with a concrete plan, timeline, and price. Thursday or Friday works on my end.`
+  }},
+  l2:{ name:'Sports facility operator', kind:'draft', drafts:{
+    default:`Hi — 40 hand-built quotes a month is exactly the problem that case study came out of. Honest version: the win wasn't the tool, it was encoding your pricing logic once so every quote inherits it. I'd want 30 minutes with one of your real quotes on screen — that tells me 80% of the scope. When works?`,
+    shorter:`Hi — that case study exists because of exactly this. 30 minutes with one real quote on screen and I'll tell you the scope. When works?`,
+    firmer:`Hi — I'll save us both a discovery dance: if your pricing logic lives in your estimators' heads, that IS the project — encoding it once so every quote inherits it. I take one build like this per quarter. If you want the slot, bring a real quote to a 30-minute call this week.`
+  }},
+  l3:{ name:'Event production co — Austin', kind:'draft', drafts:{
+    default:`Hi — glad the intake felt that way; that's the point of it. Yours would follow the same pattern: clients describe the event in plain language, you receive structured fields — date, venue, scale, budget signal — plus a clean summary. It's a contained build. I can show you the internals on a call and quote from there.`,
+    shorter:`Hi — same pattern as mine: clients write plain language, you get structured intake. Contained build, fixed quote after one call. When suits?`,
+    firmer:`Hi — straightforward: plain-language intake in, structured brief out. Contained, fixed-fee build, quoted after one call — but I need your current intake fields up front. Send those over and pick a slot.`
+  }},
+  l4:{ name:'Boutique gym chain — 9 sites', kind:'draft', think:'Still reading — arrived 12 minutes ago…', drafts:{
+    default:`Hi — nine locations and zero shared reporting is a familiar starting point, and usually a fast one to improve: the first win is a single weekly scorecard pulled from what each site already produces, before any new tooling. I'd start there, then earn the bigger build. Call this week?`,
+    shorter:`Hi — start small: one shared weekly scorecard from what your sites already produce, then the bigger build if it earns it. Call this week?`,
+    firmer:`Hi — nine sites with no shared reporting means the first project is a scorecard, not a platform. Anyone selling you a platform first is selling shelf-ware. The scorecard is a two-week fixed-fee build. If that framing works, let's talk this week.`
+  }},
+  l5:{ name:'Agency — NYC', kind:'revive', think:'Thread read 3 days ago, never answered — drafting a revival nudge…', drafts:{
+    default:`Hi — circling back on this. White-label dashboard work can fit how I operate if the volume is real and the specs arrive clean. Worth a 20-minute call to see if our standards match? If the moment's passed, no hard feelings.`,
+    shorter:`Hi — still interested in talking white-label dashboards? 20 minutes tells us both. If the moment's passed, no worries.`,
+    firmer:`Hi — following up once, then I'll close the file. If white-label volume is real, I need specs-in-writing and a standards call before anything else. This week or not at all — your call.`
+  }},
+  l6:{ name:'Equipment distributor — SE', kind:'note',
+    body:`You replied Monday with the scoping questions. No response in 2 days — normal cadence for a distributor; give it until Friday. I've prepared a one-line nudge to fire Friday 9am unless you say otherwise.`,
+    action:{label:'Do it — queue Friday nudge', done:'Queued · Fri 9:00am'} },
+  l7:{ name:'University athletics dept', kind:'note',
+    body:`Closed last week — budget pushed to next fiscal year. I set a re-open reminder for September 1; their FY planning starts mid-September, so the timing lands just ahead of it. Nothing to do until then.` },
+  l8:{ name:'(no name) — token promo', kind:'note',
+    body:`Pattern-matched against 14 near-identical submissions: disposable domain, paste-identical copy, link payload. Filed as spam automatically — you never saw a notification for it, by design.`,
+    action:{label:'Do it — block domain', done:'Domain blocked'} }
+};
+
+const INSIGHTS = {
+  leads:{ ctx:'Stat · New leads',
+    body:`3 of the 4 arrived within 36 hours of the proposal case study circulating — two cite it by name. Warm inbound decays fast: on this site, reply-within-a-day has roughly doubled response rates. Drafts for three are queued below; the fourth landed 12 minutes ago and I'm mid-read.` },
+  subs:{ ctx:'Stat · Submissions',
+    body:`23 lifetime — 9 this quarter vs 5 last. The March intake rewrite is the driver: completion went from 61% to 88% once the form stopped feeling like a form. Nothing to fix here; this one is compounding on its own.` },
+  cases:{ ctx:'Stat · Case studies',
+    body:`Three live. The proposal-engine study pulls 64% of case-study traffic but ends without a next step — the retrofit study converts 3× better purely because of its closing block. Same block, appended, should close that gap.`,
+    action:{label:'Do it — append closing block', done:'Appended · live'} },
+  articles:{ ctx:'Stat · Articles',
+    body:`Three published; the newest is 5 weeks old. Tuesday proved the audience shows up when the work ships. I've outlined a follow-up piece on the same system — it's sitting in the queue below as "Tuesday spike → follow-up post."` },
+  ai:{ ctx:'Stat · AI conversations',
+    body:`12 conversations this week. Five asked about pricing; two of those sessions ended right after the deflection. A one-paragraph "how I price" page would likely convert both patterns. I can draft it against your existing voice now.`,
+    action:{label:'Do it — draft pricing page', done:'Drafted · in Site Controls'} },
+  traffic:{ ctx:'Traffic · Tuesday anomaly',
+    body:`Tuesday's spike — 412 of the week's 1,240 visits — traces to the proposal case study being shared in a venue-ops community around 9am. 31 of those visitors reached the contact page; three became the leads now sitting in your inbox. This is a repeatable channel, not a fluke.`,
+    action:{label:'Do it — outline follow-up post', done:'Outline → drafts'} }
+};
+
+const COMPOSER_REPLIES = [
+  `Quick read: 4 new leads, 23 lifetime submissions, Tuesday did 3× a normal day. The thread to pull first is the venue group — multi-site work, arrived via the case study, decision energy in the writing. Draft's ready; click the row.`,
+  `Nothing is on fire. One thing is quietly leaking: the Agency — NYC thread was read 3 days ago and never answered. Agencies shop fast. Click the row and I'll show you the nudge I'd send.`,
+  `Site-side: availability is current, stats ledger updated 2 days ago, hero copy is the stale one — fix is in the queue. The only aging surface after that is the article index; newest piece is 5 weeks old.`
+];
+
+/* ---------- streaming engine ---------- */
+
+let streamToken = 0;
+
+function setThinking(on){ cpDot.classList.toggle('think', on); }
+
+function streamInto(el, text, cps = 2.6){
+  const token = ++streamToken;
+  el.innerHTML = '';
+  const node  = document.createTextNode('');
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+  el.appendChild(node); el.appendChild(caret);
+  let i = 0;
+  setThinking(true);
+  return new Promise(resolve => {
+    (function tick(){
+      if (token !== streamToken){ caret.remove(); setThinking(false); return resolve(false); }
+      i = Math.min(text.length, i + 1 + Math.round(Math.random() * cps));
+      node.data = text.slice(0, i);
+      if (i >= text.length){
+        setTimeout(() => { if (token === streamToken){ caret.remove(); setThinking(false);} resolve(true); }, 350);
+      } else {
+        setTimeout(tick, 12 + Math.random() * 22);
+      }
+    })();
+  });
+}
+
+function thinkingEl(label){
+  const d = document.createElement('div');
+  d.className = 'thinking';
+  d.innerHTML = `<span class="dots"><i></i><i></i><i></i></span><span>${label}</span>`;
+  return d;
+}
+
+/* ---------- active card builder ---------- */
+
+function setContext(label, hot){
+  ctxStrip.textContent = label.toLowerCase();
+  ctxStrip.classList.toggle('hot', !!hot);
+}
+
+let committedCtx = 'watching: overview';
+function commitContext(label){ committedCtx = label.toLowerCase(); setContext(committedCtx, true); }
+
+function buildActiveCard(cfg){
+  // cfg: {kindLabel, ctx, body|drafts, thinkLabel, action:{label,done,onDone}}
+  streamToken++;            // cancel any in-flight stream
+  activeSlot.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'cp-card active';
+
+  const head = document.createElement('div');
+  head.className = 'cp-card-head';
+  head.innerHTML = `<span class="cp-kind">${cfg.kindLabel}</span><span class="cp-ctx">${cfg.ctx}</span>`;
+  card.appendChild(head);
+
+  let tonesBar = null;
+  if (cfg.drafts){
+    tonesBar = document.createElement('div');
+    tonesBar.className = 'tones';
+    ['default','shorter','firmer'].forEach((t,idx)=>{
+      const b = document.createElement('button');
+      b.textContent = t[0].toUpperCase() + t.slice(1);
+      b.dataset.tone = t;
+      if (idx === 0) b.classList.add('on');
+      tonesBar.appendChild(b);
+    });
+    card.appendChild(tonesBar);
+  }
+
+  const body = document.createElement('div');
+  body.className = 'cp-body';
+  card.appendChild(body);
+
+  let actions = null;
+  if (cfg.action || cfg.drafts){
+    actions = document.createElement('div');
+    actions.className = 'cp-actions';
+    actions.style.display = 'none';
+    const doBtn = document.createElement('button');
+    doBtn.className = 'do-btn';
+    doBtn.textContent = cfg.action ? cfg.action.label : 'Do it — send & mark replied';
+    actions.appendChild(doBtn);
+    const ghost = document.createElement('button');
+    ghost.className = 'ghost-btn';
+    ghost.textContent = cfg.drafts ? 'Edit first' : 'Not now';
+    actions.appendChild(ghost);
+    card.appendChild(actions);
+
+    doBtn.addEventListener('click', ()=>{
+      if (doBtn.disabled) return;
+      doBtn.disabled = true;
+      doBtn.classList.add('busy');
+      const orig = doBtn.textContent;
+      doBtn.textContent = 'Working…';
+      setTimeout(()=>{
+        doBtn.classList.remove('busy');
+        doBtn.classList.add('done');
+        doBtn.textContent = (cfg.action && cfg.action.done) ? cfg.action.done + ' ✓' : 'Sent · marked REPLIED ✓';
+        if (cfg.onDone) cfg.onDone();
+      }, 900);
+    });
+    ghost.addEventListener('click', ()=>{
+      showToast(cfg.drafts ? 'Opened in editor (concept)' : 'Snoozed');
+    });
+  }
+
+  activeSlot.appendChild(card);
+  railScroll.scrollTop = 0;
+
+  const run = async (text)=>{
+    const th = thinkingEl(cfg.thinkLabel || 'Thinking…');
+    body.innerHTML = ''; body.appendChild(th);
+    if (actions) actions.style.display = 'none';
+    setThinking(true);
+    const myToken = ++streamToken;
+    await new Promise(r => setTimeout(r, cfg.thinkMs ?? 750));
+    if (myToken !== streamToken) return;
+    streamToken--;                       // hand control to streamInto
+    const ok = await streamInto(body, text);
+    if (ok && actions) actions.style.display = 'flex';
+  };
+
+  if (cfg.drafts){
+    run(cfg.drafts.default);
+    tonesBar.addEventListener('click', e=>{
+      const b = e.target.closest('button[data-tone]');
+      if (!b || b.classList.contains('on')) return;
+      tonesBar.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      cfg.thinkLabel = 'Rewriting — ' + b.dataset.tone + '…';
+      cfg.thinkMs = 450;
+      run(cfg.drafts[b.dataset.tone]);
+    });
+  } else {
+    run(cfg.body);
+  }
+}
+
+/* ---------- toast & badge ---------- */
+
+let toastTimer;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 2400);
+}
+
+let queueCount = 3;
+function setBadge(n){
+  queueCount = Math.max(0, n);
+  queueBadge.classList.remove('pop'); void queueBadge.offsetWidth;
+  queueBadge.classList.add('pop');
+  if (queueCount === 0){
+    queueBadge.textContent = 'queue clear ✓';
+    queueBadge.classList.add('clear');
+  } else {
+    queueBadge.textContent = queueCount + (queueCount === 1 ? ' draft waiting' : ' drafts waiting');
+    queueBadge.classList.remove('clear');
+  }
+}
+
+/* ---------- lead rows ---------- */
+
+function setLeadStatus(id, status){
+  const row = document.querySelector(`.lead[data-lead="${id}"]`);
+  if (!row) return;
+  const pill = row.querySelector('.pill');
+  pill.className = 'pill ' + status.toLowerCase();
+  pill.textContent = status.toUpperCase();
+}
+
+$$('.lead').forEach(row=>{
+  const id   = row.dataset.lead;
+  const data = LEADS[id];
+
+  row.addEventListener('mouseenter', ()=>{
+    setContext('reading: ' + data.name, true);
+  });
+  row.addEventListener('mouseleave', ()=>{
+    setContext(committedCtx, false);
+  });
+
+  row.addEventListener('click', ()=>{
+    $$('.lead').forEach(r=>r.classList.remove('sel'));
+    row.classList.add('sel');
+    commitContext('focused: ' + data.name);
+
+    if (data.kind === 'draft' || data.kind === 'revive'){
+      buildActiveCard({
+        kindLabel: data.kind === 'revive' ? 'Revive thread' : 'Draft reply',
+        ctx: data.name,
+        drafts: data.drafts,
+        thinkLabel: data.think || ('Reading "' + data.name + '"…'),
+        onDone: ()=>{
+          setLeadStatus(id, 'replied');
+          showToast('Reply sent — ' + data.name + ' marked REPLIED');
+        }
+      });
+    } else {
+      buildActiveCard({
+        kindLabel: 'Insight',
+        ctx: data.name,
+        body: data.body,
+        thinkLabel: 'Checking the thread…',
+        action: data.action ? { label: data.action.label, done: data.action.done } : null,
+        onDone: ()=> showToast(data.action ? data.action.done : 'Done')
+      });
+    }
+  });
+});
+
+/* ---------- stat tiles & traffic ---------- */
+
+$$('.tile').forEach(tile=>{
+  const key = tile.dataset.insight;
+  const ins = INSIGHTS[key];
+  tile.addEventListener('mouseenter', ()=> setContext('looking at: ' + ins.ctx, true));
+  tile.addEventListener('mouseleave', ()=> setContext(committedCtx, false));
+  tile.addEventListener('click', ()=>{
+    commitContext('explaining: ' + ins.ctx);
+    buildActiveCard({
+      kindLabel:'Insight', ctx: ins.ctx, body: ins.body,
+      thinkLabel:'Pulling the numbers…',
+      action: ins.action ? {label: ins.action.label, done: ins.action.done} : null,
+      onDone: ()=> showToast(ins.action ? ins.action.done : 'Done')
+    });
+  });
+});
+
+const trafficPanel = $('#trafficPanel');
+trafficPanel.addEventListener('mouseenter', ()=> setContext('looking at: traffic · tuesday anomaly', true));
+trafficPanel.addEventListener('mouseleave', ()=> setContext(committedCtx, false));
+trafficPanel.addEventListener('click', ()=>{
+  const ins = INSIGHTS.traffic;
+  commitContext('explaining: tuesday spike');
+  buildActiveCard({
+    kindLabel:'Anomaly', ctx: ins.ctx, body: ins.body,
+    thinkLabel:'Tracing referrers for Tuesday…',
+    action:{label: ins.action.label, done: ins.action.done},
+    onDone: ()=> showToast('Outline moved to drafts')
+  });
+});
+trafficPanel.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();trafficPanel.click();} });
+
+/* ---------- queue cards ---------- */
+
+const QUEUE_DONE = {
+  q1(){ ['l1','l2','l3'].forEach(id=>setLeadStatus(id,'replied')); showToast('3 replies sent · leads marked REPLIED'); },
+  q2(){ $('#heroCopy').textContent = '"Systems builder. Open for Q3 — one slot."'; showToast('Hero updated · live, no deploy'); },
+  q3(){ showToast('Outline moved to drafts'); }
+};
+
+$$('#queueList .do-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.add('busy');
+    btn.textContent = 'Working…';
+    setTimeout(()=>{
+      btn.classList.remove('busy');
+      btn.classList.add('done');
+      btn.textContent = 'Done ✓';
+      const id = btn.dataset.act;
+      if (QUEUE_DONE[id]) QUEUE_DONE[id]();
+      setBadge(queueCount - 1);
+      setTimeout(()=>{
+        const card = document.querySelector(`.q-card[data-q="${id}"]`);
+        if (card){ card.classList.add('gone'); setTimeout(()=>card.remove(), 350); }
+      }, 1100);
+    }, 950);
+  });
+});
+
+$$('#queueList [data-dismiss]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const id = btn.dataset.dismiss;
+    const card = document.querySelector(`.q-card[data-q="${id}"]`);
+    if (card){ card.classList.add('gone'); setTimeout(()=>card.remove(), 350); }
+    setBadge(queueCount - 1);
+    showToast('Dismissed — won’t resurface');
+  });
+});
+
+/* ---------- availability switch ---------- */
+
+const availSwitch = $('#availSwitch');
+const availTxt    = $('#availTxt');
+availSwitch.addEventListener('click', ()=>{
+  const nowOff = !availSwitch.classList.contains('off');
+  availSwitch.classList.toggle('off', nowOff);
+  availSwitch.setAttribute('aria-checked', String(!nowOff));
+  availTxt.textContent = nowOff ? 'Closed — waitlist only' : 'Open — taking Q3 work';
+  commitContext('site controls: availability');
+  buildActiveCard({
+    kindLabel:'Heads up', ctx:'Availability changed',
+    body: nowOff
+      ? `Availability flipped to "Closed — waitlist only." I'll mirror that on the hero, the contact page, and the assistant's canned answers so nothing on the site contradicts it. Confirm?`
+      : `Back to "Open — taking Q3 work." I'll restore the hero line, re-enable the contact CTA, and update the assistant's availability answer to match. Confirm?`,
+    thinkLabel:'Checking every surface that mentions availability…',
+    thinkMs: 600,
+    action:{label:'Do it — mirror everywhere', done:'Mirrored · 3 surfaces'},
+    onDone: ()=> showToast('Mirrored on hero, contact, assistant')
+  });
+});
+
+/* ---------- site-control edit buttons ---------- */
+
+const EDITS = {
+  hero:{
+    ctx:'Hero copy',
+    body:`Current hero: "Systems builder. Booking May." It's June — the line is stale. Prepared replacement: "Systems builder. Open for Q3 — one slot." Applies instantly, no deploy.`,
+    action:{label:'Do it — update hero', done:'Hero updated · live'},
+    onDone(){ $('#heroCopy').textContent = '"Systems builder. Open for Q3 — one slot."'; }
+  },
+  ledger:{
+    ctx:'Stats ledger',
+    body:`8 entries, last touched 2 days ago. One row is out of date — the quote count on the pricing system moved from 180 to 212 this week. One-line update, applies instantly.`,
+    action:{label:'Do it — update entry', done:'Ledger updated · live'}
+  }
+};
+
+$$('.ctl-row .edit').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const cfg = EDITS[btn.dataset.edit];
+    if (!cfg) return;
+    commitContext('site controls: ' + cfg.ctx);
+    buildActiveCard({
+      kindLabel:'Live edit', ctx: cfg.ctx, body: cfg.body,
+      thinkLabel:'Opening live editor…', thinkMs: 500,
+      action: cfg.action,
+      onDone: ()=>{ if (cfg.onDone) cfg.onDone(); showToast(cfg.action.done); }
+    });
+  });
+});
+
+/* ---------- model chip ---------- */
+
+const MODELS = ['fast','deep','reasoning'];
+let modelIdx = 0;
+$('#modelChip').addEventListener('click', ()=>{
+  modelIdx = (modelIdx + 1) % MODELS.length;
+  $('#modelChip').textContent = 'model: ' + MODELS[modelIdx];
+  showToast('Copilot switched to "' + MODELS[modelIdx] + '"');
+});
+
+/* ---------- composer ---------- */
+
+const composerInput = $('#composerInput');
+let replyIdx = 0;
+function sendComposer(){
+  const q = composerInput.value.trim();
+  if (!q) return;
+  composerInput.value = '';
+  const msg = document.createElement('div');
+  msg.className = 'user-msg';
+  msg.textContent = q;
+  railScroll.insertBefore(msg, activeSlot);
+  commitContext('answering you');
+  buildActiveCard({
+    kindLabel:'Answer', ctx:'You asked',
+    body: COMPOSER_REPLIES[replyIdx++ % COMPOSER_REPLIES.length],
+    thinkLabel:'Looking across the cockpit…',
+    thinkMs: 850
+  });
+}
+$('#composerSend').addEventListener('click', sendComposer);
+composerInput.addEventListener('keydown', e=>{ if (e.key === 'Enter') sendComposer(); });
+
+/* ---------- search box (routes to copilot in this concept) ---------- */
+
+$('.searchbox').addEventListener('click', ()=>{
+  composerInput.focus();
+  showToast('Search routes to the copilot in this concept');
+});
+window.addEventListener('keydown', e=>{
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    composerInput.focus();
+  }
+});
+
+/* ---------- sidebar nav (concept) ---------- */
+
+$$('.nav a').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    $$('.nav a').forEach(x=>x.classList.remove('on'));
+    a.classList.add('on');
+    const where = a.dataset.nav;
+    if (where === 'inbox') $('#inboxPanel').scrollIntoView({behavior:'smooth'});
+    else if (where === 'assistant') composerInput.focus();
+    else if (where === 'overview') $('.main').scrollTo({top:0, behavior:'smooth'});
+    else showToast('Concept deck — this view demos the Overview');
+  });
+});
+
+/* ---------- opening brief ---------- */
+
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    buildActiveCard({
+      kindLabel:'Morning brief', ctx:'Overview · Wed, Jun 11',
+      body:`Morning. Four new leads overnight — three trace back to the proposal case study. Replies are drafted and waiting in the queue. One anomaly worth your eyes: Tuesday did 3× a normal day. Click the traffic panel and I'll walk you through it.`,
+      thinkLabel:'Scanning overnight activity…',
+      thinkMs: 900
+    });
+  }, 600);
+});
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;left:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

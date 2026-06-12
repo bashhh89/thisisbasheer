@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept 16 — Generative · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder & operator. Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONCEPT 16 — GENERATIVE
+   A living node-graph of the systems, running behind the words.
+   ============================================================ */
+:root{
+  --bg:        #04070b;
+  --bg-2:      #060b10;
+  --panel:     rgba(8, 15, 19, .62);
+  --panel-hi:  rgba(13, 23, 28, .72);
+  --line:      rgba(146, 178, 172, .13);
+  --line-hi:   rgba(146, 178, 172, .28);
+  --ink:       #e9f1ee;
+  --dim:       #93a7a2;
+  --faint:     #5d6f6b;
+  --accent:    #3ee6b0;
+  --accent-dk: #14543f;
+  --amber:     #ffb45c;
+  --mono:      "Space Mono", ui-monospace, monospace;
+  --sans:      "Instrument Sans", system-ui, sans-serif;
+  --max:       1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:#03110b}
+
+/* ---------- atmosphere layers ---------- */
+#net{
+  position:fixed; inset:0; width:100vw; height:100vh;
+  z-index:0; display:block;
+}
+.atmo{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(1100px 700px at 12% -8%,  rgba(62,230,176,.055), transparent 60%),
+    radial-gradient(900px 700px at 96% 110%, rgba(255,180,92,.04),  transparent 60%),
+    radial-gradient(140% 100% at 50% 50%, transparent 55%, rgba(2,4,7,.55) 100%);
+}
+.grain{
+  position:fixed; inset:-50%; z-index:60; pointer-events:none;
+  width:200%; height:200%;
+  opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 9s steps(6) infinite;
+}
+@keyframes grain{
+  0%,100%{transform:translate(0,0)} 20%{transform:translate(-2%,1%)}
+  40%{transform:translate(1%,-2%)} 60%{transform:translate(-1%,2%)} 80%{transform:translate(2%,1%)}
+}
+@media (prefers-reduced-motion: reduce){ .grain{animation:none} }
+
+#progress{
+  position:fixed; top:0; left:0; height:2px; width:0%;
+  background:linear-gradient(90deg, var(--accent), rgba(62,230,176,.25));
+  z-index:80; pointer-events:none;
+  box-shadow:0 0 12px rgba(62,230,176,.5);
+}
+
+/* ---------- shared ---------- */
+.wrap{max-width:var(--max); margin:0 auto; padding:0 32px; position:relative; z-index:10}
+.mono{font-family:var(--mono)}
+.kicker{
+  font-family:var(--mono); font-size:11px; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--accent);
+}
+.kicker .idx{color:var(--faint)}
+.section{padding:130px 0; position:relative; z-index:10}
+.sec-head{margin-bottom:56px; display:flex; flex-direction:column; gap:18px}
+.sec-head h2{
+  font-size:clamp(1.9rem, 3.6vw, 2.9rem); font-weight:600;
+  letter-spacing:-.025em; line-height:1.12; max-width:18ch;
+}
+.glass{
+  background:var(--panel);
+  backdrop-filter:blur(16px) saturate(1.25);
+  -webkit-backdrop-filter:blur(16px) saturate(1.25);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+
+/* reveal choreography (JS-gated so no-JS still reads) */
+.js .reveal{opacity:0; transform:translateY(26px); transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.in{opacity:1; transform:none}
+.js .reveal[data-delay="1"]{transition-delay:.12s}
+.js .reveal[data-delay="2"]{transition-delay:.24s}
+@media (prefers-reduced-motion: reduce){
+  .js .reveal{opacity:1; transform:none; transition:none}
+}
+
+/* ---------- header ---------- */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:70;
+  transition:background .4s ease, border-color .4s ease, backdrop-filter .4s ease;
+  border-bottom:1px solid transparent;
+}
+header.scrolled{
+  background:rgba(4,8,12,.72);
+  backdrop-filter:blur(14px) saturate(1.2);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom-color:var(--line);
+}
+.hd{
+  max-width:var(--max); margin:0 auto; padding:18px 32px;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+}
+.brand{
+  font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+  color:var(--ink); text-decoration:none; display:flex; align-items:center; gap:10px;
+  white-space:nowrap;
+}
+.brand .dot{
+  width:7px; height:7px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 10px var(--accent);
+  animation:pulse 2.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){ .brand .dot{animation:none} }
+nav{display:flex; gap:28px}
+nav a{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--dim); text-decoration:none; transition:color .25s;
+}
+nav a:hover, nav a:focus-visible{color:var(--accent)}
+.hd-mail{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  color:var(--ink); text-decoration:none;
+  border:1px solid var(--line-hi); border-radius:6px; padding:8px 14px;
+  transition:border-color .25s, color .25s, background .25s;
+  white-space:nowrap;
+}
+.hd-mail:hover, .hd-mail:focus-visible{border-color:var(--accent); color:var(--accent); background:rgba(62,230,176,.06)}
+@media (max-width:860px){ nav{display:none} }
+@media (max-width:560px){ .hd-mail{display:none} }
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  position:relative; z-index:10; padding:140px 0 90px;
+}
+.hero .kicker{margin-bottom:28px}
+.hero h1{
+  font-size:clamp(2.7rem, 7.6vw, 6.4rem);
+  font-weight:620; letter-spacing:-.035em; line-height:1.02;
+  max-width:14ch;
+}
+.hero h1 em{font-style:italic; font-weight:560; color:var(--accent)}
+.hero .sub{
+  margin-top:30px; max-width:52ch; color:var(--dim);
+  font-size:clamp(1rem, 1.4vw, 1.2rem); line-height:1.65;
+}
+.ticker{
+  margin-top:54px; font-family:var(--mono); font-size:12px; letter-spacing:.06em;
+  color:var(--faint); display:flex; align-items:center; gap:12px; min-height:20px;
+}
+.ticker .tag{
+  color:var(--accent); border:1px solid rgba(62,230,176,.3); border-radius:4px;
+  padding:1px 7px; font-size:10px; letter-spacing:.18em;
+}
+.ticker .line::after{
+  content:"▌"; color:var(--accent); margin-left:2px;
+  animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){ .ticker .line::after{animation:none} }
+.scroll-cue{
+  position:absolute; bottom:36px; left:32px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.3em; color:var(--faint);
+  writing-mode:vertical-rl; display:flex; align-items:center; gap:10px;
+}
+.scroll-cue::after{
+  content:""; width:1px; height:48px; background:linear-gradient(var(--accent), transparent);
+  animation:drip 2.2s ease-in-out infinite;
+}
+@keyframes drip{0%{transform:scaleY(0); transform-origin:top}55%{transform:scaleY(1); transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0); transform-origin:bottom}}
+@media (prefers-reduced-motion: reduce){ .scroll-cue::after{animation:none} }
+
+/* ---------- stats ---------- */
+.stats{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line); overflow:hidden; border-radius:10px;
+  border:1px solid var(--line);
+}
+.stat{
+  background:var(--panel); padding:34px 30px 30px;
+  display:flex; flex-direction:column; gap:18px; position:relative;
+  transition:background .35s;
+}
+.stat:hover{background:var(--panel-hi)}
+.stat .viz{width:100%; height:56px; display:block}
+.stat .viz .track{stroke:rgba(146,178,172,.16); fill:none}
+.stat .viz .prog{stroke:var(--accent); fill:none; filter:drop-shadow(0 0 4px rgba(62,230,176,.55))}
+.stat .viz .bar{fill:rgba(146,178,172,.16)}
+.stat .viz .bar.lit{fill:var(--accent)}
+.stat .num{
+  font-family:var(--mono); font-size:clamp(1.7rem, 2.6vw, 2.3rem); font-weight:700;
+  letter-spacing:-.02em; line-height:1; color:var(--ink);
+}
+.stat .num .suf{color:var(--accent); font-size:.62em; margin-left:2px}
+.stat .lbl{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--dim); line-height:1.7;
+}
+@media (max-width:900px){ .stats{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .stats{grid-template-columns:1fr} }
+
+/* ---------- work ---------- */
+.work-list{display:flex; flex-direction:column; gap:22px}
+.card{
+  display:grid; grid-template-columns:88px 1fr 220px; gap:36px;
+  padding:42px 44px; position:relative;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1), border-color .4s, background .4s;
+}
+.card:hover{transform:translateY(-3px); border-color:rgba(62,230,176,.32); background:var(--panel-hi)}
+.card .idx{
+  font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--faint);
+  padding-top:6px;
+}
+.card .idx b{display:block; color:var(--accent); font-size:22px; font-weight:700; letter-spacing:0; margin-top:6px}
+.card h3{font-size:clamp(1.3rem,2vw,1.65rem); font-weight:600; letter-spacing:-.02em; margin-bottom:12px}
+.card p{color:var(--dim); font-size:15.5px; max-width:58ch}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px}
+.chip{
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+  color:var(--accent); background:rgba(62,230,176,.07);
+  border:1px solid rgba(62,230,176,.22); border-radius:4px; padding:4px 9px;
+  white-space:nowrap;
+}
+.spark{align-self:center; width:100%; height:90px}
+.spark .axis{stroke:rgba(146,178,172,.14); stroke-dasharray:2 4}
+.spark .pathline{
+  stroke:var(--accent); fill:none; stroke-width:1.6;
+  filter:drop-shadow(0 0 5px rgba(62,230,176,.45));
+  stroke-dasharray:1; stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.8s cubic-bezier(.3,.6,.2,1) .15s;
+}
+.spark .enddot{fill:var(--accent); opacity:0; transition:opacity .4s ease 1.7s}
+.spark.drawn .pathline{stroke-dashoffset:0}
+.spark.drawn .enddot{opacity:1}
+@media (prefers-reduced-motion: reduce){
+  .spark .pathline{stroke-dashoffset:0 !important; transition:none}
+  .spark .enddot{opacity:1; transition:none}
+  .card{transition:none}
+}
+@media (max-width:980px){
+  .card{grid-template-columns:64px 1fr; }
+  .spark{grid-column:2; height:70px; max-width:340px}
+}
+@media (max-width:600px){
+  .card{grid-template-columns:1fr; padding:30px 26px; gap:20px}
+  .card .idx{display:flex; align-items:baseline; gap:12px; padding:0}
+  .card .idx b{margin:0}
+}
+
+/* ---------- capabilities ---------- */
+.caps{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  border-radius:10px; overflow:hidden;
+}
+.cap{
+  background:var(--panel); padding:34px 30px;
+  display:flex; flex-direction:column; gap:14px;
+  position:relative; transition:background .35s;
+}
+.cap:hover{background:var(--panel-hi)}
+.cap .cross{
+  font-family:var(--mono); font-size:11px; color:var(--faint); letter-spacing:.2em;
+  display:flex; justify-content:space-between;
+}
+.cap .cross .plus{color:var(--accent); transition:transform .4s}
+.cap:hover .cross .plus{transform:rotate(90deg)}
+.cap h3{font-size:1.15rem; font-weight:600; letter-spacing:-.01em}
+.cap p{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--dim); line-height:1.8}
+@media (max-width:900px){ .caps{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .caps{grid-template-columns:1fr} }
+
+/* ---------- contact ---------- */
+.cta{
+  padding:72px 64px; text-align:left; position:relative; overflow:hidden;
+}
+.cta::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(560px 280px at 12% 0%, rgba(62,230,176,.08), transparent 70%);
+}
+.cta h2{font-size:clamp(2rem,4.2vw,3.3rem); font-weight:620; letter-spacing:-.03em; margin:18px 0 16px}
+.cta .lead{color:var(--dim); max-width:46ch; margin-bottom:44px}
+.mail{
+  font-family:var(--mono); font-weight:700;
+  font-size:clamp(1.25rem, 3.4vw, 2.4rem); letter-spacing:-.01em;
+  color:var(--accent); text-decoration:none; display:inline-block; position:relative;
+  padding-bottom:6px;
+}
+.mail::after{
+  content:""; position:absolute; left:0; bottom:0; height:2px; width:100%;
+  background:var(--accent); transform:scaleX(0); transform-origin:left;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1);
+  box-shadow:0 0 10px rgba(62,230,176,.6);
+}
+.mail:hover::after, .mail:focus-visible::after{transform:scaleX(1)}
+.cta .note{
+  margin-top:30px; font-family:var(--mono); font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--faint);
+}
+@media (max-width:600px){ .cta{padding:44px 28px} }
+
+/* ---------- footer ---------- */
+footer{
+  position:relative; z-index:10;
+  border-top:1px solid var(--line);
+  padding:34px 0 44px; margin-top:40px;
+  background:rgba(4,8,12,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.ft{
+  max-width:var(--max); margin:0 auto; padding:0 32px;
+  display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--faint);
+}
+.ft a{color:var(--dim); text-decoration:none}
+.ft a:hover{color:var(--accent)}
+
+a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+</style>
+</head>
+<body>
+
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="atmo" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div id="progress" aria-hidden="true"></div>
+
+<header id="hdr">
+  <div class="hd">
+    <a class="brand" href="#top"><span class="dot"></span>AHMAD&nbsp;BASHEER</a>
+    <nav aria-label="Sections">
+      <a href="#proof">Proof</a>
+      <a href="#work">Work</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="hd-mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker reveal">Ahmad Basheer — Systems Builder &amp; Operator</p>
+      <h1 class="reveal" data-delay="1">I build systems that <em>run</em> companies.</h1>
+      <p class="sub reveal" data-delay="2">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+      <div class="ticker reveal" data-delay="2" aria-hidden="true">
+        <span class="tag">LIVE</span>
+        <span class="line" id="tick">ops.sync ▸ 43 venues nominal</span>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">SCROLL</div>
+  </section>
+
+  <!-- PROOF -->
+  <section class="section" id="proof">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="kicker"><span class="idx">01 /</span> Proof</p>
+        <h2>Running in production, right now.</h2>
+      </div>
+      <div class="stats glass reveal" data-delay="1">
+
+        <div class="stat" data-target="100" data-suffix="+" data-viz="bars" data-pattern="up">
+          <svg class="viz" viewBox="0 0 120 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="num"><span class="val">100</span><span class="suf">+</span></div>
+          <div class="lbl">containers in production</div>
+        </div>
+
+        <div class="stat" data-target="43" data-suffix="+" data-viz="arc" data-frac="0.68">
+          <svg class="viz" viewBox="0 0 120 56" aria-hidden="true">
+            <circle class="track" cx="60" cy="28" r="22" stroke-width="3"></circle>
+            <circle class="prog" cx="60" cy="28" r="22" stroke-width="3" stroke-linecap="round"
+                    transform="rotate(-90 60 28)"></circle>
+          </svg>
+          <div class="num"><span class="val">43</span><span class="suf">+</span></div>
+          <div class="lbl">venues live</div>
+        </div>
+
+        <div class="stat" data-target="150" data-viz="bars" data-pattern="wave">
+          <svg class="viz" viewBox="0 0 120 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="num"><span class="val">150</span><span class="suf"></span></div>
+          <div class="lbl">field technicians</div>
+        </div>
+
+        <div class="stat" data-target="1" data-from="72" data-mode="down" data-prefix="&lt;" data-suffix="hr" data-viz="shrink">
+          <svg class="viz" viewBox="0 0 120 56" preserveAspectRatio="none" aria-hidden="true">
+            <rect class="track" x="0" y="25" width="120" height="6" rx="3" fill="rgba(146,178,172,.16)"></rect>
+            <rect class="fill" x="0" y="25" width="6" height="6" rx="3" fill="var(--accent)"
+                  style="filter:drop-shadow(0 0 4px rgba(62,230,176,.55))"></rect>
+          </svg>
+          <div class="num"><span class="pre">&lt;</span><span class="val">1</span><span class="suf">hr</span></div>
+          <div class="lbl">proposal turnaround · from days</div>
+        </div>
+
+        <div class="stat" data-target="30000" data-suffix="+" data-viz="arc" data-frac="0.94">
+          <svg class="viz" viewBox="0 0 120 56" aria-hidden="true">
+            <circle class="track" cx="60" cy="28" r="22" stroke-width="3"></circle>
+            <circle class="prog" cx="60" cy="28" r="22" stroke-width="3" stroke-linecap="round"
+                    transform="rotate(-90 60 28)"></circle>
+          </svg>
+          <div class="num"><span class="val">30,000</span><span class="suf">+</span></div>
+          <div class="lbl">CRM records</div>
+        </div>
+
+        <div class="stat" data-target="250" data-suffix="+" data-viz="bars" data-pattern="rand">
+          <svg class="viz" viewBox="0 0 120 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="num"><span class="val">250</span><span class="suf">+</span></div>
+          <div class="lbl">events per season</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="kicker"><span class="idx">02 /</span> Work</p>
+        <h2>Three systems, end to end.</h2>
+      </div>
+      <div class="work-list">
+
+        <article class="card glass reveal">
+          <div class="idx">WRK<b>01</b></div>
+          <div>
+            <h3>Proposal Engine for ANC</h3>
+            <p>Quoting used to take days and produce one-off documents. Now the pricing lives in one engine — every proposal versioned, reproducible, and out the door in under an hour.</p>
+            <div class="chips">
+              <span class="chip">DAYS → &lt;1 HR</span>
+              <span class="chip">VERSIONED PRICING</span>
+              <span class="chip">REPRODUCIBLE OUTPUT</span>
+            </div>
+          </div>
+          <svg class="spark" viewBox="0 0 220 90" aria-hidden="true">
+            <line class="axis" x1="0" y1="80" x2="220" y2="80"></line>
+            <path class="pathline" pathLength="1" d="M4,12 L36,16 L62,14 L88,26 L112,38 L138,58 L164,70 L192,76 L216,78"></path>
+            <circle class="enddot" cx="216" cy="78" r="3"></circle>
+          </svg>
+        </article>
+
+        <article class="card glass reveal">
+          <div class="idx">WRK<b>02</b></div>
+          <div>
+            <h3>Venue Operations Platform</h3>
+            <p>One screen for scheduling, dispatch, and coverage across 43+ venues and 150 field technicians in 15 markets. It replaced four separate reports.</p>
+            <div class="chips">
+              <span class="chip">43+ VENUES</span>
+              <span class="chip">150 TECHS</span>
+              <span class="chip">15 MARKETS</span>
+              <span class="chip">4 REPORTS → 1 SCREEN</span>
+            </div>
+          </div>
+          <svg class="spark" viewBox="0 0 220 90" aria-hidden="true">
+            <line class="axis" x1="0" y1="80" x2="220" y2="80"></line>
+            <path class="pathline" pathLength="1" d="M4,76 L34,76 L34,62 L66,62 L66,50 L100,50 L100,38 L136,38 L136,26 L172,26 L172,14 L216,14"></path>
+            <circle class="enddot" cx="216" cy="14" r="3"></circle>
+          </svg>
+        </article>
+
+        <article class="card glass reveal">
+          <div class="idx">WRK<b>03</b></div>
+          <div>
+            <h3>CRM Platform Extension</h3>
+            <p>Extended the company CRM with 13 custom objects, migrated and reconciled 30,000+ records, and built 16 live dashboards the team actually opens.</p>
+            <div class="chips">
+              <span class="chip">13 CUSTOM OBJECTS</span>
+              <span class="chip">30,000+ RECORDS</span>
+              <span class="chip">16 LIVE DASHBOARDS</span>
+            </div>
+          </div>
+          <svg class="spark" viewBox="0 0 220 90" aria-hidden="true">
+            <line class="axis" x1="0" y1="80" x2="220" y2="80"></line>
+            <path class="pathline" pathLength="1" d="M4,78 C50,76 70,68 96,54 C124,39 150,28 178,18 C192,13 204,11 216,10"></path>
+            <circle class="enddot" cx="216" cy="10" r="3"></circle>
+          </svg>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPABILITIES -->
+  <section class="section" id="capabilities">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="kicker"><span class="idx">03 /</span> Capabilities</p>
+        <h2>What I build.</h2>
+      </div>
+      <div class="caps reveal" data-delay="1">
+        <div class="cap"><div class="cross"><span>CAP·01</span><span class="plus">+</span></div><h3>CRM Platforms</h3><p>schemas, migrations, dashboards</p></div>
+        <div class="cap"><div class="cross"><span>CAP·02</span><span class="plus">+</span></div><h3>Proposal Engines</h3><p>pricing logic, versioned output</p></div>
+        <div class="cap"><div class="cross"><span>CAP·03</span><span class="plus">+</span></div><h3>Operations Platforms</h3><p>scheduling, dispatch, coverage</p></div>
+        <div class="cap"><div class="cross"><span>CAP·04</span><span class="plus">+</span></div><h3>Automation Systems</h3><p>the work that runs itself</p></div>
+        <div class="cap"><div class="cross"><span>CAP·05</span><span class="plus">+</span></div><h3>Platform Integrations</h3><p>one system of record</p></div>
+        <div class="cap"><div class="cross"><span>CAP·06</span><span class="plus">+</span></div><h3>AI Inside the Workflow</h3><p>embedded where decisions happen</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="cta glass reveal">
+        <p class="kicker"><span class="idx">04 /</span> Contact</p>
+        <h2>Start a project.</h2>
+        <p class="lead">Tell me what's slow, manual, or scattered. I'll tell you what I'd build.</p>
+        <a class="mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+        <p class="note">Direct line · replies within a day</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="ft">
+    <span>Ahmad Basheer · Systems Builder &amp; Operator</span>
+    <span>Concept 16 · Generative</span>
+    <span>© 2026 · <a href="mailto:ahmad@basheer.app">ahmad@basheer.app</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+document.documentElement.classList.add("js");
+
+var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+var easeOut = function(t){ return 1-Math.pow(1-t,3); };
+var easeExpo = function(t){ return t>=1?1:1-Math.pow(2,-10*t); };
+
+/* ============================================================
+   1. GENERATIVE NETWORK CANVAS
+   nodes = the systems · edges pulse with data · particles route
+   ============================================================ */
+(function net(){
+  var cv = document.getElementById("net");
+  var ctx = cv.getContext("2d");
+  var W=0, H=0, DPR=1, S=1;
+  var mouse = {x:-9999, y:-9999, active:false};
+  var hubs=[], sats=[], edges=[], particles=[], pulses=[];
+  var running = !RM, hidden = false;
+
+  var HUB_DEFS = [
+    {label:"CRM",          fx:.16, fy:.30},
+    {label:"PROPOSALS",    fx:.80, fy:.20},
+    {label:"OPERATIONS",   fx:.64, fy:.60},
+    {label:"AUTOMATION",   fx:.32, fy:.76},
+    {label:"INTEGRATIONS", fx:.90, fy:.74},
+    {label:"AI LAYER",     fx:.46, fy:.12},
+    {label:"VENUES ×43",  fx:.08, fy:.72}
+  ];
+  var HUB_LINKS = [[0,1],[0,5],[1,5],[1,2],[2,6],[2,3],[3,0],[4,2],[4,1],[6,3],[5,2],[4,0]];
+
+  function makeNode(x,y,hub){
+    return {
+      ax:x, ay:y, x:x, y:y,
+      amp: hub ? 7+Math.random()*7 : 4+Math.random()*9,
+      spd: .00018 + Math.random()*.00026,
+      ph:  Math.random()*Math.PI*2,
+      ph2: Math.random()*Math.PI*2,
+      mx:0, my:0,
+      hub: !!hub, count: 0
+    };
+  }
+
+  function build(){
+    hubs=[]; sats=[]; edges=[]; particles=[]; pulses=[];
+    S = clamp(Math.min(W,H)/820, .62, 1.25);
+    HUB_DEFS.forEach(function(d){
+      var n = makeNode(d.fx*W, d.fy*H, true);
+      n.label = d.label;
+      n.count = 800 + Math.floor(Math.random()*8200);
+      hubs.push(n);
+    });
+    HUB_LINKS.forEach(function(l){ edges.push({a:hubs[l[0]], b:hubs[l[1]], heat:0}); });
+    // satellites ring each hub
+    var satTotal = W < 700 ? 3 : 5;
+    hubs.forEach(function(h, hi){
+      var k = (hi===6 ? satTotal+3 : satTotal); // venues hub gets extra
+      for(var i=0;i<k;i++){
+        var ang = Math.random()*Math.PI*2;
+        var dist = (55 + Math.random()*110) * S;
+        var s = makeNode(h.ax + Math.cos(ang)*dist, h.ay + Math.sin(ang)*dist, false);
+        sats.push(s);
+        edges.push({a:h, b:s, heat:0});
+      }
+    });
+    // a few cross-links between random satellites for texture
+    for(var j=0;j<6;j++){
+      var s1 = sats[Math.floor(Math.random()*sats.length)];
+      var s2 = sats[Math.floor(Math.random()*sats.length)];
+      if(s1!==s2) edges.push({a:s1, b:s2, heat:0});
+    }
+    // particles
+    var n = RM ? 0 : clamp(Math.floor(W*H/26000), 24, 80);
+    for(var p=0;p<n;p++){
+      var e = edges[Math.floor(Math.random()*edges.length)];
+      particles.push({
+        e:e, t:Math.random(), dir: Math.random()<.5?1:-1,
+        spd: .0018 + Math.random()*.0042,
+        warm: Math.random()<.14
+      });
+    }
+  }
+
+  // pre-rendered glow sprites (cheap — no per-frame shadowBlur)
+  function sprite(color){
+    var c = document.createElement("canvas"); c.width=c.height=48;
+    var g = c.getContext("2d");
+    var grad = g.createRadialGradient(24,24,0,24,24,24);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = grad; g.fillRect(0,0,48,48);
+    return c;
+  }
+  var glowTeal  = sprite("rgba(62,230,176,.85)");
+  var glowAmber = sprite("rgba(255,180,92,.85)");
+
+  function resize(){
+    DPR = clamp(window.devicePixelRatio||1, 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W*DPR; cv.height = H*DPR;
+    cv.style.width = W+"px"; cv.style.height = H+"px";
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    build();
+    if(RM){ step(0); draw(); }
+  }
+
+  function step(t){
+    var i, n;
+    var all = hubs.concat(sats);
+    for(i=0;i<all.length;i++){
+      n = all[i];
+      // organic drift
+      var dx = Math.cos(t*n.spd + n.ph) * n.amp;
+      var dy = Math.sin(t*n.spd*1.27 + n.ph2) * n.amp;
+      // gentle mouse attraction
+      var tx=0, ty=0;
+      if(mouse.active){
+        var mx = mouse.x - (n.ax+dx), my = mouse.y - (n.ay+dy);
+        var d = Math.sqrt(mx*mx+my*my);
+        var R = 240*S;
+        if(d < R && d > 0.001){
+          var f = (1-d/R); f = f*f*(n.hub? 16 : 26) * S;
+          tx = mx/d*f; ty = my/d*f;
+        }
+      }
+      n.mx += (tx-n.mx)*.055;
+      n.my += (ty-n.my)*.055;
+      n.x = n.ax + dx + n.mx;
+      n.y = n.ay + dy + n.my;
+    }
+    // particles route along edges
+    for(i=0;i<particles.length;i++){
+      var p = particles[i];
+      p.t += p.spd * p.dir;
+      if(p.t>1 || p.t<0){
+        var arrive = p.t>1 ? p.e.b : p.e.a;
+        p.e.heat = 1;
+        arrive.count++;
+        if(arrive.hub && pulses.length<10 && Math.random()<.55){
+          pulses.push({x:arrive.x, y:arrive.y, r:6*S, a:.45});
+        }
+        // hop to a connected edge
+        var opts = [];
+        for(var k=0;k<edges.length;k++){
+          if(edges[k]!==p.e && (edges[k].a===arrive || edges[k].b===arrive)) opts.push(edges[k]);
+        }
+        if(opts.length){
+          p.e = opts[Math.floor(Math.random()*opts.length)];
+          if(p.e.a===arrive){ p.dir=1; p.t=0; } else { p.dir=-1; p.t=1; }
+        } else {
+          p.t = clamp(p.t,0,1); p.dir*=-1;
+        }
+      }
+    }
+    for(i=pulses.length-1;i>=0;i--){
+      pulses[i].r += 1.05*S; pulses[i].a -= .012;
+      if(pulses[i].a<=0) pulses.splice(i,1);
+    }
+    for(i=0;i<edges.length;i++){ if(edges[i].heat>0) edges[i].heat*=.955; }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var i;
+    // edges
+    ctx.lineWidth = 1;
+    for(i=0;i<edges.length;i++){
+      var e = edges[i];
+      var a = .05 + e.heat*.30;
+      ctx.strokeStyle = e.heat>.04
+        ? "rgba(62,230,176,"+a.toFixed(3)+")"
+        : "rgba(146,178,172,"+a.toFixed(3)+")";
+      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke();
+    }
+    // particles
+    for(i=0;i<particles.length;i++){
+      var p = particles[i];
+      var x = p.e.a.x + (p.e.b.x-p.e.a.x)*p.t;
+      var y = p.e.a.y + (p.e.b.y-p.e.a.y)*p.t;
+      var g = p.warm ? glowAmber : glowTeal;
+      var gs = 13*S;
+      ctx.globalAlpha = .55;
+      ctx.drawImage(g, x-gs/2, y-gs/2, gs, gs);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = p.warm ? "#ffce96" : "#aef7dd";
+      ctx.fillRect(x-1, y-1, 2, 2);
+    }
+    // pulse rings
+    for(i=0;i<pulses.length;i++){
+      var pu = pulses[i];
+      ctx.strokeStyle = "rgba(62,230,176,"+pu.a.toFixed(3)+")";
+      ctx.beginPath(); ctx.arc(pu.x, pu.y, pu.r, 0, Math.PI*2); ctx.stroke();
+    }
+    // satellites
+    ctx.fillStyle = "rgba(150,200,190,.5)";
+    for(i=0;i<sats.length;i++){
+      ctx.beginPath(); ctx.arc(sats[i].x, sats[i].y, 1.6*S, 0, Math.PI*2); ctx.fill();
+    }
+    // hubs + labels + live counters
+    var fontM = Math.round(10*S)+"px 'Space Mono', monospace";
+    var fontC = Math.round(9*S)+"px 'Space Mono', monospace";
+    for(i=0;i<hubs.length;i++){
+      var h = hubs[i];
+      var gs2 = 34*S;
+      ctx.globalAlpha = .35;
+      ctx.drawImage(glowTeal, h.x-gs2/2, h.y-gs2/2, gs2, gs2);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = "rgba(62,230,176,.35)";
+      ctx.beginPath(); ctx.arc(h.x, h.y, 9*S, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = "#3ee6b0";
+      ctx.beginPath(); ctx.arc(h.x, h.y, 2.6*S, 0, Math.PI*2); ctx.fill();
+      ctx.font = fontM;
+      ctx.fillStyle = "rgba(210,232,226,.62)";
+      ctx.fillText(h.label, h.x+15*S, h.y-3);
+      ctx.font = fontC;
+      ctx.fillStyle = "rgba(120,145,140,.55)";
+      ctx.fillText("▸ "+h.count.toLocaleString("en-US"), h.x+15*S, h.y+11*S);
+    }
+  }
+
+  function frame(t){
+    if(!running || hidden) return;
+    step(t); draw();
+    requestAnimationFrame(frame);
+  }
+
+  var rT;
+  window.addEventListener("resize", function(){ clearTimeout(rT); rT=setTimeout(resize,150); });
+  window.addEventListener("pointermove", function(e){
+    mouse.x=e.clientX; mouse.y=e.clientY; mouse.active=true;
+  }, {passive:true});
+  window.addEventListener("pointerleave", function(){ mouse.active=false; });
+  document.addEventListener("visibilitychange", function(){
+    hidden = document.hidden;
+    if(!hidden && running) requestAnimationFrame(frame);
+  });
+
+  resize();
+  if(running){
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ requestAnimationFrame(frame); });
+    } else {
+      requestAnimationFrame(frame);
+    }
+  } else {
+    // reduced motion: a single, calm, fully-drawn frame
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ step(0); draw(); }); }
+  }
+})();
+
+/* ============================================================
+   2. SCROLL REVEALS
+   ============================================================ */
+(function reveals(){
+  var els = document.querySelectorAll(".reveal");
+  if(!("IntersectionObserver" in window) || RM){
+    els.forEach(function(el){ el.classList.add("in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, {threshold:.18, rootMargin:"0px 0px -8% 0px"});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ============================================================
+   3. STATS — numbers count, arcs/bars/shrink draw themselves
+   ============================================================ */
+(function stats(){
+  var BAR_N = 14, BAR_W = 5;
+  var PATTERNS = {
+    up:   function(i){ return .2 + .8*(i/(BAR_N-1)); },
+    wave: function(i){ return .45 + .42*Math.sin(i*.9); },
+    rand: function(i){ return [.45,.7,.3,.85,.55,.95,.4,.65,.8,.5,.9,.35,.75,.6][i%14]; }
+  };
+  var statEls = Array.prototype.slice.call(document.querySelectorAll(".stat"));
+
+  statEls.forEach(function(el){
+    var viz = el.getAttribute("data-viz");
+    var svg = el.querySelector(".viz");
+    if(viz==="bars"){
+      var fn = PATTERNS[el.getAttribute("data-pattern")||"up"];
+      var gap = (120 - BAR_N*BAR_W)/(BAR_N-1);
+      for(var i=0;i<BAR_N;i++){
+        var hh = Math.max(4, fn(i)*52);
+        var r = document.createElementNS("http://www.w3.org/2000/svg","rect");
+        r.setAttribute("class","bar");
+        r.setAttribute("x", (i*(BAR_W+gap)).toFixed(2));
+        r.setAttribute("width", BAR_W);
+        r.setAttribute("y", (56-hh).toFixed(2));
+        r.setAttribute("height", hh.toFixed(2));
+        r.setAttribute("rx", 1.5);
+        svg.appendChild(r);
+      }
+    }
+    if(viz==="arc"){
+      var prog = svg.querySelector(".prog");
+      var C = 2*Math.PI*22;
+      prog.setAttribute("stroke-dasharray", C.toFixed(2));
+      var frac = parseFloat(el.getAttribute("data-frac")||"0.8");
+      prog.setAttribute("stroke-dashoffset", (C*(1-frac)).toFixed(2)); // final state by default
+      el._arc = {prog:prog, C:C, frac:frac};
+    }
+  });
+
+  function render(el, p){ // p: eased 0..1
+    var viz = el.getAttribute("data-viz");
+    var svg = el.querySelector(".viz");
+    var valEl = el.querySelector(".val");
+    var mode = el.getAttribute("data-mode");
+    var target = parseFloat(el.getAttribute("data-target"));
+    // number
+    var v;
+    if(mode==="down"){
+      var from = parseFloat(el.getAttribute("data-from")||"100");
+      v = Math.round(from + (target-from)*p);
+      valEl.textContent = String(v);
+      var pre = el.querySelector(".pre");
+      if(pre) pre.style.visibility = (p>=1) ? "visible" : "hidden";
+    } else {
+      v = Math.round(target*p);
+      valEl.textContent = v.toLocaleString("en-US");
+    }
+    // viz
+    if(viz==="arc" && el._arc){
+      el._arc.prog.setAttribute("stroke-dashoffset", (el._arc.C*(1 - el._arc.frac*p)).toFixed(2));
+    } else if(viz==="bars"){
+      var bars = svg.querySelectorAll(".bar");
+      for(var i=0;i<bars.length;i++){
+        var bp = clamp(p*bars.length - i, 0, 1);
+        bars[i].classList.toggle("lit", bp>=.999 || (p>=1));
+        bars[i].style.opacity = .35 + .65*bp;
+      }
+      if(p>=1){ for(var j=0;j<bars.length;j++){ bars[j].classList.add("lit"); bars[j].style.opacity=1; } }
+    } else if(viz==="shrink"){
+      var fill = svg.querySelector(".fill");
+      var w = 120 - (120-6)*p;
+      fill.setAttribute("width", Math.max(6,w).toFixed(2));
+    }
+  }
+
+  function animate(el){
+    var dur = 1600, t0 = null;
+    function tick(ts){
+      if(t0===null) t0 = ts;
+      var p = clamp((ts-t0)/dur, 0, 1);
+      render(el, easeExpo(p));
+      if(p<1) requestAnimationFrame(tick);
+      else render(el, 1);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if(RM || !("IntersectionObserver" in window)){
+    statEls.forEach(function(el){ render(el,1); });
+    return;
+  }
+  // arm: zero everything out, then draw on entry
+  statEls.forEach(function(el){ render(el, 0); });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ animate(en.target); io.unobserve(en.target); }
+    });
+  }, {threshold:.45});
+  statEls.forEach(function(el){ io.observe(el); });
+})();
+
+/* ============================================================
+   4. SPARKLINES draw on scroll
+   ============================================================ */
+(function sparks(){
+  var els = document.querySelectorAll(".spark");
+  if(RM || !("IntersectionObserver" in window)){
+    els.forEach(function(el){ el.classList.add("drawn"); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add("drawn"); io.unobserve(en.target); }
+    });
+  }, {threshold:.5});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ============================================================
+   5. LIVE TICKER
+   ============================================================ */
+(function ticker(){
+  var el = document.getElementById("tick");
+  if(!el) return;
+  var LINES = [
+    "ops.sync ▸ 43 venues nominal",
+    "proposal.build ▸ rendered in 00:41",
+    "crm.reconcile ▸ 30,412 records clean",
+    "dispatch ▸ 150 techs · 15 markets",
+    "pipeline ▸ 16 dashboards live",
+    "events.feed ▸ 250+ per season",
+    "fleet ▸ 100+ containers green"
+  ];
+  if(RM){ el.textContent = LINES[0]; return; }
+  var li = 0;
+  function type(line, done){
+    var i = 0;
+    el.textContent = "";
+    (function ch(){
+      if(i<=line.length){
+        el.textContent = line.slice(0,i); i++;
+        setTimeout(ch, 22);
+      } else {
+        setTimeout(done, 2900);
+      }
+    })();
+  }
+  function next(){
+    type(LINES[li], function(){
+      li = (li+1)%LINES.length;
+      next();
+    });
+  }
+  next();
+})();
+
+/* ============================================================
+   6. HEADER STATE + SCROLL PROGRESS
+   ============================================================ */
+(function chrome(){
+  var hdr = document.getElementById("hdr");
+  var bar = document.getElementById("progress");
+  var ticking = false;
+  function update(){
+    ticking = false;
+    var y = window.scrollY || 0;
+    hdr.classList.toggle("scrolled", y>40);
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (max>0 ? (y/max)*100 : 0) + "%";
+  }
+  window.addEventListener("scroll", function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(update); }
+  }, {passive:true});
+  update();
+})();
+
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

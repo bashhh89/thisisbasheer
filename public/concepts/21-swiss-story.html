@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 21 — Swiss Story · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer builds proposal engines, operations platforms and CRMs — systems that run companies. A scroll-film told in seven chapters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+document.documentElement.classList.add('js');
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('fx');}
+</script>
+<style>
+/* ================================================================
+   SWISS SCROLL-FILM — FINAL CUT
+   timeline-engineer dossier (B) + slate hard cuts (A) + scale-fit
+   embeds (C) · pure white · near-black ink · one red · Archivo
+   ================================================================ */
+:root{
+  --ink:#0b0b0c;
+  --paper:#ffffff;
+  --red:#E30613;
+  --hair:#e7e7e7;
+  --ghost:#f3f3f3;
+  --ghost2:#ededed;
+  --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --grot:'Archivo', Helvetica, Arial, sans-serif;
+  --rail-w:104px;
+  --pad:clamp(24px, 5vw, 104px);
+  --head-ind:clamp(84px, 9.5vw, 148px);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --maxw:1560px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  font-family:var(--grot);
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:clip;
+}
+::selection{background:var(--red);color:#fff}
+a{color:inherit;text-decoration:none}
+button{font:inherit;background:none;border:0;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+em{font-style:normal;color:var(--red)}
+img,svg{display:block}
+
+/* ---------------- fixed site head (difference blend — readable on slates) ---------------- */
+.site-head{
+  position:fixed;inset:0 0 auto 0;z-index:60;
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:18px var(--pad) 14px calc(var(--rail-w) + 28px);
+  pointer-events:none;
+  mix-blend-mode:difference;
+}
+.site-head a,.site-head span{pointer-events:auto;color:#fff}
+.site-head .mono{font-size:11px}
+.wordmark{font-weight:700;letter-spacing:.14em}
+.head-mail{border-bottom:1px solid #fff;padding-bottom:1px}
+.head-mail:hover{opacity:.7}
+
+/* ---------------- TIMELINE RAIL (the instrument) ---------------- */
+.rail{
+  position:fixed;top:0;left:0;bottom:0;width:var(--rail-w);z-index:55;
+  border-right:1px solid var(--hair);
+  background:var(--paper);
+}
+.rail__label{
+  position:absolute;left:14px;top:50%;
+  transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  white-space:nowrap;color:var(--ink);
+  transition:opacity .3s ease;
+}
+.rail__track{
+  position:absolute;top:132px;bottom:120px;left:66px;width:1px;
+  background:var(--hair);
+}
+.rail__ticks{
+  position:absolute;top:0;bottom:0;left:0;width:9px;
+  background-image:
+    repeating-linear-gradient(to bottom, rgba(11,11,12,.28) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(to bottom, rgba(11,11,12,.5) 0 1px, transparent 1px 120px);
+  background-size:5px 100%, 9px 100%;
+  background-repeat:no-repeat;
+}
+.rail__fill{
+  position:absolute;top:0;left:0;width:1px;height:100%;
+  background:var(--red);
+  transform:scaleY(0);transform-origin:top;
+}
+.rail__dot{
+  position:absolute;top:0;left:0.5px;width:9px;height:9px;border-radius:50%;
+  background:var(--red);
+  transform:translate(-50%,0);
+  z-index:3;
+}
+.rail__dot::after{
+  content:'';position:absolute;inset:-5px;border:1px solid var(--red);
+  border-radius:50%;opacity:.4;
+}
+.rail__marker{
+  position:absolute;left:0;width:36px;height:24px;
+  transform:translate(-14px,-12px);
+  display:flex;align-items:center;
+  z-index:2;
+}
+.rail__num{
+  position:absolute;right:calc(100% - 6px);
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  color:#9a9a9a;
+  transition:color .25s ease;
+  padding-right:8px;
+}
+.rail__sq{
+  width:7px;height:7px;background:var(--paper);
+  border:1px solid var(--ink);
+  margin-left:11px;
+  transition:background .25s ease,border-color .25s ease,transform .25s ease;
+}
+.rail__marker:hover .rail__sq{transform:scale(1.5)}
+.rail__marker:hover .rail__num{color:var(--ink)}
+.rail__marker.is-active .rail__sq{background:var(--red);border-color:var(--red)}
+.rail__marker.is-active .rail__num{color:var(--red)}
+.rail__marker:focus-visible .rail__sq{outline:2px solid var(--red);outline-offset:2px}
+.rail__cap{
+  position:absolute;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#9a9a9a;
+}
+.rail__cap--top{top:96px}
+.rail__cap--btm{bottom:88px}
+
+/* ---------------- mobile progress bar ---------------- */
+.progress-mobile{display:none}
+
+/* ---------------- main ---------------- */
+main{display:block;padding-left:var(--rail-w)}
+section.ch{position:relative;overflow:clip}
+
+/* hairline chapter separators */
+.ch + .ch{border-top:1px solid var(--hair)}
+
+/* ================================================================
+   SLATES — pinned full-black title cards (the hard cuts, from A)
+   ================================================================ */
+.pin{position:relative;height:170vh}
+.slate{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  background:var(--ink);color:#fff;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 var(--pad);
+  z-index:2;
+}
+.slate-top{
+  position:absolute;top:48px;left:var(--pad);right:var(--pad);
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);
+}
+.slate-kick{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red);margin-bottom:3vh;
+}
+.slate-ttl{
+  font-weight:800;font-stretch:116%;
+  font-size:clamp(44px, 8.4vw, 140px);
+  line-height:.9;letter-spacing:-.025em;text-transform:uppercase;
+  color:#fff;max-width:9.5em;
+  will-change:transform,opacity;
+}
+.slate-slug{
+  position:absolute;bottom:56px;left:var(--pad);
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);
+}
+.slate-bar{
+  position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--red);
+  transform-origin:left;will-change:transform;
+}
+.fx .slate-bar{transform:scaleX(0)}
+.fx .slate-ttl{opacity:0;transform:translate3d(9vw,0,0)}
+.fx .slate-kick{opacity:0}
+
+/* academy leader ring (from A) — scroll-scrubbed countdown */
+.leader{
+  position:absolute;right:clamp(24px,8vw,120px);top:50%;
+  width:clamp(110px,15vw,210px);transform:translateY(-50%);
+}
+.leader svg{width:100%;height:auto;display:block;overflow:visible}
+.leader .ring-bg{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1}
+.leader .ring-prog{fill:none;stroke:var(--red);stroke-width:2;stroke-dasharray:100;stroke-dashoffset:0;transform:rotate(-90deg);transform-origin:50% 50%}
+.fx .leader .ring-prog{stroke-dashoffset:100}
+.leader .cross{stroke:rgba(255,255,255,.25);stroke-width:1}
+.leader .num{font-family:var(--mono);font-size:13px;letter-spacing:.1em;fill:#fff}
+.leader .tickwrap{will-change:transform;transform-origin:50px 50px}
+.leader .tick{stroke:#fff;stroke-width:1.5}
+
+/* ---------------- connector (JS-injected once, drawn per chapter) ---------------- */
+.ch__head{position:relative;padding-left:var(--head-ind);padding-top:118px;min-height:340px}
+.connector{position:absolute;left:24px;top:0;width:120px;height:340px;pointer-events:none}
+.connector path{fill:none;stroke:var(--ink);stroke-width:1.5}
+.ch__fig{
+  position:absolute;left:34px;top:14px;
+  writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#9a9a9a;
+  text-transform:uppercase;
+}
+.ch__kicker{color:var(--red);font-weight:500;margin-bottom:22px}
+.ch__title{
+  font-weight:780;
+  font-stretch:112%;
+  font-size:clamp(44px, 7.4vw, 118px);
+  line-height:.92;
+  letter-spacing:-.025em;
+  text-transform:uppercase;
+}
+
+/* sweep-in titles */
+.sweep{display:block;overflow:hidden;padding-bottom:.06em}
+.js .sweep > span{display:block;transform:translateX(-103%);transition:transform 1.15s var(--ease)}
+.js .sweep--r > span{transform:translateX(103%)}
+.js .in .sweep > span,
+.js .sweep.in > span{transform:translateX(0)}
+
+/* generic reveals */
+.js .reveal{opacity:0;transform:translateY(46px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--d,0)*1ms)}
+.js .reveal--l{transform:translateX(-64px)}
+.js .reveal--r{transform:translateX(64px)}
+.js .reveal--up{transform:translateY(90px)}
+.js .reveal--drop{transform:translateY(-70px)}
+.js .reveal.in,
+.js .rgroup.in .reveal{opacity:1;transform:none}
+
+/* ================= CH.00 HERO ================= */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.hero__grid{
+  position:absolute;inset:-14% -2%;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(11,11,12,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11,11,12,.038) 1px, transparent 1px);
+  background-size:calc(100%/12) 100%, 100% 112px;
+}
+.hero__ghost{
+  position:absolute;right:clamp(16px,3.5vw,56px);top:50%;z-index:0;
+  transform:translateY(-50%);
+  writing-mode:vertical-rl;
+  font-size:11px;letter-spacing:.34em;color:#b9b9b9;
+  white-space:nowrap;
+}
+.hero__red{
+  position:absolute;z-index:0;
+  width:clamp(72px,9vw,150px);height:clamp(72px,9vw,150px);
+  background:var(--red);
+  right:clamp(10%,16vw,18%);top:14%;
+}
+.hero__wrap{position:relative;z-index:1}
+.hero__kicker{display:flex;gap:2.4em;flex-wrap:wrap;margin-bottom:clamp(28px,4vh,52px)}
+.hero__kicker b{font-weight:500;color:var(--red)}
+h1{
+  font-weight:800;
+  font-stretch:116%;
+  font-size:clamp(52px, 10.8vw, 170px);
+  line-height:.9;
+  letter-spacing:-.028em;
+  text-transform:uppercase;
+}
+h1 .mask{white-space:nowrap}
+.mask{display:block;overflow:hidden;padding-bottom:.05em;margin-bottom:-.05em}
+.rise{display:inline-block}
+.js .hero .rise{transform:translateY(112%);transition:transform 1.2s var(--ease);transition-delay:calc(var(--d,0)*1ms)}
+.js.loaded .hero .rise{transform:translateY(0)}
+.hero__sub{
+  margin-top:clamp(30px,4.5vh,56px);
+  max-width:560px;font-size:12px;line-height:2;letter-spacing:.06em;color:#444;
+}
+.js .hero__sub,.js .hero__kicker,.js .cue{opacity:0;transition:opacity 1s ease .9s}
+.js.loaded .hero__sub,.js.loaded .hero__kicker,.js.loaded .cue{opacity:1}
+.cue{
+  position:absolute;left:calc(var(--pad) + 2px);bottom:34px;z-index:2;
+  display:flex;align-items:center;gap:16px;color:var(--ink);
+}
+.cue .mono{font-size:10px;letter-spacing:.26em}
+.cue__line{position:relative;width:1px;height:56px;background:var(--hair);overflow:hidden}
+.cue__line::after{
+  content:'';position:absolute;left:0;top:-100%;width:1px;height:100%;
+  background:var(--red);
+  animation:cueDrop 1.8s var(--ease) infinite;
+}
+@keyframes cueDrop{0%{top:-100%}55%{top:0}100%{top:100%}}
+
+/* ================= CH.01 MANIFESTO ================= */
+.ch01{padding-bottom:clamp(120px,16vh,220px)}
+.manifesto{padding-left:var(--head-ind);max-width:1180px}
+.m-line{
+  font-weight:780;font-stretch:110%;
+  font-size:clamp(40px,6.6vw,104px);
+  line-height:1;letter-spacing:-.02em;text-transform:uppercase;
+  margin-top:clamp(56px,11vh,128px);
+}
+.m-line .mask{padding-bottom:.08em;margin-bottom:-.08em}
+.js .m-line .rise{transform:translateY(112%);transition:transform 1s var(--ease);transition-delay:calc(var(--d,0)*1ms)}
+.js .m-line.in .rise{transform:translateY(0)}
+.m-words .rise{margin-right:.22em}
+.m-coda{
+  margin-top:clamp(72px,13vh,150px);
+  display:grid;grid-template-columns:minmax(180px,320px) 1fr;gap:40px;align-items:start;
+  max-width:980px;
+}
+.m-coda__rule{height:1px;background:var(--red);margin-top:.7em;transform-origin:left}
+.js .m-coda__rule{transform:scaleX(0);transition:transform 1.2s var(--ease) .2s}
+.js .m-coda.in .m-coda__rule{transform:scaleX(1)}
+.m-coda p{font-size:clamp(17px,1.5vw,21px);line-height:1.65;max-width:34em;color:#2a2a2a}
+.m-coda strong{font-weight:700}
+
+/* ================= CASE CHAPTERS shared ================= */
+.case{padding-bottom:clamp(130px,18vh,260px)}
+.bignum{
+  position:absolute;z-index:0;pointer-events:none;user-select:none;
+  font-weight:800;font-stretch:120%;
+  font-size:clamp(300px,40vw,680px);
+  line-height:.78;color:var(--ghost);
+  letter-spacing:-.04em;
+}
+.case__body{position:relative;z-index:1;margin-top:clamp(36px,6vh,84px)}
+
+/* browser-chrome frame */
+.bframe{
+  position:relative;background:var(--paper);
+  border:1px solid var(--ink);
+  box-shadow:14px 14px 0 rgba(11,11,12,.06);
+}
+.bframe__bar{
+  display:flex;align-items:center;gap:18px;
+  height:42px;padding:0 16px;
+  border-bottom:1px solid var(--ink);
+  background:var(--paper);
+}
+.bframe__dots{display:flex;gap:6px}
+.bframe__dots i{width:8px;height:8px;border:1px solid var(--ink);border-radius:50%}
+.bframe__dots i:first-child{background:var(--red);border-color:var(--red)}
+.bframe__url{
+  flex:1;text-align:center;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:#555;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bframe__live{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--red)}
+.bframe__body{position:relative;aspect-ratio:16/10;background:var(--ghost);overflow:hidden}
+/* scale-to-fit (from C): render a 1280px desktop viewport, scale into the frame */
+.bframe iframe{
+  position:absolute;top:0;left:0;border:0;display:block;
+  width:1280px;height:800px;transform-origin:0 0;
+  pointer-events:none;
+  opacity:0;transition:opacity .8s ease;
+  background:#fff;
+}
+.bframe iframe.on{opacity:1}
+.bframe.interactive iframe{pointer-events:auto}
+/* self-re-arming shield (from A): click to interact, re-arms on mouseleave */
+.bframe__shield{
+  position:absolute;inset:0;z-index:2;width:100%;
+  background:transparent;
+  display:flex;align-items:center;justify-content:center;
+}
+.bframe__shield span{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:9px 14px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .25s ease,transform .25s ease;
+}
+.bframe__shield:hover span,.bframe__shield:focus-visible span{opacity:1;transform:none}
+.bframe.interactive .bframe__shield{display:none}
+.bframe__toggle{
+  position:absolute;right:0;bottom:0;z-index:3;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--ink);color:#fff;
+  padding:10px 16px;
+  transition:background .25s ease;
+}
+.bframe__toggle:hover{background:var(--red)}
+.bframe.interactive .bframe__toggle{background:var(--red)}
+.bframe__loading{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:#9a9a9a;text-transform:uppercase;
+}
+html:not(.js) .bframe__toggle,
+html:not(.js) .bframe__shield{display:none}
+/* mobile fallback card */
+.bframe__fallback{display:none}
+
+.bcap{
+  display:flex;justify-content:space-between;gap:24px;
+  margin-top:14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:#9a9a9a;text-transform:uppercase;
+}
+.bcap a{color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:1px}
+.bcap a:hover{color:var(--red);border-color:var(--red)}
+
+/* info cards */
+.card{
+  position:relative;background:var(--paper);
+  border:1px solid var(--ink);
+  padding:22px 22px 26px;
+}
+.card__idx{
+  position:absolute;top:18px;right:18px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--red);
+}
+.card__metric{
+  font-weight:800;font-stretch:112%;
+  font-size:clamp(34px,3.2vw,52px);
+  line-height:1;letter-spacing:-.02em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.card--word .card__metric{font-size:clamp(20px,1.6vw,29px);padding-right:40px;white-space:nowrap}
+.card__cap{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--red);text-transform:uppercase;margin-bottom:12px}
+.card__txt{font-size:13.5px;line-height:1.6;color:#3a3a3a;max-width:30em}
+.card::before{
+  content:'';position:absolute;left:0;top:0;width:34px;height:3px;background:var(--red);
+}
+
+/* ---- CH.02 choreography: frame rises left, cards staircase right ---- */
+.ch02 .bignum{right:-4%;top:8%}
+.ch02 .case__grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);gap:clamp(28px,3.4vw,64px);align-items:start}
+.ch02 .cards{display:flex;flex-direction:column;gap:clamp(18px,2.2vh,28px)}
+.ch02 .cards .card:nth-child(2){margin-left:clamp(16px,2.4vw,44px)}
+.ch02 .cards .card:nth-child(3){margin-left:clamp(32px,4.8vw,88px)}
+
+/* ---- CH.03 choreography: frame enters from right, cards fan from under ---- */
+.ch03 .bignum{left:-6%;top:4%}
+.ch03 .case__grid{display:block}
+.ch03 .frame-row{display:grid;grid-template-columns:minmax(200px,.62fr) minmax(0,1.6fr);gap:clamp(28px,3.4vw,64px);align-items:end}
+.ch03 .frame-side{padding-bottom:18px}
+.ch03 .frame-side p{font-size:clamp(16px,1.4vw,20px);line-height:1.65;color:#2a2a2a;max-width:24em;margin-top:18px}
+.ch03 .bframe{position:relative;z-index:2}
+.ch03 .cards{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,26px);
+  margin-top:clamp(20px,3vh,34px);
+}
+.ch03 .card--wide{grid-column:1 / -1;display:grid;grid-template-columns:minmax(220px,.9fr) 1fr;gap:24px;align-items:center}
+.ch03 .card--wide .card__metric{font-size:clamp(26px,2.6vw,44px)}
+
+/* ---- CH.04 choreography: red wipe prints the frame, cards overlap from left ---- */
+.ch04 .bignum{right:-5%;bottom:-4%;color:var(--ghost2)}
+.ch04 .case__grid{display:grid;grid-template-columns:minmax(280px,.78fr) minmax(0,1.5fr);gap:0;align-items:center}
+.ch04 .cards{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;gap:clamp(16px,2vh,24px);
+  margin-right:clamp(-90px,-5vw,-40px);
+}
+.ch04 .bframe-wrap{position:relative;z-index:1}
+.js .wipeframe{position:relative}
+.js .wipeframe::after{
+  content:'';position:absolute;inset:-1px;background:var(--red);z-index:6;
+  transform:scaleX(1);transform-origin:right;
+  transition:transform 1.05s var(--ease) .12s;
+}
+.js .wipeframe.in::after{transform:scaleX(0)}
+
+/* ================= CH.05 STATS WALL ================= */
+.ch05{padding-bottom:clamp(130px,18vh,240px)}
+.stats{
+  margin-top:clamp(40px,7vh,90px);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  column-gap:clamp(24px,3vw,64px);
+}
+.stats .rule{
+  grid-column:1 / -1;height:2px;background:var(--red);
+  margin:clamp(26px,4vh,46px) 0;
+  transform-origin:left;
+}
+.fx .stats .rule{transform:scaleX(0)}
+.stats .rule:first-child{margin-top:0}
+.stat{padding:6px 0;transform-origin:left bottom}
+.stat__row{display:flex;align-items:baseline;gap:.08em;white-space:nowrap}
+.stat__pre{
+  font-weight:800;font-stretch:112%;
+  font-size:clamp(44px,5.4vw,96px);line-height:.95;letter-spacing:-.03em;
+  color:var(--red);
+}
+.fx .stat__pre{opacity:0;transition:opacity .3s ease}
+.fx .stat__pre.on{opacity:1}
+.stat__n{
+  font-weight:800;font-stretch:114%;
+  font-size:clamp(52px,6.4vw,116px);
+  line-height:.95;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;
+}
+.stat__suf{
+  font-weight:800;font-stretch:112%;
+  font-size:clamp(34px,3.8vw,64px);line-height:1;color:var(--red);
+}
+.stat__l{
+  display:block;margin-top:14px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#6b6b6b;text-transform:uppercase;
+}
+.ch05 .ch__title{max-width:12em}
+/* genre-reframe payoff (from C) */
+.op-coda{
+  margin-top:clamp(64px,10vh,130px);
+  font-weight:800;font-stretch:114%;
+  font-size:clamp(36px,5.6vw,92px);
+  line-height:.95;letter-spacing:-.025em;text-transform:uppercase;
+}
+
+/* ================= CH.06 CONTACT ================= */
+.ch06{padding-bottom:clamp(80px,10vh,140px)}
+.cta-zone{padding-left:var(--head-ind);max-width:1180px;margin-top:clamp(20px,4vh,40px)}
+.cta{
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:32px;
+  border:2px solid var(--ink);
+  padding:clamp(28px,4.5vh,52px) clamp(26px,3.4vw,56px);
+  overflow:hidden;
+  isolation:isolate;
+}
+.cta::before{
+  content:'';position:absolute;inset:0;background:var(--red);z-index:-1;
+  transform:scaleY(0);transform-origin:bottom;
+  transition:transform .5s var(--ease);
+}
+.cta:hover::before,.cta:focus-visible::before{transform:scaleY(1)}
+.cta:hover,.cta:focus-visible{border-color:var(--red);color:#fff}
+.cta__label{
+  font-weight:800;font-stretch:114%;
+  font-size:clamp(30px,4.6vw,72px);
+  letter-spacing:-.02em;text-transform:uppercase;line-height:1;
+}
+.cta__right{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.cta__mail{font-family:var(--mono);font-size:11px;letter-spacing:.18em}
+.cta__arrow{
+  font-weight:800;font-size:clamp(28px,3.4vw,52px);line-height:1;
+  transition:transform .5s var(--ease);
+}
+.cta:hover .cta__arrow{transform:translate(8px,-8px)}
+.cta-meta{
+  display:flex;gap:3em;flex-wrap:wrap;margin-top:26px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#8a8a8a;text-transform:uppercase;
+}
+
+/* ---------------- footer (the credits) ---------------- */
+footer{
+  border-top:1px solid var(--hair);
+  margin-left:0;
+  padding:30px var(--pad) 36px calc(var(--rail-w) + 44px);
+  display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#8a8a8a;text-transform:uppercase;
+}
+footer b{color:var(--ink);font-weight:500}
+footer .fin{color:var(--red)}
+.totop{letter-spacing:.18em;color:var(--ink)}
+.totop:hover{color:var(--red)}
+
+/* ================================================================
+   MOBILE — rail becomes top progress bar, iframes become cards
+   ================================================================ */
+@media (max-width:860px){
+  .rail{display:none}
+  main{padding-left:0}
+  .site-head{padding:14px 20px;mix-blend-mode:normal;background:linear-gradient(to bottom, rgba(255,255,255,.96), rgba(255,255,255,0))}
+  .site-head a,.site-head span{color:var(--ink)}
+  .head-mail{border-color:var(--ink)}
+  .head-meta,.head-mail{display:none}
+  h1{font-size:min(10.6vw,60px)}
+  .progress-mobile{
+    display:block;position:fixed;top:0;left:0;right:0;z-index:70;
+  }
+  .progress-mobile__bar{
+    height:3px;background:var(--red);
+    transform:scaleX(0);transform-origin:left;
+  }
+  .progress-mobile__label{
+    position:absolute;top:7px;right:8px;
+    font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    background:var(--ink);color:#fff;padding:4px 8px;
+  }
+  .site-head{top:3px}
+  .pin{height:140vh}
+  .slate-ttl{font-size:clamp(40px,11.5vw,72px)}
+  .leader{top:auto;bottom:96px;transform:none;right:20px;width:84px}
+  .slate-slug{bottom:104px}
+  .ch__head{padding-left:0;padding-top:96px;min-height:0}
+  .connector,.ch__fig{display:none}
+  .manifesto,.cta-zone{padding-left:0}
+  .m-coda{grid-template-columns:1fr;gap:18px}
+  .ch02 .case__grid,.ch04 .case__grid{display:block}
+  .ch03 .frame-row{display:block}
+  .ch02 .cards,.ch04 .cards{margin:20px 0 0;gap:14px}
+  .ch02 .cards .card,.ch04 .cards .card{margin-left:0!important}
+  .ch03 .cards{grid-template-columns:1fr;margin-top:14px}
+  .ch03 .card--wide{grid-template-columns:1fr;gap:10px}
+  .ch04 .cards{margin-right:0}
+  .bignum{font-size:240px;opacity:.7}
+  footer{padding:26px 20px;flex-direction:column;gap:10px}
+  /* iframe → static linked card */
+  .bframe iframe,.bframe__toggle,.bframe__loading,.bframe__shield{display:none}
+  .bframe__body{aspect-ratio:auto}
+  .bframe__fallback{
+    display:block;position:relative;
+    padding:30px 22px 26px;
+    background:var(--paper);
+  }
+  .bframe__fallback::before{content:'';position:absolute;left:0;top:0;width:44px;height:4px;background:var(--red)}
+  .fallback__num{
+    font-weight:800;font-stretch:116%;font-size:84px;line-height:.8;color:var(--ghost2);
+    position:absolute;right:10px;bottom:8px;z-index:0;
+  }
+  .fallback__title{position:relative;z-index:1;font-weight:780;font-stretch:110%;font-size:26px;text-transform:uppercase;letter-spacing:-.01em;margin:10px 0 8px}
+  .fallback__url{position:relative;z-index:1;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#777}
+  .fallback__go{
+    position:relative;z-index:1;display:inline-block;margin-top:18px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    background:var(--ink);color:#fff;padding:10px 14px;
+  }
+  .bframe__fallback:active .fallback__go{background:var(--red)}
+  .cue{left:20px}
+  .hero__red{right:8%;top:12%}
+}
+
+/* ================================================================
+   REDUCED MOTION — full static fallback, everything visible
+   ================================================================ */
+@media (prefers-reduced-motion: reduce){
+  .js .reveal,.js .sweep > span,.js .hero .rise,.js .m-line .rise{
+    opacity:1!important;transform:none!important;transition:none!important;
+  }
+  .js .hero__sub,.js .hero__kicker,.js .cue{opacity:1;transition:none}
+  .js .m-coda__rule{transform:scaleX(1);transition:none}
+  .js .wipeframe::after{display:none}
+  .stats .rule{transform:scaleX(1)!important}
+  .stat{opacity:1!important;transform:none!important}
+  .stat__pre{opacity:1!important}
+  .cue__line::after{animation:none;top:0}
+  .rail__dot::after{display:none}
+  .cta::before{transition:none}
+  [data-depth]{transform:none!important}
+  .connector path{stroke-dasharray:none!important;stroke-dashoffset:0!important}
+  .slate-ttl,.slate-kick{opacity:1!important;transform:none!important}
+  .slate-bar{transform:scaleX(1)!important}
+  .leader .ring-prog{stroke-dashoffset:0!important}
+  .leader .tickwrap{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- mobile progress -->
+<div class="progress-mobile" aria-hidden="true">
+  <div class="progress-mobile__bar" id="mBar"></div>
+  <div class="progress-mobile__label" id="mLabel">CH.00 — ORIGIN</div>
+</div>
+
+<header class="site-head">
+  <span class="wordmark mono">AHMAD&nbsp;BASHEER</span>
+  <span class="head-meta mono">SYSTEMS&nbsp;ENGINEER&nbsp;—&nbsp;A&nbsp;STORY&nbsp;IN&nbsp;SEVEN&nbsp;CHAPTERS</span>
+  <a class="head-mail mono" href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+</header>
+
+<!-- ======================= TIMELINE RAIL ======================= -->
+<nav class="rail" aria-label="Chapter timeline">
+  <span class="rail__cap rail__cap--top">CH</span>
+  <div class="rail__label" id="railLabel">CH.00 — ORIGIN</div>
+  <div class="rail__track" id="railTrack">
+    <div class="rail__ticks" aria-hidden="true"></div>
+    <div class="rail__fill" id="railFill" aria-hidden="true"></div>
+    <div class="rail__dot" id="railDot" aria-hidden="true"></div>
+    <!-- markers injected by JS -->
+  </div>
+  <span class="rail__cap rail__cap--btm">FIN</span>
+</nav>
+
+<main id="top">
+
+  <!-- ======================= CH.00 HERO ======================= -->
+  <section class="ch hero" data-chapter="00" data-title="ORIGIN" id="ch-00">
+    <div class="hero__grid" data-depth="0.07" aria-hidden="true"></div>
+    <div class="hero__ghost mono" data-depth="0.2" aria-hidden="true">PORTFOLIO — 2026 EDITION — SET IN SEVEN CHAPTERS</div>
+    <div class="hero__red" data-depth="-0.16" aria-hidden="true"></div>
+    <div class="wrap hero__wrap" data-depth="-0.035">
+      <p class="hero__kicker mono"><b>CH.00</b><span>AHMAD BASHEER</span><span>SYSTEMS ENGINEER</span></p>
+      <h1>
+        <span class="mask"><span class="rise" style="--d:0">I build</span></span>
+        <span class="mask"><span class="rise" style="--d:90">systems</span></span>
+        <span class="mask"><span class="rise" style="--d:180">that run</span></span>
+        <span class="mask"><span class="rise" style="--d:270">companies<em>.</em></span></span>
+      </h1>
+      <p class="hero__sub mono">PROPOSAL ENGINES. OPERATIONS PLATFORMS. CRMS.<br>BUILT, SHIPPED, AND KEPT RUNNING IN PRODUCTION.</p>
+    </div>
+    <div class="cue" aria-hidden="true">
+      <span class="mono">SCROLL — THE STORY STARTS AT CH.01</span>
+      <i class="cue__line"></i>
+    </div>
+  </section>
+
+  <!-- ======================= CH.01 THE PROBLEM ======================= -->
+  <section class="ch ch01" data-chapter="01" data-title="THE PROBLEM" id="ch-01">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 01 — THE PROBLEM</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.01</p>
+        <h2 class="slate-ttl">The<br>Problem</h2>
+        <p class="slate-slug">INT. EVERY COMPANY — DAY</p>
+        <div class="leader" data-num="01" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <header class="ch__head rgroup reveal-head">
+      <span class="ch__fig">FIG.01 — DIAGNOSIS</span>
+      <p class="ch__kicker mono">CH.01 — THE PROBLEM</p>
+      <h3 class="ch__title"><span class="sweep"><span>Every company<br>runs on duct tape.</span></span></h3>
+    </header>
+
+    <div class="manifesto wrap" style="padding-right:var(--pad)">
+      <p class="m-line"><span class="mask"><span class="rise">Nine tools<em>.</em></span></span></p>
+      <p class="m-line"><span class="mask"><span class="rise">Spreadsheets as glue<em>.</em></span></span></p>
+      <p class="m-line m-words">
+        <span class="mask"><span class="rise" style="--d:0">Nobody</span><span class="rise" style="--d:140">trusts</span><span class="rise" style="--d:280">the</span><span class="rise" style="--d:420">numbers<em>.</em></span></span>
+      </p>
+      <div class="m-coda rgroup">
+        <div class="m-coda__rule" aria-hidden="true"></div>
+        <p class="reveal" style="--d:200">The work outgrows the tooling, and the tooling fights back. The fix is not another subscription. <strong>It is one system, built around how the work actually moves.</strong> That is what I build. Three of them follow — live, embedded, in production.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CH.02 THE PROPOSAL ENGINE ======================= -->
+  <section class="ch case ch02" data-chapter="02" data-title="THE PROPOSAL ENGINE" id="ch-02">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 02 — CASE 01</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.02</p>
+        <h2 class="slate-ttl">The Proposal<br>Engine</h2>
+        <p class="slate-slug">INT. PRICING ROOM — NIGHT</p>
+        <div class="leader" data-num="02" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="bignum" data-depth="0.13" aria-hidden="true">01</div>
+    <header class="ch__head rgroup">
+      <span class="ch__fig">FIG.02 — EXHIBIT A</span>
+      <p class="ch__kicker mono">CH.02 — THE PROPOSAL ENGINE</p>
+      <h3 class="ch__title"><span class="sweep"><span>Pricing took days.<br>Now under an hour.</span></span></h3>
+    </header>
+
+    <div class="wrap case__body">
+      <div class="case__grid">
+        <div data-depth="-0.05">
+          <figure class="bframe reveal reveal--up rgroup" id="frame-a">
+            <div class="bframe__bar">
+              <span class="bframe__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="bframe__url">basheer.app/work/proposal-engine</span>
+              <span class="bframe__live">&#9679; LIVE</span>
+            </div>
+            <div class="bframe__body">
+              <span class="bframe__loading" aria-hidden="true">LOADING LIVE SYSTEM</span>
+              <iframe data-src="https://basheer.app/work/proposal-engine" title="The proposal engine — live case study" loading="lazy"></iframe>
+              <a class="bframe__fallback" href="https://basheer.app/work/proposal-engine">
+                <span class="fallback__num" aria-hidden="true">01</span>
+                <span class="fallback__url">basheer.app/work/proposal-engine</span>
+                <span class="fallback__title">The Proposal Engine</span>
+                <span class="fallback__go">VIEW CASE STUDY &nearr;</span>
+              </a>
+              <button class="bframe__shield" type="button" aria-label="Interact with the embedded live system"><span>CLICK TO INTERACT</span></button>
+              <button class="bframe__toggle" type="button">INTERACT WITH LIVE SYSTEM</button>
+            </div>
+          </figure>
+          <p class="bcap"><span>FIG.02 — LIVE SYSTEM, EMBEDDED IN THE STORY</span><a href="https://basheer.app/work/proposal-engine">OPEN FULL CASE STUDY &nearr;</a></p>
+        </div>
+        <aside class="cards rgroup" aria-label="Proposal engine outcomes">
+          <article class="card reveal" style="--d:0">
+            <span class="card__idx">02.1</span>
+            <h4 class="card__metric">&lt;1 hr</h4>
+            <p class="card__cap">TURNAROUND</p>
+            <p class="card__txt">From request to priced proposal. Previously measured in days.</p>
+          </article>
+          <article class="card card--word reveal" style="--d:140">
+            <span class="card__idx">02.2</span>
+            <h4 class="card__metric">Versioned</h4>
+            <p class="card__cap">PRICING</p>
+            <p class="card__txt">Every number traceable to a rule. Every change traceable to a version.</p>
+          </article>
+          <article class="card card--word reveal" style="--d:280">
+            <span class="card__idx">02.3</span>
+            <h4 class="card__metric">Reproducible</h4>
+            <p class="card__cap">OUTPUT</p>
+            <p class="card__txt">Same inputs, same proposal. No heroics required at 11pm.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CH.03 THE OPERATIONS PLATFORM ======================= -->
+  <section class="ch case ch03" data-chapter="03" data-title="THE OPERATIONS PLATFORM" id="ch-03">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 03 — CASE 02</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.03</p>
+        <h2 class="slate-ttl">The Operations<br>Platform</h2>
+        <p class="slate-slug">EXT. FORTY-THREE VENUES — GAME DAY</p>
+        <div class="leader" data-num="03" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="bignum" data-depth="-0.11" aria-hidden="true">02</div>
+    <header class="ch__head rgroup">
+      <span class="ch__fig">FIG.03 — EXHIBIT B</span>
+      <p class="ch__kicker mono">CH.03 — THE OPERATIONS PLATFORM</p>
+      <h3 class="ch__title"><span class="sweep sweep--r"><span>Forty-three venues.<br>One screen.</span></span></h3>
+    </header>
+
+    <div class="wrap case__body">
+      <div class="case__grid">
+        <div class="frame-row">
+          <div class="frame-side rgroup">
+            <p class="mono reveal" style="--d:0;color:var(--red)">THE SECOND SYSTEM</p>
+            <p class="reveal" style="--d:120">Events, staffing, coverage and hours across an entire field operation — read in one place, in real time, by the people running it.</p>
+          </div>
+          <div data-depth="-0.045">
+            <figure class="bframe reveal reveal--r rgroup" id="frame-b">
+              <div class="bframe__bar">
+                <span class="bframe__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="bframe__url">basheer.app/work/venue-operations</span>
+                <span class="bframe__live">&#9679; LIVE</span>
+              </div>
+              <div class="bframe__body">
+                <span class="bframe__loading" aria-hidden="true">LOADING LIVE SYSTEM</span>
+                <iframe data-src="https://basheer.app/work/venue-operations" title="The operations platform — live case study" loading="lazy"></iframe>
+                <a class="bframe__fallback" href="https://basheer.app/work/venue-operations">
+                  <span class="fallback__num" aria-hidden="true">02</span>
+                  <span class="fallback__url">basheer.app/work/venue-operations</span>
+                  <span class="fallback__title">The Operations Platform</span>
+                  <span class="fallback__go">VIEW CASE STUDY &nearr;</span>
+                </a>
+                <button class="bframe__shield" type="button" aria-label="Interact with the embedded live system"><span>CLICK TO INTERACT</span></button>
+                <button class="bframe__toggle" type="button">INTERACT WITH LIVE SYSTEM</button>
+              </div>
+            </figure>
+            <p class="bcap"><span>FIG.03 — LIVE SYSTEM, EMBEDDED IN THE STORY</span><a href="https://basheer.app/work/venue-operations">OPEN FULL CASE STUDY &nearr;</a></p>
+          </div>
+        </div>
+        <aside class="cards rgroup" aria-label="Operations platform outcomes">
+          <article class="card reveal reveal--drop" style="--d:0">
+            <span class="card__idx">03.1</span>
+            <h4 class="card__metric">43+</h4>
+            <p class="card__cap">VENUES</p>
+            <p class="card__txt">Live daily operations, one pane.</p>
+          </article>
+          <article class="card reveal reveal--drop" style="--d:120">
+            <span class="card__idx">03.2</span>
+            <h4 class="card__metric">150</h4>
+            <p class="card__cap">FIELD TECHNICIANS</p>
+            <p class="card__txt">Scheduled, dispatched, tracked.</p>
+          </article>
+          <article class="card reveal reveal--drop" style="--d:240">
+            <span class="card__idx">03.3</span>
+            <h4 class="card__metric">15</h4>
+            <p class="card__cap">MARKETS</p>
+            <p class="card__txt">One operating standard, everywhere.</p>
+          </article>
+          <article class="card card--wide reveal reveal--drop" style="--d:380">
+            <span class="card__idx">03.4</span>
+            <h4 class="card__metric">One screen replaced four reports.</h4>
+            <p class="card__txt">Status, staffing, coverage and labor hours — read at a glance, not assembled by hand every Monday.</p>
+          </article>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CH.04 THE CRM PLATFORM ======================= -->
+  <section class="ch case ch04" data-chapter="04" data-title="THE CRM PLATFORM" id="ch-04">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 04 — CASE 03</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.04</p>
+        <h2 class="slate-ttl">The CRM<br>Platform</h2>
+        <p class="slate-slug">INT. THE SYSTEM OF RECORD — CONTINUOUS</p>
+        <div class="leader" data-num="04" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="bignum" data-depth="0.16" aria-hidden="true">03</div>
+    <header class="ch__head rgroup">
+      <span class="ch__fig">FIG.04 — EXHIBIT C</span>
+      <p class="ch__kicker mono">CH.04 — THE CRM PLATFORM</p>
+      <h3 class="ch__title"><span class="sweep"><span>Every record.<br>Reconciled.</span></span></h3>
+    </header>
+
+    <div class="wrap case__body">
+      <div class="case__grid">
+        <aside class="cards rgroup" aria-label="CRM platform outcomes">
+          <article class="card reveal reveal--l" style="--d:0">
+            <span class="card__idx">04.1</span>
+            <h4 class="card__metric">13</h4>
+            <p class="card__cap">CUSTOM OBJECTS</p>
+            <p class="card__txt">Modeled on the business, not on the template.</p>
+          </article>
+          <article class="card reveal reveal--l" style="--d:150">
+            <span class="card__idx">04.2</span>
+            <h4 class="card__metric">30,000+</h4>
+            <p class="card__cap">RECORDS RECONCILED</p>
+            <p class="card__txt">Migrated and verified line by line against the source of truth.</p>
+          </article>
+          <article class="card reveal reveal--l" style="--d:300">
+            <span class="card__idx">04.3</span>
+            <h4 class="card__metric">16</h4>
+            <p class="card__cap">LIVE DASHBOARDS</p>
+            <p class="card__txt">Decisions read from one place, not eight tabs.</p>
+          </article>
+        </aside>
+        <div class="bframe-wrap" data-depth="-0.04">
+          <figure class="bframe wipeframe rgroup" id="frame-c">
+            <div class="bframe__bar">
+              <span class="bframe__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="bframe__url">basheer.app/work/crm-platform</span>
+              <span class="bframe__live">&#9679; LIVE</span>
+            </div>
+            <div class="bframe__body">
+              <span class="bframe__loading" aria-hidden="true">LOADING LIVE SYSTEM</span>
+              <iframe data-src="https://basheer.app/work/crm-platform" title="The CRM platform — live case study" loading="lazy"></iframe>
+              <a class="bframe__fallback" href="https://basheer.app/work/crm-platform">
+                <span class="fallback__num" aria-hidden="true">03</span>
+                <span class="fallback__url">basheer.app/work/crm-platform</span>
+                <span class="fallback__title">The CRM Platform</span>
+                <span class="fallback__go">VIEW CASE STUDY &nearr;</span>
+              </a>
+              <button class="bframe__shield" type="button" aria-label="Interact with the embedded live system"><span>CLICK TO INTERACT</span></button>
+              <button class="bframe__toggle" type="button">INTERACT WITH LIVE SYSTEM</button>
+            </div>
+          </figure>
+          <p class="bcap"><span>FIG.04 — LIVE SYSTEM, EMBEDDED IN THE STORY</span><a href="https://basheer.app/work/crm-platform">OPEN FULL CASE STUDY &nearr;</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CH.05 THE OPERATION ======================= -->
+  <section class="ch ch05" data-chapter="05" data-title="THE OPERATION" id="ch-05">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 05 — THE NUMBERS</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.05</p>
+        <h2 class="slate-ttl">The<br>Operation</h2>
+        <p class="slate-slug">INT. SERVER ROOM — 4 A.M.</p>
+        <div class="leader" data-num="05" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <header class="ch__head rgroup">
+      <span class="ch__fig">FIG.05 — THE LEDGER</span>
+      <p class="ch__kicker mono">CH.05 — THE OPERATION</p>
+      <h3 class="ch__title"><span class="sweep"><span>The numbers hold.</span></span></h3>
+    </header>
+
+    <div class="wrap">
+      <div class="stats" id="statsWall">
+        <div class="rule" aria-hidden="true"></div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__n" data-count="100">100</span><span class="stat__suf">+</span></span>
+          <span class="stat__l">CONTAINERS IN PRODUCTION</span>
+        </div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__n" data-count="43">43</span><span class="stat__suf">+</span></span>
+          <span class="stat__l">VENUES RUNNING DAILY OPS</span>
+        </div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__n" data-count="150">150</span></span>
+          <span class="stat__l">FIELD TECHNICIANS COORDINATED</span>
+        </div>
+        <div class="rule" aria-hidden="true"></div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__pre" aria-hidden="true">&lt;</span><span class="stat__n" data-count="1" data-from="72">1</span><span class="stat__suf">&nbsp;hr</span></span>
+          <span class="stat__l">PROPOSAL TURNAROUND, DOWN FROM DAYS</span>
+        </div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__n" data-count="30000">30,000</span><span class="stat__suf">+</span></span>
+          <span class="stat__l">RECORDS RECONCILED</span>
+        </div>
+        <div class="stat">
+          <span class="stat__row"><span class="stat__n" data-count="250">250</span><span class="stat__suf">+</span></span>
+          <span class="stat__l">EVENTS SUPPORTED PER SEASON</span>
+        </div>
+        <div class="rule" aria-hidden="true"></div>
+      </div>
+      <p class="op-coda"><span class="sweep"><span>Not a portfolio.<br>A running operation<em>.</em></span></span></p>
+    </div>
+  </section>
+
+  <!-- ======================= CH.06 WORK WITH ME ======================= -->
+  <section class="ch ch06" data-chapter="06" data-title="WORK WITH ME" id="ch-06">
+    <div class="pin">
+      <div class="slate">
+        <div class="slate-top"><span>SCENE 06 — FINAL</span><span>TAKE 01</span></div>
+        <p class="slate-kick">CH.06</p>
+        <h2 class="slate-ttl">Work<br>With Me</h2>
+        <p class="slate-slug">INT. YOUR COMPANY — SOON</p>
+        <div class="leader" data-num="06" aria-hidden="true"></div>
+        <div class="slate-bar" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <header class="ch__head rgroup">
+      <span class="ch__fig">FIG.06 — NEXT</span>
+      <p class="ch__kicker mono">CH.06 — WORK WITH ME</p>
+      <h3 class="ch__title"><span class="sweep"><span>Have a system<br>in mind<em>?</em></span></span></h3>
+    </header>
+
+    <div class="cta-zone rgroup" style="padding-right:var(--pad)">
+      <a class="cta reveal" style="--d:120" href="mailto:ahmad@basheer.app">
+        <span class="cta__label">Start a project</span>
+        <span class="cta__right">
+          <span class="cta__arrow" aria-hidden="true">&nearr;</span>
+          <span class="cta__mail">AHMAD@BASHEER.APP</span>
+        </span>
+      </a>
+      <p class="cta-meta reveal" style="--d:260">
+        <span>DIRECT EMAIL — NO FORMS</span>
+        <span>SCOPED IN WRITING BEFORE WORK STARTS</span>
+        <span>BUILT, SHIPPED, KEPT RUNNING</span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span><b>AHMAD BASHEER</b> — SYSTEMS THAT RUN COMPANIES</span>
+  <span>WRITTEN, DIRECTED &amp; ENGINEERED BY AHMAD BASHEER — ONE RED LINE — <span class="fin">FIN.</span></span>
+  <a class="totop" href="#top">&uarr; BACK TO CH.00</a>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var doc = document.documentElement;
+
+  var motionOK = doc.classList.contains('fx');
+  var deskMQ   = window.matchMedia('(min-width: 861px)');
+
+  /* ---------- inject the connector SVG once per chapter head (single source, no copy-paste) ---------- */
+  var CONNECTOR =
+    '<svg class="connector" viewBox="0 0 120 340" width="120" height="340" aria-hidden="true">' +
+    '<path class="connector__draw" d="M1 0 V340 M1 150 H116 M1 36 H11 M1 72 H11 M1 108 H11 M1 192 H11 M1 228 H11 M1 264 H11 M1 300 H11"/></svg>';
+  [].slice.call(document.querySelectorAll('.ch__head')).forEach(function(h){
+    h.insertAdjacentHTML('afterbegin', CONNECTOR);
+  });
+
+  /* ---------- inject the academy-leader ring once per slate ---------- */
+  [].slice.call(document.querySelectorAll('.leader[data-num]')).forEach(function(l){
+    l.innerHTML =
+      '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<circle class="ring-bg" cx="50" cy="50" r="45"/>' +
+      '<circle class="ring-prog" cx="50" cy="50" r="45" pathLength="100"/>' +
+      '<line class="cross" x1="50" y1="0" x2="50" y2="100"/>' +
+      '<line class="cross" x1="0" y1="50" x2="100" y2="50"/>' +
+      '<g class="tickwrap"><line class="tick" x1="50" y1="5" x2="50" y2="13"/></g>' +
+      '<text class="num" x="56" y="46">' + l.dataset.num + '</text></svg>';
+  });
+
+  /* ---------- collections ---------- */
+  var chapters = [].slice.call(document.querySelectorAll('[data-chapter]')).map(function(el){
+    var head = el.querySelector('.ch__head');
+    return { el:el, num:el.dataset.chapter, title:el.dataset.title, top:0, h:0,
+             head:head, headTop:0,
+             path:head ? head.querySelector('.connector__draw') : null, len:0, marker:null };
+  });
+
+  var pins = [].slice.call(document.querySelectorAll('.pin')).map(function(z){
+    return { z:z, ttl:z.querySelector('.slate-ttl'), kick:z.querySelector('.slate-kick'),
+             ring:z.querySelector('.ring-prog'), tick:z.querySelector('.tickwrap'),
+             bar:z.querySelector('.slate-bar'), top:0, h:0 };
+  });
+
+  var pxEls = [].slice.call(document.querySelectorAll('[data-depth]')).map(function(el){
+    return { el:el, depth:parseFloat(el.dataset.depth), sec:el.closest('section') || document.body, top:0, h:0 };
+  });
+
+  var counters = [].slice.call(document.querySelectorAll('.stat__n')).map(function(el){
+    return { el:el, from:parseFloat(el.dataset.from || 0), to:parseFloat(el.dataset.count), last:null,
+             pre:el.parentNode.querySelector('.stat__pre') };
+  });
+  var statBlocks = [].slice.call(document.querySelectorAll('.stat'));
+  var rules = [].slice.call(document.querySelectorAll('.stats .rule'));
+  var statsEl = document.getElementById('statsWall');
+
+  var railLabel = document.getElementById('railLabel');
+  var railTrack = document.getElementById('railTrack');
+  var railFill  = document.getElementById('railFill');
+  var railDot   = document.getElementById('railDot');
+  var mBar      = document.getElementById('mBar');
+  var mLabel    = document.getElementById('mLabel');
+
+  /* ---------- build rail markers ---------- */
+  chapters.forEach(function(c, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'rail__marker';
+    b.setAttribute('aria-label', 'Go to chapter ' + c.num + ' — ' + c.title.toLowerCase());
+    b.innerHTML = '<span class="rail__num">' + c.num + '</span><span class="rail__sq"></span>';
+    b.addEventListener('click', function(){
+      var target = i === 0 ? 0 : c.top - Math.round(window.innerHeight * 0.02);
+      window.scrollTo({ top: target, behavior: motionOK ? 'smooth' : 'auto' });
+    });
+    railTrack.appendChild(b);
+    c.marker = b;
+  });
+
+  /* ---------- connector dash setup (line-drawing) ---------- */
+  chapters.forEach(function(c){
+    if (!c.path) return;
+    c.len = c.path.getTotalLength();
+    if (motionOK){
+      c.path.style.strokeDasharray  = c.len;
+      c.path.style.strokeDashoffset = c.len;
+    }
+  });
+
+  /* ---------- iframe scale-to-fit (from C): force a 1280px desktop viewport ---------- */
+  function fitFrames(){
+    [].slice.call(document.querySelectorAll('.bframe__body')).forEach(function(v){
+      var f = v.querySelector('iframe');
+      if (!f) return;
+      var w = v.clientWidth, h = v.clientHeight;
+      if (w < 2 || h < 2) return;
+      var s = w / 1280;
+      f.style.width = '1280px';
+      f.style.height = Math.ceil(h / s) + 'px';
+      f.style.transform = 'scale(' + s + ')';
+    });
+  }
+
+  /* ---------- measurements ---------- */
+  var vh = 0, docH = 0, trackH = 0, statsTop = 0, statsH = 0;
+  function measure(){
+    vh   = window.innerHeight;
+    docH = doc.scrollHeight;
+    var sy = window.scrollY || window.pageYOffset;
+    chapters.forEach(function(c){
+      var r = c.el.getBoundingClientRect();
+      c.top = r.top + sy;
+      c.h   = r.height;
+      if (c.head){
+        var rh = c.head.getBoundingClientRect();
+        c.headTop = rh.top + sy;
+      }
+    });
+    pins.forEach(function(p){
+      var r = p.z.getBoundingClientRect();
+      p.top = r.top + sy;
+      p.h   = r.height;
+    });
+    pxEls.forEach(function(p){
+      var r = p.sec.getBoundingClientRect();
+      p.top = r.top + sy;
+      p.h   = r.height;
+    });
+    if (statsEl){
+      var rs = statsEl.getBoundingClientRect();
+      statsTop = rs.top + sy; statsH = rs.height;
+    }
+    trackH = railTrack.getBoundingClientRect().height;
+    var span = Math.max(docH - vh, 1);
+    chapters.forEach(function(c){
+      var f = Math.min(Math.max(c.top / span, 0), 1);
+      c.marker.style.top = (f * 100) + '%';
+    });
+    fitFrames();
+    kick(); /* force one repaint with fresh geometry */
+  }
+
+  function clamp(v, a, b){ return v < a ? a : (v > b ? b : v); }
+  function easeOut(p){ return 1 - Math.pow(1 - p, 3); }
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+
+  /* ---------- chapter label / active marker ---------- */
+  var activeIdx = -1;
+  function setActive(i){
+    if (i === activeIdx) return;
+    activeIdx = i;
+    var c = chapters[i];
+    var text = 'CH.' + c.num + ' — ' + c.title;
+    railLabel.textContent = text;
+    mLabel.textContent = text;
+    chapters.forEach(function(ch, j){ ch.marker.classList.toggle('is-active', j === i); });
+  }
+
+  /* ---------- master scroll frame — event-gated rAF (from A), no idle wake-ups ---------- */
+  var lastY = -1, ticking = false;
+  function onScroll(){
+    if (!ticking){ ticking = true; requestAnimationFrame(frame); }
+  }
+  function kick(){
+    lastY = -1;
+    onScroll();
+  }
+  function frame(){
+    ticking = false;
+    var y = window.scrollY || window.pageYOffset;
+    if (y === lastY) return;
+    lastY = y;
+
+    var p = clamp(y / Math.max(docH - vh, 1), 0, 1);
+
+    /* rail progress */
+    railFill.style.transform = 'scaleY(' + p + ')';
+    railDot.style.transform  = 'translate(-50%,' + (p * trackH) + 'px)';
+    mBar.style.transform     = 'scaleX(' + p + ')';
+
+    /* active chapter */
+    var idx = 0;
+    for (var i = 0; i < chapters.length; i++){
+      if (chapters[i].top <= y + vh * 0.45) idx = i;
+    }
+    if (y + vh >= docH - 4) idx = chapters.length - 1;
+    setActive(idx);
+
+    if (motionOK){
+      /* slate scrub (from A): hard-cut title cards with academy-leader countdown */
+      for (var q = 0; q < pins.length; q++){
+        var pn = pins[q];
+        var raw = (y - pn.top) / Math.max(pn.h - vh, 1);
+        if (raw < -0.25 || raw > 1.25) continue;
+        var t = clamp(raw, 0, 1);
+        var e = easeOut(clamp(t / 0.45, 0, 1));
+        pn.ttl.style.transform = 'translate3d(' + ((1 - e) * 9).toFixed(2) + 'vw,0,0)';
+        pn.ttl.style.opacity = e.toFixed(3);
+        pn.kick.style.opacity = clamp((t - 0.04) / 0.2, 0, 1).toFixed(3);
+        if (pn.ring) pn.ring.style.strokeDashoffset = (100 - t * 100).toFixed(2);
+        if (pn.tick) pn.tick.style.transform = 'rotate(' + (t * 360).toFixed(1) + 'deg)';
+        pn.bar.style.transform = 'scaleX(' + t.toFixed(4) + ')';
+      }
+      /* parallax — 3+ depth layers, distance-culled */
+      for (var k = 0; k < pxEls.length; k++){
+        var px = pxEls[k];
+        var rel = (px.top + px.h / 2) - (y + vh / 2);
+        if (Math.abs(rel) > vh + px.h) continue;
+        px.el.style.transform = 'translate3d(0,' + (rel * px.depth).toFixed(2) + 'px,0)';
+      }
+      /* connector line-drawing, scroll-scrubbed against the chapter head */
+      for (var j = 0; j < chapters.length; j++){
+        var c = chapters[j];
+        if (!c.path || !c.len) continue;
+        var cp = clamp((y + vh * 0.82 - c.headTop) / (vh * 0.85), 0, 1);
+        c.path.style.strokeDashoffset = (c.len * (1 - easeOut(cp))).toFixed(1);
+      }
+      /* stats: count-up + scale + red rules, scroll-scrubbed, diffed writes */
+      if (statsEl){
+        var sp = clamp((y + vh * 0.88 - statsTop) / (vh * 0.78), 0, 1);
+        for (var s = 0; s < counters.length; s++){
+          var cn = counters[s];
+          var spi = clamp(sp * 1.35 - s * 0.06, 0, 1);
+          var val = cn.from + (cn.to - cn.from) * easeOut(spi);
+          var txt = fmt(val);
+          if (txt !== cn.last){ cn.el.textContent = txt; cn.last = txt; }
+          if (cn.pre) cn.pre.classList.toggle('on', spi >= 0.995);
+        }
+        for (var t2 = 0; t2 < statBlocks.length; t2++){
+          var bp = clamp(sp * 1.35 - t2 * 0.06, 0, 1);
+          statBlocks[t2].style.opacity   = bp;
+          statBlocks[t2].style.transform = 'scale(' + (0.9 + 0.1 * easeOut(bp)) + ')';
+        }
+        for (var r = 0; r < rules.length; r++){
+          var rp = clamp(sp * 1.25 - r * 0.12, 0, 1);
+          rules[r].style.transform = 'scaleX(' + easeOut(rp) + ')';
+        }
+      }
+    }
+  }
+
+  /* ---------- static finalization for reduced motion ---------- */
+  function finalizeStatic(){
+    counters.forEach(function(cn){
+      cn.el.textContent = fmt(cn.to);
+      if (cn.pre) cn.pre.classList.add('on');
+    });
+  }
+
+  /* ---------- reveal observer ---------- */
+  var rio = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); }
+    });
+  }, { threshold: 0.16, rootMargin: '0px 0px -7% 0px' });
+
+  [].slice.call(document.querySelectorAll('.rgroup, .reveal, .m-line, .sweep')).forEach(function(el){
+    rio.observe(el);
+  });
+
+  /* ---------- lazy iframes — pendingFrames queue + media-query change listener ---------- */
+  var pendingFrames = [];
+  function loadFrame(f){
+    if (f.src) return;
+    f.src = f.dataset.src;
+    f.addEventListener('load', function(){ f.classList.add('on'); }, { once:true });
+  }
+  var fio = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      fio.unobserve(e.target);
+      if (deskMQ.matches) loadFrame(e.target);
+      else pendingFrames.push(e.target);
+    });
+  }, { rootMargin: '900px 0px' });
+  [].slice.call(document.querySelectorAll('iframe[data-src]')).forEach(function(f){ fio.observe(f); });
+
+  var mqHandler = function(e){
+    if (e.matches){ pendingFrames.forEach(loadFrame); pendingFrames = []; measure(); }
+  };
+  if (deskMQ.addEventListener) deskMQ.addEventListener('change', mqHandler);
+  else deskMQ.addListener(mqHandler);
+
+  /* ---------- iframe interactivity: explicit toggle (B) + self-re-arming shield (A) ---------- */
+  [].slice.call(document.querySelectorAll('.bframe')).forEach(function(fig){
+    var btn    = fig.querySelector('.bframe__toggle');
+    var shield = fig.querySelector('.bframe__shield');
+    function setOn(on){
+      fig.classList.toggle('interactive', on);
+      if (btn) btn.textContent = on ? 'RELEASE — RESUME THE STORY' : 'INTERACT WITH LIVE SYSTEM';
+    }
+    if (btn) btn.addEventListener('click', function(){
+      setOn(!fig.classList.contains('interactive'));
+    });
+    if (shield) shield.addEventListener('click', function(){ setOn(true); });
+    /* shield re-arms automatically when the pointer leaves the frame */
+    fig.addEventListener('mouseleave', function(){
+      if (fig.classList.contains('interactive')) setOn(false);
+    });
+  });
+
+  /* ---------- boot ---------- */
+  function boot(){
+    measure();
+    if (!motionOK) finalizeStatic();
+    requestAnimationFrame(function(){ doc.classList.add('loaded'); });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', function(){ measure(); });
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ measure(); }); }
+  setTimeout(measure, 1200);
+  setTimeout(measure, 3000);
+  if ('ResizeObserver' in window){
+    var ro = new ResizeObserver(function(){ measure(); });
+    ro.observe(document.body);
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else { boot(); }
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

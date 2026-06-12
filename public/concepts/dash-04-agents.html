@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cockpit Concept — Agent Ops Center · Ahmad Basheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e13;
+  --bg2:#0d1219;
+  --panel:#10161e;
+  --panel2:#141b25;
+  --inset:#0b1017;
+  --line:rgba(146,166,192,.13);
+  --line2:rgba(146,166,192,.22);
+  --ink:#e9eef5;
+  --dim:#8fa0b4;
+  --faint:#5a6a7d;
+  --green:#3fdc8c;
+  --green-dim:rgba(63,220,140,.14);
+  --amber:#f2b33d;
+  --amber-dim:rgba(242,179,61,.13);
+  --red:#ef5350;
+  --red-dim:rgba(239,83,80,.12);
+  --cyan:#56c8ff;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Archivo',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.45;
+  font-variant-numeric:tabular-nums;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1200px 600px at 70% -10%,rgba(86,200,255,.05),transparent 60%),
+    radial-gradient(900px 500px at 10% 110%,rgba(63,220,140,.04),transparent 60%),
+    repeating-linear-gradient(0deg,transparent 0 47px,rgba(146,166,192,.035) 47px 48px),
+    repeating-linear-gradient(90deg,transparent 0 47px,rgba(146,166,192,.035) 47px 48px);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection{background:rgba(86,200,255,.3)}
+.mono{font-family:var(--mono)}
+
+/* ---------- type utilities ---------- */
+.microlabel{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:stretch;
+  height:58px;border-bottom:1px solid var(--line2);
+  background:rgba(10,14,19,.92);backdrop-filter:blur(10px);
+}
+.tb-cell{display:flex;align-items:center;gap:12px;padding:0 20px;border-right:1px solid var(--line)}
+.tb-brand{min-width:280px}
+.mark{
+  width:26px;height:26px;flex:none;position:relative;
+  border:1px solid var(--line2);background:var(--inset);
+}
+.mark::before{content:"";position:absolute;inset:6px;background:var(--green);box-shadow:0 0 10px rgba(63,220,140,.7);animation:markblink 4s infinite}
+@keyframes markblink{0%,92%,100%{opacity:1}95%{opacity:.25}}
+.brand-stack{line-height:1.15}
+.brand-stack b{
+  display:block;font-stretch:118%;font-weight:800;font-size:14px;letter-spacing:.22em;
+}
+.brand-stack span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--faint)}
+.tb-status{gap:10px}
+.tb-spacer{flex:1;border-right:none}
+.tb-clock{flex-direction:column;align-items:flex-end;justify-content:center;gap:0}
+.tb-clock b{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:.06em}
+.tb-clock span{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--faint)}
+.tb-op{border-right:none}
+.avatar{
+  width:30px;height:30px;flex:none;display:grid;place-items:center;
+  border:1px solid var(--line2);background:var(--panel2);
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--cyan);
+}
+.tb-op .who{line-height:1.2}
+.tb-op .who b{display:block;font-size:12px;font-weight:700;letter-spacing:.04em}
+.tb-op .who span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--faint)}
+
+/* ---------- lamps ---------- */
+.lamp{width:8px;height:8px;flex:none;border-radius:50%;background:#3a4655;position:relative}
+.lamp.green{background:var(--green);box-shadow:0 0 8px rgba(63,220,140,.8)}
+.lamp.amber{background:var(--amber);box-shadow:0 0 8px rgba(242,179,61,.8)}
+.lamp.red{background:var(--red);box-shadow:0 0 8px rgba(239,83,80,.8)}
+.lamp.off{background:#3a4655;box-shadow:none}
+.lamp.pulse::after{
+  content:"";position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid currentColor;color:inherit;opacity:0;
+  animation:ring 2s ease-out infinite;
+}
+.lamp.green.pulse::after{border-color:var(--green)}
+.lamp.amber.pulse::after{border-color:var(--amber);animation-duration:2.8s}
+@keyframes ring{0%{transform:scale(.4);opacity:.9}70%{opacity:0}100%{transform:scale(1.6);opacity:0}}
+
+/* ---------- layout shell ---------- */
+.shell{display:flex;position:relative;z-index:1;max-width:1640px;margin:0 auto}
+.rail{
+  width:172px;flex:none;border-right:1px solid var(--line);
+  padding:22px 0;position:sticky;top:58px;height:calc(100vh - 58px);
+  display:flex;flex-direction:column;
+}
+.rail nav{display:flex;flex-direction:column}
+.rail a{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;color:var(--dim);text-decoration:none;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  border-left:2px solid transparent;transition:all .15s;
+}
+.rail a:hover{color:var(--ink);background:rgba(146,166,192,.05)}
+.rail a.active{color:var(--green);border-left-color:var(--green);background:var(--green-dim)}
+.rail a .nbadge{
+  margin-left:auto;min-width:18px;text-align:center;padding:1px 4px;
+  background:var(--amber-dim);border:1px solid rgba(242,179,61,.4);color:var(--amber);
+  font-size:9px;
+}
+.rail-foot{margin-top:auto;padding:18px 20px;border-top:1px solid var(--line)}
+.rail-foot p{font-size:11px;color:var(--faint);line-height:1.6;font-style:normal}
+.rail-foot p b{color:var(--dim);font-weight:600;display:block;font-stretch:112%;letter-spacing:.04em;font-size:11.5px;margin-bottom:4px}
+
+.board{flex:1;min-width:0;padding:26px 28px 80px}
+
+/* ---------- section heads ---------- */
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.sec-head h2{
+  font-size:13px;font-weight:800;font-stretch:120%;letter-spacing:.24em;
+}
+.sec-head .sec-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--faint)}
+.sec-head .rule{flex:1;height:1px;background:var(--line);align-self:center;min-width:30px}
+.badge{
+  font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 7px;
+  border:1px solid var(--line2);color:var(--dim);
+}
+.badge.amber{border-color:rgba(242,179,61,.5);color:var(--amber);background:var(--amber-dim)}
+
+/* ---------- intro strip ---------- */
+.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+.intro h1{
+  font-size:clamp(22px,2.6vw,32px);font-weight:850;font-stretch:122%;
+  letter-spacing:.02em;line-height:1.05;
+}
+.intro h1 em{font-style:normal;color:var(--green)}
+.intro .sub{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--faint);margin-top:8px}
+.intro .pitch{
+  max-width:330px;font-size:12.5px;color:var(--dim);line-height:1.6;
+  border-left:2px solid var(--green);padding-left:14px;
+}
+.intro .pitch b{color:var(--ink)}
+
+/* ---------- stat tiles ---------- */
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:30px}
+.tile{
+  background:var(--panel);padding:14px 16px 12px;position:relative;overflow:hidden;
+  transition:background .15s;
+}
+.tile:hover{background:var(--panel2)}
+.tile .microlabel{display:block;margin-bottom:8px}
+.tile .num{font-family:var(--mono);font-size:26px;font-weight:600;line-height:1;letter-spacing:-.01em}
+.tile .num small{font-size:14px;color:var(--dim)}
+.tile .delta{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;margin-top:7px;color:var(--faint)}
+.tile .delta.up{color:var(--green)}
+.tile .spark{position:absolute;right:10px;bottom:10px;opacity:.9}
+.tile.hot::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--green)}
+
+/* ---------- agent grid ---------- */
+.agents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:34px}
+.agent{
+  background:var(--panel);border:1px solid var(--line);position:relative;
+  padding:16px 16px 0;display:flex;flex-direction:column;
+  transition:border-color .2s;
+}
+.agent:hover{border-color:var(--line2)}
+.agent::before,.agent::after{
+  content:"";position:absolute;width:7px;height:7px;border-color:var(--line2);border-style:solid;
+}
+.agent::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+.agent::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+.agent.st-working{border-top:2px solid var(--green)}
+.agent.st-awaiting{border-top:2px solid var(--amber)}
+.agent.st-idle{border-top:2px solid #2b3543}
+.ag-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.ag-top h3{font-size:13px;font-weight:800;font-stretch:118%;letter-spacing:.18em}
+.ag-id{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.12em}
+.chip{
+  margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  padding:2px 7px;border:1px solid var(--line2);color:var(--dim);background:var(--inset);
+  white-space:nowrap;
+}
+.ag-status{
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.2em;margin-bottom:9px;
+}
+.st-working .ag-status{color:var(--green)}
+.st-awaiting .ag-status{color:var(--amber)}
+.st-idle .ag-status{color:var(--faint)}
+.ag-desc{font-size:11.5px;color:var(--dim);line-height:1.5;margin-bottom:12px;min-height:35px}
+.ag-task{
+  background:var(--inset);border:1px solid var(--line);padding:9px 11px;
+  font-family:var(--mono);font-size:10.5px;line-height:1.55;color:var(--ink);
+  min-height:52px;margin-bottom:13px;word-break:break-word;
+}
+.ag-task .pfx{color:var(--faint);user-select:none}
+.caret::after{content:"▌";color:var(--green);animation:blink 1s steps(1) infinite;margin-left:1px}
+.st-awaiting .caret::after{color:var(--amber)}
+.st-idle .caret::after{color:var(--faint)}
+@keyframes blink{50%{opacity:0}}
+.meters{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.meter{display:grid;grid-template-columns:62px 1fr 38px;align-items:center;gap:8px}
+.meter label{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--faint)}
+.meter .bar{height:4px;background:var(--inset);border:1px solid var(--line);position:relative}
+.meter .bar i{
+  position:absolute;inset:0;right:auto;background:var(--green);width:40%;
+  transition:width .9s cubic-bezier(.4,0,.2,1);
+}
+.meter .bar i.warn{background:var(--amber)}
+.meter .bar i.low{background:#3a4655}
+.meter .mval{font-family:var(--mono);font-size:9.5px;color:var(--dim);text-align:right}
+.ag-foot{
+  display:flex;align-items:center;gap:12px;
+  border-top:1px solid var(--line);margin:0 -16px;padding:9px 16px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--faint);
+}
+.ag-foot b{color:var(--dim);font-weight:600}
+.ag-btn{
+  margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  background:none;border:1px solid var(--line2);color:var(--dim);
+  padding:3px 9px;cursor:pointer;transition:all .15s;
+}
+.ag-btn:hover{border-color:var(--dim);color:var(--ink)}
+
+/* ---------- lower grid ---------- */
+.lower{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:26px;align-items:start}
+.lcol{min-width:0}
+
+/* ---------- pipeline ---------- */
+.pipe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:34px}
+.pipe-col{background:var(--panel);border:1px solid var(--line);min-height:230px;position:relative}
+.pipe-col + .pipe-col::before{
+  content:"›";position:absolute;left:-13px;top:10px;color:var(--faint);
+  font-size:14px;font-family:var(--mono);animation:flow 1.6s ease-in-out infinite;
+}
+.pipe-col:nth-child(2)::before{animation-delay:0s}
+.pipe-col:nth-child(3)::before{animation-delay:.25s}
+.pipe-col:nth-child(4)::before{animation-delay:.5s}
+@keyframes flow{0%,100%{opacity:.25;transform:translateX(-2px)}50%{opacity:1;transform:translateX(2px)}}
+.pipe-head{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.16em;color:var(--dim);
+}
+.pipe-head .cnt{margin-left:auto;color:var(--faint)}
+.pipe-col[data-col="running"] .pipe-head{color:var(--green)}
+.pipe-col[data-col="review"] .pipe-head{color:var(--amber)}
+.pipe-list{padding:8px;display:flex;flex-direction:column;gap:6px}
+.task{
+  background:var(--inset);border:1px solid var(--line);border-left:2px solid #3a4655;
+  padding:7px 9px;font-size:11px;line-height:1.4;
+}
+.task.pop{animation:pop .4s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{0%{transform:translateY(-6px);opacity:0}100%{transform:none;opacity:1}}
+.task .t-agent{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:var(--faint);display:block;margin-bottom:3px}
+.task .t-name{color:var(--ink);font-weight:500}
+.task.c-run{border-left-color:var(--green)}
+.task.c-rev{border-left-color:var(--amber)}
+.task.c-done{border-left-color:#2b3543;opacity:.62}
+.task.c-done .t-name{color:var(--dim);font-weight:400}
+.t-prog{height:3px;background:rgba(146,166,192,.1);margin-top:7px;position:relative;overflow:hidden}
+.t-prog i{position:absolute;inset:0;right:auto;background:var(--green);transition:width 1.2s linear}
+.t-prog::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(233,238,245,.25),transparent);
+  transform:translateX(-100%);animation:shimmer 1.8s infinite;
+}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.t-meta{font-family:var(--mono);font-size:8.5px;color:var(--faint);margin-top:5px;letter-spacing:.06em}
+.t-meta .ok{color:var(--green)}
+
+/* ---------- approvals ---------- */
+.appr-wrap{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--amber);padding:18px 18px 8px;margin-bottom:34px}
+.appr-lede{font-size:12.5px;color:var(--dim);margin-bottom:16px}
+.appr-lede b{color:var(--ink)}
+.btn{
+  font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.14em;
+  background:none;border:1px solid var(--line2);color:var(--dim);
+  padding:6px 13px;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--dim);color:var(--ink)}
+.btn.primary{border-color:rgba(63,220,140,.5);color:var(--green);background:var(--green-dim)}
+.btn.primary:hover{border-color:var(--green);background:rgba(63,220,140,.22)}
+.btn.amberline{border-color:rgba(242,179,61,.5);color:var(--amber);background:var(--amber-dim)}
+.btn.amberline:hover{border-color:var(--amber)}
+#approve-all{margin-left:auto}
+.appr{
+  border:1px solid var(--line);background:var(--inset);margin-bottom:10px;
+  overflow:hidden;max-height:600px;transition:max-height .45s ease,opacity .45s ease,margin .45s ease,border-color .2s;
+}
+.appr.leaving{max-height:0;opacity:0;margin-bottom:0;border-width:0}
+.appr-row{display:flex;align-items:center;gap:13px;padding:12px 14px}
+.appr-info{min-width:0;flex:1}
+.appr-info h4{font-size:12.5px;font-weight:700;letter-spacing:.03em;font-stretch:108%}
+.appr-info p{font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.08em;margin-top:3px}
+.appr-actions{display:flex;gap:7px}
+.appr-draft{display:none;border-top:1px dashed var(--line2);padding:14px;background:rgba(11,16,23,.6)}
+.appr.open .appr-draft{display:block}
+.draft-body{
+  font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink);
+  white-space:pre-wrap;min-height:60px;
+}
+.draft-body.typing::after{content:"▌";color:var(--amber);animation:blink 1s steps(1) infinite}
+.draft-edit{
+  width:100%;min-height:120px;background:var(--bg);border:1px solid var(--line2);
+  color:var(--ink);font-family:var(--mono);font-size:11px;line-height:1.7;padding:10px;resize:vertical;
+}
+.draft-edit:focus{outline:1px solid var(--amber)}
+.draft-foot{display:flex;align-items:center;gap:10px;margin-top:12px}
+.draft-foot .microlabel{margin-right:auto}
+.appr-empty{
+  border:1px dashed var(--line2);padding:22px;text-align:center;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--green);
+  margin-bottom:10px;animation:pop .4s;
+}
+
+/* ---------- timeline ---------- */
+.timeline{
+  background:var(--panel);border:1px solid var(--line);
+  position:sticky;top:84px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;
+}
+.tl-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.tl-head h2{font-size:11.5px;font-weight:800;font-stretch:118%;letter-spacing:.22em}
+.tl-live{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--green);
+}
+.feed{list-style:none;overflow-y:auto;padding:6px 0 14px;flex:1;scrollbar-width:thin;scrollbar-color:#2b3543 transparent}
+.ev{
+  display:grid;grid-template-columns:52px 14px 1fr;gap:8px;align-items:start;
+  padding:9px 16px 9px 14px;position:relative;
+}
+.ev::before{content:"";position:absolute;left:72px;top:0;bottom:0;width:1px;background:var(--line)}
+.ev:first-child::before{top:14px}
+.ev.enter{animation:evin .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes evin{0%{transform:translateY(-10px);opacity:0;background:rgba(63,220,140,.08)}60%{background:rgba(63,220,140,.08)}100%{transform:none;opacity:1;background:transparent}}
+.ev-time{font-family:var(--mono);font-size:9px;color:var(--faint);padding-top:2px;letter-spacing:.04em}
+.ev-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;justify-self:center;position:relative;z-index:1;background:#3a4655;box-shadow:0 0 0 3px var(--panel)}
+.ev-dot.g{background:var(--green)}
+.ev-dot.a{background:var(--amber)}
+.ev-dot.c{background:var(--cyan)}
+.ev-dot.r{background:var(--red)}
+.ev-body{font-size:11px;color:var(--dim);line-height:1.5;word-break:break-word}
+.ev-body b{
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--ink);
+  font-weight:600;margin-right:4px;
+}
+
+/* ---------- status bar ---------- */
+.statusbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;height:32px;
+  display:flex;align-items:center;
+  background:rgba(10,14,19,.95);border-top:1px solid var(--line2);backdrop-filter:blur(8px);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);
+}
+.sb-cell{display:flex;align-items:center;gap:7px;padding:0 16px;border-right:1px solid var(--line);height:100%}
+.sb-cell b{color:var(--dim);font-weight:600}
+.sb-cell .ok{color:var(--green)}
+.sb-flex{flex:1;border-right:none;justify-content:flex-end}
+
+/* ---------- responsive ---------- */
+@media(max-width:1280px){
+  .agents-grid{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .lower{grid-template-columns:1fr}
+  .timeline{position:static;max-height:420px}
+}
+@media(max-width:860px){
+  .rail{display:none}
+  .sb-flex{display:none}
+  .statusbar{overflow-x:auto}
+  .sb-cell{padding:0 10px;white-space:nowrap}
+  .board{padding:20px 16px 80px}
+  .pipe-grid{grid-template-columns:repeat(2,1fr)}
+  .pipe-col + .pipe-col::before{display:none}
+  .tb-brand{min-width:0}
+  .tb-status,.tb-op .who{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .agents-grid,.pipe-grid{grid-template-columns:1fr}
+  .appr-row{flex-wrap:wrap}
+  .appr-actions{width:100%;justify-content:flex-end}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="tb-cell tb-brand">
+    <div class="mark"></div>
+    <div class="brand-stack">
+      <b>BASHEER//OPS</b>
+      <span>AGENT OPS CENTER · REV 04</span>
+    </div>
+  </div>
+  <div class="tb-cell tb-status">
+    <span class="lamp green pulse"></span>
+    <span class="microlabel" id="sys-status" style="color:var(--green)">ALL SYSTEMS NOMINAL</span>
+  </div>
+  <div class="tb-cell tb-spacer"></div>
+  <div class="tb-cell tb-clock">
+    <b id="clock">--:--:--</b>
+    <span id="clock-date">UTC · ----</span>
+  </div>
+  <div class="tb-cell tb-op">
+    <div class="avatar">AB</div>
+    <div class="who">
+      <b>A. Basheer</b>
+      <span>OPERATOR · FULL CLEARANCE</span>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- ============ LEFT RAIL ============ -->
+  <aside class="rail">
+    <nav>
+      <a href="#overview" class="active">OVERVIEW</a>
+      <a href="#agents">AGENTS</a>
+      <a href="#pipeline">PIPELINE</a>
+      <a href="#approvals">APPROVALS <span class="nbadge" id="nav-badge">3</span></a>
+      <a href="#timeline">TIMELINE</a>
+      <a href="#overview">SITE CONTROLS</a>
+      <a href="#overview">ASSISTANT</a>
+    </nav>
+    <div class="rail-foot">
+      <p><b>Supervision, not labor.</b>Four agents run the site. You review what matters and approve what ships.</p>
+    </div>
+  </aside>
+
+  <!-- ============ BOARD ============ -->
+  <main class="board">
+
+    <div class="intro" id="overview">
+      <div>
+        <h1>Mission control for<br>your <em>autonomous staff</em>.</h1>
+        <div class="sub">SHIFT 0142 · 4 AGENTS ON DUTY · 0 INCIDENTS · BASHEER.APP</div>
+      </div>
+      <p class="pitch"><b>The pitch:</b> you don't do the work — you supervise it. Agents triage leads, draft replies, publish content, and brief you. Nothing ships without your stamp.</p>
+    </div>
+
+    <!-- stat tiles -->
+    <section class="stats">
+      <div class="tile hot">
+        <span class="microlabel">New leads</span>
+        <div class="num" id="stat-leads">4</div>
+        <div class="delta up">▲ 2 THIS WK · TRIAGED</div>
+      </div>
+      <div class="tile">
+        <span class="microlabel">Submissions</span>
+        <div class="num">23</div>
+        <div class="delta">ALL-TIME · 0 SPAM LEAKED</div>
+      </div>
+      <div class="tile">
+        <span class="microlabel">Case studies</span>
+        <div class="num">3</div>
+        <div class="delta">LIVE · 1 IN DRAFT</div>
+      </div>
+      <div class="tile">
+        <span class="microlabel">Articles</span>
+        <div class="num">3</div>
+        <div class="delta">LIVE · NEXT FRI 09:00</div>
+      </div>
+      <div class="tile">
+        <span class="microlabel">AI conversations</span>
+        <div class="num">12</div>
+        <div class="delta up">▲ 5 THIS WK</div>
+      </div>
+      <div class="tile">
+        <span class="microlabel">Visits / wk</span>
+        <div class="num">1.2<small>k</small></div>
+        <div class="delta up">▲ 8% W/W</div>
+        <svg class="spark" width="64" height="22" viewBox="0 0 64 22">
+          <polyline points="0,18 8,16 16,17 24,12 32,13 40,9 48,10 56,5 64,3" fill="none" stroke="var(--green)" stroke-width="1.5"/>
+          <circle cx="64" cy="3" r="2" fill="var(--green)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ AGENTS ============ -->
+    <div class="sec-head" id="agents">
+      <h2>AGENTS ON DUTY</h2>
+      <span class="sec-meta">4 / 4 ONLINE</span>
+      <div class="rule"></div>
+      <span class="sec-meta">AUTONOMY: SUPERVISED</span>
+    </div>
+
+    <section class="agents-grid">
+
+      <article class="agent st-working" id="ag-triage">
+        <div class="ag-top">
+          <span class="lamp green pulse" data-role="lamp"></span>
+          <h3>TRIAGE</h3><span class="ag-id">AGT-01</span>
+          <span class="chip">model-01 · fast</span>
+        </div>
+        <div class="ag-status" data-role="status">WORKING</div>
+        <p class="ag-desc">Reads every inbound submission. Scores intent, flags spam, routes hot leads to the inbox.</p>
+        <div class="ag-task"><span class="pfx">»&nbsp;</span><span class="caret" data-role="task"></span></div>
+        <div class="meters">
+          <div class="meter"><label>TOK/MIN</label><div class="bar"><i data-m="tok" style="width:62%"></i></div><span class="mval" data-v="tok">412</span></div>
+          <div class="meter"><label>QUEUE</label><div class="bar"><i data-m="que" style="width:30%"></i></div><span class="mval" data-v="que">3</span></div>
+          <div class="meter"><label>LOAD</label><div class="bar"><i data-m="load" style="width:44%"></i></div><span class="mval" data-v="load">44%</span></div>
+        </div>
+        <div class="ag-foot">
+          <span>TODAY <b data-role="count">27</b></span>
+          <span>LAST <b data-role="last">—</b></span>
+          <button class="ag-btn" data-role="toggle">PAUSE</button>
+        </div>
+      </article>
+
+      <article class="agent st-awaiting" id="ag-drafter">
+        <div class="ag-top">
+          <span class="lamp amber pulse" data-role="lamp"></span>
+          <h3>DRAFTER</h3><span class="ag-id">AGT-02</span>
+          <span class="chip">model-02 · deep</span>
+        </div>
+        <div class="ag-status" data-role="status">AWAITING APPROVAL</div>
+        <p class="ag-desc">Writes first-draft replies to qualified leads in your voice. Never sends without sign-off.</p>
+        <div class="ag-task"><span class="pfx">»&nbsp;</span><span class="caret" data-role="task"></span></div>
+        <div class="meters">
+          <div class="meter"><label>TOK/MIN</label><div class="bar"><i data-m="tok" class="warn" style="width:12%"></i></div><span class="mval" data-v="tok">38</span></div>
+          <div class="meter"><label>QUEUE</label><div class="bar"><i data-m="que" class="warn" style="width:60%"></i></div><span class="mval" data-v="que">3</span></div>
+          <div class="meter"><label>LOAD</label><div class="bar"><i data-m="load" class="warn" style="width:18%"></i></div><span class="mval" data-v="load">18%</span></div>
+        </div>
+        <div class="ag-foot">
+          <span>TODAY <b data-role="count">9</b></span>
+          <span>LAST <b data-role="last">—</b></span>
+          <button class="ag-btn" data-role="toggle">PAUSE</button>
+        </div>
+      </article>
+
+      <article class="agent st-idle" id="ag-publisher">
+        <div class="ag-top">
+          <span class="lamp off" data-role="lamp"></span>
+          <h3>PUBLISHER</h3><span class="ag-id">AGT-03</span>
+          <span class="chip">model-01 · fast</span>
+        </div>
+        <div class="ag-status" data-role="status">IDLE</div>
+        <p class="ag-desc">Pushes approved copy live — hero text, availability, stats ledgers. Live edits, no deploy.</p>
+        <div class="ag-task"><span class="pfx">»&nbsp;</span><span class="caret" data-role="task"></span></div>
+        <div class="meters">
+          <div class="meter"><label>TOK/MIN</label><div class="bar"><i data-m="tok" class="low" style="width:4%"></i></div><span class="mval" data-v="tok">0</span></div>
+          <div class="meter"><label>QUEUE</label><div class="bar"><i data-m="que" class="low" style="width:10%"></i></div><span class="mval" data-v="que">1</span></div>
+          <div class="meter"><label>LOAD</label><div class="bar"><i data-m="load" class="low" style="width:6%"></i></div><span class="mval" data-v="load">6%</span></div>
+        </div>
+        <div class="ag-foot">
+          <span>TODAY <b data-role="count">5</b></span>
+          <span>LAST <b data-role="last">—</b></span>
+          <button class="ag-btn" data-role="toggle">WAKE</button>
+        </div>
+      </article>
+
+      <article class="agent st-working" id="ag-digest">
+        <div class="ag-top">
+          <span class="lamp green pulse" data-role="lamp"></span>
+          <h3>DIGEST</h3><span class="ag-id">AGT-04</span>
+          <span class="chip">model-03 · reasoning</span>
+        </div>
+        <div class="ag-status" data-role="status">COMPILING</div>
+        <p class="ag-desc">Watches everything. Compiles the weekly brief: traffic, leads, conversations, anomalies.</p>
+        <div class="ag-task"><span class="pfx">»&nbsp;</span><span class="caret" data-role="task"></span></div>
+        <div class="meters">
+          <div class="meter"><label>TOK/MIN</label><div class="bar"><i data-m="tok" style="width:34%"></i></div><span class="mval" data-v="tok">221</span></div>
+          <div class="meter"><label>QUEUE</label><div class="bar"><i data-m="que" style="width:14%"></i></div><span class="mval" data-v="que">1</span></div>
+          <div class="meter"><label>LOAD</label><div class="bar"><i data-m="load" style="width:28%"></i></div><span class="mval" data-v="load">28%</span></div>
+        </div>
+        <div class="ag-foot">
+          <span>NEXT BRIEF <b id="digest-eta">02:14:33</b></span>
+          <button class="ag-btn" data-role="toggle">PAUSE</button>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ============ LOWER: PIPELINE + APPROVALS | TIMELINE ============ -->
+    <div class="lower">
+      <div class="lcol">
+
+        <!-- pipeline -->
+        <div class="sec-head" id="pipeline">
+          <h2>TASK PIPELINE</h2>
+          <span class="sec-meta" id="pipe-meta">— ACTIVE · — DONE TODAY</span>
+          <div class="rule"></div>
+        </div>
+        <section class="pipe-grid">
+          <div class="pipe-col" data-col="queued">
+            <div class="pipe-head"><span class="lamp off" style="width:6px;height:6px"></span>QUEUED<span class="cnt" id="n-queued">0</span></div>
+            <div class="pipe-list" id="col-queued"></div>
+          </div>
+          <div class="pipe-col" data-col="running">
+            <div class="pipe-head"><span class="lamp green" style="width:6px;height:6px"></span>RUNNING<span class="cnt" id="n-running">0</span></div>
+            <div class="pipe-list" id="col-running"></div>
+          </div>
+          <div class="pipe-col" data-col="review">
+            <div class="pipe-head"><span class="lamp amber" style="width:6px;height:6px"></span>NEEDS REVIEW<span class="cnt" id="n-review">0</span></div>
+            <div class="pipe-list" id="col-review"></div>
+          </div>
+          <div class="pipe-col" data-col="done">
+            <div class="pipe-head"><span class="lamp off" style="width:6px;height:6px"></span>DONE<span class="cnt" id="n-done">0</span></div>
+            <div class="pipe-list" id="col-done"></div>
+          </div>
+        </section>
+
+        <!-- approvals -->
+        <div class="sec-head" id="approvals">
+          <h2>APPROVAL INBOX</h2>
+          <span class="badge amber" id="appr-count">3</span>
+          <span class="sec-meta">HUMAN CHECKPOINT — NOTHING SHIPS WITHOUT YOU</span>
+          <div class="rule"></div>
+        </div>
+        <section class="appr-wrap">
+          <p class="appr-lede" id="appr-lede"><b>Drafter</b> prepared <b id="appr-n">3 replies</b> to qualified leads. Review each, edit inline, or approve the batch. <button class="btn amberline" id="approve-all" style="float:right">APPROVE ALL</button></p>
+          <div id="appr-list">
+
+            <article class="appr" data-id="a1">
+              <div class="appr-row">
+                <span class="lamp amber pulse"></span>
+                <div class="appr-info">
+                  <h4>Reply — Venue group, Midwest</h4>
+                  <p>RE: SCOREBOARD &amp; DISPLAY INQUIRY · STAGED 12:31:48 · CONFIDENCE 0.93</p>
+                </div>
+                <div class="appr-actions">
+                  <button class="btn" data-act="review">REVIEW</button>
+                  <button class="btn" data-act="edit">EDIT</button>
+                  <button class="btn primary" data-act="approve">APPROVE</button>
+                </div>
+              </div>
+              <div class="appr-draft">
+                <div class="draft-body"></div>
+                <div class="draft-foot">
+                  <span class="microlabel">DRAFTED BY AGT-02 · MODEL-02 DEEP · 2 CASE STUDIES ATTACHED</span>
+                  <button class="btn primary" data-act="approve">APPROVE &amp; SEND</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="appr" data-id="a2">
+              <div class="appr-row">
+                <span class="lamp amber pulse"></span>
+                <div class="appr-info">
+                  <h4>Reply — Sports facility operator</h4>
+                  <p>RE: OPS DASHBOARD WALKTHROUGH · STAGED 12:33:02 · CONFIDENCE 0.91</p>
+                </div>
+                <div class="appr-actions">
+                  <button class="btn" data-act="review">REVIEW</button>
+                  <button class="btn" data-act="edit">EDIT</button>
+                  <button class="btn primary" data-act="approve">APPROVE</button>
+                </div>
+              </div>
+              <div class="appr-draft">
+                <div class="draft-body"></div>
+                <div class="draft-foot">
+                  <span class="microlabel">DRAFTED BY AGT-02 · MODEL-02 DEEP · CALENDAR LINK INCLUDED</span>
+                  <button class="btn primary" data-act="approve">APPROVE &amp; SEND</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="appr" data-id="a3">
+              <div class="appr-row">
+                <span class="lamp amber pulse"></span>
+                <div class="appr-info">
+                  <h4>Reply — Agency, NYC</h4>
+                  <p>RE: WHITE-LABEL PARTNERSHIP · STAGED 12:36:17 · CONFIDENCE 0.84 · FLAGGED: PRICING QUESTION</p>
+                </div>
+                <div class="appr-actions">
+                  <button class="btn" data-act="review">REVIEW</button>
+                  <button class="btn" data-act="edit">EDIT</button>
+                  <button class="btn primary" data-act="approve">APPROVE</button>
+                </div>
+              </div>
+              <div class="appr-draft">
+                <div class="draft-body"></div>
+                <div class="draft-foot">
+                  <span class="microlabel">DRAFTED BY AGT-02 · MODEL-02 DEEP · PRICING DEFERRED TO CALL</span>
+                  <button class="btn primary" data-act="approve">APPROVE &amp; SEND</button>
+                </div>
+              </div>
+            </article>
+
+          </div>
+          <div class="appr-empty" id="appr-empty" hidden>✓ INBOX ZERO — DRAFTER RESUMED AUTONOMOUS QUEUE</div>
+        </section>
+
+      </div>
+
+      <!-- ============ TIMELINE ============ -->
+      <aside class="timeline" id="timeline">
+        <div class="tl-head">
+          <h2>ACTIVITY</h2>
+          <div class="tl-live"><span class="lamp green pulse" style="width:6px;height:6px"></span>LIVE FEED</div>
+        </div>
+        <ul class="feed" id="feed"></ul>
+      </aside>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============ STATUS BAR ============ -->
+<footer class="statusbar">
+  <div class="sb-cell"><span class="lamp green" style="width:6px;height:6px"></span><b class="ok">FEED LIVE</b></div>
+  <div class="sb-cell">LATENCY <b id="sb-lat">42ms</b></div>
+  <div class="sb-cell">ACTIVE TASKS <b id="sb-active">6</b></div>
+  <div class="sb-cell">DONE TODAY <b id="sb-done">14</b></div>
+  <div class="sb-cell">TOKENS BURNED <b id="sb-tok">128.4k</b></div>
+  <div class="sb-cell sb-flex">CONCEPT 04 — AGENT OPS · A. BASHEER · YOU SUPERVISE, THEY WORK</div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s){return document.querySelector(s)};
+var $$ = function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var pad = function(n){return String(n).padStart(2,"0")};
+var rnd = function(a,b){return a + Math.random()*(b-a)};
+var ri = function(a,b){return Math.round(rnd(a,b))};
+var pick = function(arr){return arr[Math.floor(Math.random()*arr.length)]};
+
+function utcTime(){
+  var d = new Date();
+  return pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+":"+pad(d.getUTCSeconds());
+}
+
+/* ---------- clock ---------- */
+var clockEl = $("#clock"), dateEl = $("#clock-date");
+var MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+function tickClock(){
+  var d = new Date();
+  clockEl.textContent = utcTime();
+  dateEl.textContent = "UTC · "+pad(d.getUTCDate())+" "+MONTHS[d.getUTCMonth()]+" "+d.getUTCFullYear();
+}
+tickClock(); setInterval(tickClock,1000);
+
+/* ---------- digest countdown ---------- */
+var digestTarget = Date.now() + (2*3600 + 14*60 + 33)*1000;
+setInterval(function(){
+  var s = Math.max(0, Math.floor((digestTarget-Date.now())/1000));
+  $("#digest-eta").textContent = pad(Math.floor(s/3600))+":"+pad(Math.floor(s%3600/60))+":"+pad(s%60);
+},1000);
+
+/* ---------- typewriter ---------- */
+function typeInto(el, text, speed, done){
+  if(el._timer) clearInterval(el._timer);
+  el.textContent = "";
+  var i = 0;
+  el._timer = setInterval(function(){
+    i += ri(1,3);
+    el.textContent = text.slice(0, i);
+    if(i >= text.length){
+      clearInterval(el._timer); el._timer = null;
+      if(done) done();
+    }
+  }, speed || 24);
+}
+
+/* ---------- agents ---------- */
+var AGENTS = {
+  triage: {
+    el: $("#ag-triage"), name:"TRIAGE", color:"g", count:27,
+    lines: [
+      "Scoring lead: \"Venue group — Midwest\" … intent HIGH (0.93). Routed → inbox.",
+      "Spam sweep: form #1047 … pattern match 0.99. Quarantined.",
+      "Re-reading thread: \"Sports facility operator\" … budget signal found.",
+      "Scoring lead: \"Architecture firm — Gulf region\" … intent MED (0.71). Queued.",
+      "Dedup check: 23 submissions … 0 duplicates. Ledger clean."
+    ]
+  },
+  drafter: {
+    el: $("#ag-drafter"), name:"DRAFTER", color:"a", count:9,
+    holdLine: "3 replies staged. Holding for operator review — autonomy paused at checkpoint.",
+    lines: [
+      "Drafting reply: \"University athletics dept\" … pulling case study refs.",
+      "Tone pass: matching operator voice profile v3 … terse, no fluff.",
+      "Drafting reply: \"Hospitality group — coastal\" … 2 options prepared."
+    ]
+  },
+  publisher: {
+    el: $("#ag-publisher"), name:"PUBLISHER", color:"c", count:5,
+    idleLine: "Standing by. Next publish window 18:00 UTC — 1 hero-copy change staged.",
+    lines: [
+      "Pushing availability flag → LIVE. Verifying render … OK (142ms).",
+      "Updating stats ledger: visits/wk 1.2k … published, no deploy.",
+      "Hero copy v12 → LIVE. Diff archived to ledger."
+    ]
+  },
+  digest: {
+    el: $("#ag-digest"), name:"DIGEST", color:"g", count:1,
+    lines: [
+      "Compiling weekly brief … traffic Δ +8%, leads Δ +2, zero anomalies.",
+      "Cross-referencing 12 AI conversations … 3 recurring questions found.",
+      "Drafting brief section: \"What changed\" … 4 bullets, 0 fluff.",
+      "Anomaly scan: response-time p95 nominal. Nothing to flag."
+    ]
+  }
+};
+
+Object.keys(AGENTS).forEach(function(k){
+  var a = AGENTS[k];
+  a.taskEl  = a.el.querySelector("[data-role=task]");
+  a.lampEl  = a.el.querySelector("[data-role=lamp]");
+  a.statEl  = a.el.querySelector("[data-role=status]");
+  a.lastEl  = a.el.querySelector("[data-role=last]");
+  a.cntEl   = a.el.querySelector("[data-role=count]");
+  a.lineIdx = 0;
+});
+
+function setAgentState(key, state, statusText){
+  var a = AGENTS[key];
+  a.state = state;
+  a.el.classList.remove("st-working","st-awaiting","st-idle");
+  a.lampEl.className = "lamp";
+  if(state === "working"){ a.el.classList.add("st-working"); a.lampEl.classList.add("green","pulse"); }
+  else if(state === "awaiting"){ a.el.classList.add("st-awaiting"); a.lampEl.classList.add("amber","pulse"); }
+  else { a.el.classList.add("st-idle"); a.lampEl.classList.add("off"); }
+  a.statEl.textContent = statusText;
+  var btn = a.el.querySelector("[data-role=toggle]");
+  if(btn) btn.textContent = (state === "idle") ? "WAKE" : "PAUSE";
+}
+
+function agentCycle(key){
+  var a = AGENTS[key];
+  if(a.state !== "working"){
+    setTimeout(function(){agentCycle(key)}, 2000);
+    return;
+  }
+  var line = a.lines[a.lineIdx % a.lines.length];
+  a.lineIdx++;
+  typeInto(a.taskEl, line, 22, function(){
+    a.count++;
+    if(a.cntEl) a.cntEl.textContent = a.count;
+    if(a.lastEl) a.lastEl.textContent = utcTime();
+    setTimeout(function(){agentCycle(key)}, rnd(2600,4800));
+  });
+}
+
+/* initial states */
+setAgentState("triage","working","WORKING");
+setAgentState("drafter","awaiting","AWAITING APPROVAL");
+setAgentState("publisher","idle","IDLE");
+setAgentState("digest","working","COMPILING");
+
+typeInto(AGENTS.drafter.taskEl, AGENTS.drafter.holdLine, 18);
+typeInto(AGENTS.publisher.taskEl, AGENTS.publisher.idleLine, 18);
+agentCycle("triage");
+setTimeout(function(){agentCycle("digest")}, 1400);
+
+/* pause / wake buttons */
+$$(".agent [data-role=toggle]").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var card = btn.closest(".agent");
+    var key = card.id.replace("ag-","");
+    var a = AGENTS[key];
+    if(a.state === "idle"){
+      setAgentState(key,"working","WORKING");
+      logEvent("YOU","resumed "+a.name+" — back on autonomous queue","c");
+      agentCycle(key);
+    } else {
+      setAgentState(key,"idle","PAUSED BY OPERATOR");
+      typeInto(a.taskEl,"Paused. Holding queue — no actions until operator resume.",16);
+      logEvent("YOU","paused "+a.name+" — queue held","c");
+    }
+  });
+});
+
+/* ---------- timeline feed ---------- */
+var feed = $("#feed");
+var MAX_EV = 22;
+function logEvent(agent, text, color){
+  var li = document.createElement("li");
+  li.className = "ev enter";
+  li.innerHTML = '<span class="ev-time">'+utcTime()+'</span>'+
+                 '<span class="ev-dot '+(color||"g")+'"></span>'+
+                 '<div class="ev-body"><b>'+agent+'</b>'+text+'</div>';
+  feed.insertBefore(li, feed.firstChild);
+  while(feed.children.length > MAX_EV) feed.removeChild(feed.lastChild);
+}
+
+/* seed history (oldest last) */
+[
+  ["DIGEST","started weekly brief compile — window opens in 02:14","g"],
+  ["TRIAGE","quarantined form #1047 — spam score 0.99","g"],
+  ["DRAFTER","staged reply → \"Agency — NYC\" (flagged: pricing question)","a"],
+  ["DRAFTER","staged reply → \"Sports facility operator\"","a"],
+  ["DRAFTER","staged reply → \"Venue group — Midwest\" (2 case studies attached)","a"],
+  ["TRIAGE","scored new lead \"Venue group — Midwest\" → 0.93 HIGH","g"],
+  ["PUBLISHER","hero copy v11 verified live — render 138ms","c"],
+  ["SYSTEM","shift 0142 opened — 4 agents on duty","c"]
+].reverse().forEach(function(e){ logEvent(e[0],e[1],e[2]) });
+
+var EVENT_POOL = [
+  ["TRIAGE","scored new lead \"Architecture firm — Gulf region\" → 0.71 MED","g"],
+  ["TRIAGE","spam sweep clean — 0 of 4 inbound flagged","g"],
+  ["TRIAGE","enriched lead \"University athletics dept\" — org size estimated","g"],
+  ["DIGEST","logged traffic sample — 1.2k visits/wk, Δ +8% w/w","g"],
+  ["DIGEST","indexed 2 new AI conversations for the weekly brief","g"],
+  ["DIGEST","anomaly scan: p95 response nominal, nothing to flag","g"],
+  ["PUBLISHER","stats ledger refreshed — no visual diff detected","c"],
+  ["PUBLISHER","availability flag verified live — render 151ms","c"],
+  ["SYSTEM","heartbeat OK — all 4 agents responding < 60ms","c"],
+  ["TRIAGE","merged duplicate submission #1049 → existing thread","g"],
+  ["DIGEST","compiled brief section \"What changed\" — 4 bullets","g"],
+  ["SYSTEM","ledger checkpoint written — 23 submissions, 0 drift","c"]
+];
+setInterval(function(){
+  var e = pick(EVENT_POOL);
+  logEvent(e[0],e[1],e[2]);
+},5200);
+
+/* ---------- pipeline ---------- */
+var TASK_POOL = [
+  {t:"Score lead — Hospitality group, coastal", a:"TRIAGE", rev:false},
+  {t:"Summarize thread — Venue group, Midwest", a:"DIGEST", rev:false},
+  {t:"Draft reply — University athletics dept", a:"DRAFTER", rev:true},
+  {t:"Refresh stats ledger — visits/wk", a:"PUBLISHER", rev:false},
+  {t:"Enrich lead — Architecture firm, Gulf region", a:"TRIAGE", rev:false},
+  {t:"Draft follow-up — Sports facility operator", a:"DRAFTER", rev:true},
+  {t:"Index 2 AI conversations → brief", a:"DIGEST", rev:false},
+  {t:"Spam sweep — overnight batch", a:"TRIAGE", rev:false},
+  {t:"Stage hero copy v13", a:"PUBLISHER", rev:true},
+  {t:"Dedup check — submissions ledger", a:"TRIAGE", rev:false}
+];
+var poolIdx = 0, taskId = 0;
+var tasks = [];
+var doneToday = 14;
+var doneLog = [
+  {t:"Quarantine spam #1047", a:"TRIAGE", at:"12:29:55"},
+  {t:"Score lead — Venue group, Midwest", a:"TRIAGE", at:"12:30:41"},
+  {t:"Verify hero copy v11 live", a:"PUBLISHER", at:"12:18:02"}
+];
+
+function addTask(stage, def, prog){
+  tasks.push({id:"t"+(taskId++), t:def.t, a:def.a, rev:def.rev, stage:stage, prog:prog||0});
+}
+/* seed */
+addTask("queued", TASK_POOL[0]); addTask("queued", TASK_POOL[1]);
+addTask("running", TASK_POOL[2], 34); addTask("running", TASK_POOL[3], 71);
+addTask("review", {t:"Reply — Venue group, Midwest", a:"DRAFTER", rev:true});
+addTask("review", {t:"Reply — Sports facility operator", a:"DRAFTER", rev:true});
+addTask("review", {t:"Reply — Agency, NYC", a:"DRAFTER", rev:true});
+poolIdx = 4;
+
+var prevCols = {queued:[], running:[], review:[], done:[]};
+function renderPipeline(){
+  var cols = {queued:[], running:[], review:[], done:[]};
+  tasks.forEach(function(tk){ cols[tk.stage] && cols[tk.stage].push(tk); });
+  ["queued","running","review"].forEach(function(c){
+    var el = $("#col-"+c);
+    el.innerHTML = cols[c].map(function(tk){
+      var cls = c==="running"?"c-run":(c==="review"?"c-rev":"");
+      var isNew = prevCols[c].indexOf(tk.id) === -1;
+      var html = '<div class="task '+cls+(isNew?' pop':'')+'">'+
+        '<span class="t-agent">'+tk.a+'</span>'+
+        '<span class="t-name">'+tk.t+'</span>';
+      if(c==="running") html += '<div class="t-prog"><i style="width:'+Math.min(tk.prog,100)+'%"></i></div>'+
+        '<div class="t-meta">'+Math.min(Math.round(tk.prog),100)+'% · ETA '+Math.max(1,Math.round((100-tk.prog)/8))+'s</div>';
+      if(c==="review") html += '<div class="t-meta">awaiting operator</div>';
+      html += '</div>';
+      return html;
+    }).join("");
+    prevCols[c] = cols[c].map(function(tk){return tk.id});
+    $("#n-"+c).textContent = cols[c].length;
+  });
+  /* done column from doneLog */
+  $("#col-done").innerHTML = doneLog.slice(0,5).map(function(d,i){
+    return '<div class="task c-done'+(d.fresh?' pop':'')+'">'+
+      '<span class="t-agent">'+d.a+'</span>'+
+      '<span class="t-name">✓ '+d.t+'</span>'+
+      '<div class="t-meta"><span class="ok">done</span> · '+d.at+'</div></div>';
+  }).join("");
+  doneLog.forEach(function(d){d.fresh = false});
+  $("#n-done").textContent = doneToday;
+  var active = cols.queued.length + cols.running.length + cols.review.length;
+  $("#pipe-meta").textContent = active+" ACTIVE · "+doneToday+" DONE TODAY";
+  $("#sb-active").textContent = active;
+  $("#sb-done").textContent = doneToday;
+}
+
+function completeTask(tk){
+  tk.stage = "gone";
+  tasks = tasks.filter(function(x){return x !== tk});
+  doneToday++;
+  doneLog.unshift({t:tk.t, a:tk.a, at:utcTime(), fresh:true});
+  if(doneLog.length > 8) doneLog.pop();
+  logEvent(tk.a, "completed: "+tk.t, tk.a==="DRAFTER"?"a":(tk.a==="PUBLISHER"?"c":"g"));
+}
+
+function pipelineTick(){
+  var running = tasks.filter(function(t){return t.stage==="running"});
+  running.forEach(function(tk){
+    tk.prog += rnd(4,11);
+    if(tk.prog >= 100){
+      if(tk.rev){
+        tk.stage = "review"; tk.prog = 0;
+        logEvent(tk.a, "finished \""+tk.t+"\" → routed to NEEDS REVIEW", "a");
+      } else {
+        completeTask(tk);
+      }
+    }
+  });
+  /* promote queued */
+  var runCount = tasks.filter(function(t){return t.stage==="running"}).length;
+  if(runCount < 3){
+    var q = tasks.filter(function(t){return t.stage==="queued"})[0];
+    if(q){ q.stage = "running"; q.prog = ri(2,8); }
+  }
+  renderPipeline();
+}
+setInterval(pipelineTick, 1400);
+
+/* spawn new queued tasks */
+setInterval(function(){
+  var qCount = tasks.filter(function(t){return t.stage==="queued"}).length;
+  if(qCount < 4){
+    addTask("queued", TASK_POOL[poolIdx % TASK_POOL.length]);
+    poolIdx++;
+  }
+},9000);
+renderPipeline();
+
+/* ---------- approvals ---------- */
+var DRAFTS = {
+  a1: "Hi — thanks for the detail on the multi-venue display refresh. Short version: this is exactly the kind of build I handle end-to-end — control system, content pipeline, and the ops dashboard your team runs it from.\n\nI've attached two case studies from comparable venue projects. If useful, I have a 30-minute slot Thursday to walk through scope.\n\n— Ahmad",
+  a2: "Hi — good timing. The ops dashboard you saw in the case study is live and I can demo it against your actual workflow, not slides.\n\nGrab any 30-minute slot on the calendar link below and bring one real scheduling headache — we'll model it live on the call.\n\n— Ahmad",
+  a3: "Hi — appreciate the partnership thought. White-label is possible, but the structure depends on volume and who owns the client relationship.\n\nRather than quote blind, let's do a 20-minute call this week — I'll bring a one-page structure with two options and we price from there.\n\n— Ahmad"
+};
+var APPR_TITLES = {
+  a1:"Venue group — Midwest",
+  a2:"Sports facility operator",
+  a3:"Agency — NYC"
+};
+
+function apprRemaining(){ return $$("#appr-list .appr:not(.leaving)").length; }
+
+function refreshApprCount(){
+  var n = apprRemaining();
+  $("#appr-count").textContent = n;
+  $("#nav-badge").textContent = n;
+  $("#appr-n").textContent = n + (n===1?" reply":" replies");
+  if(n === 0){
+    $("#nav-badge").style.display = "none";
+    $("#appr-empty").hidden = false;
+    $("#approve-all").style.display = "none";
+    setAgentState("drafter","working","WORKING");
+    logEvent("DRAFTER","approval queue cleared — resuming autonomous drafting","g");
+    agentCycle("drafter");
+    /* clear review column of the 3 staged replies */
+    tasks.filter(function(t){return t.stage==="review" && t.a==="DRAFTER" && t.t.indexOf("Reply —")===0})
+         .forEach(completeTask);
+    renderPipeline();
+  }
+}
+
+function openDraft(card, mode){
+  var body = card.querySelector(".draft-body");
+  var id = card.getAttribute("data-id");
+  var wasOpen = card.classList.contains("open");
+  /* close others */
+  $$("#appr-list .appr.open").forEach(function(c){ if(c!==card) c.classList.remove("open"); });
+  if(wasOpen && mode === card._mode){ card.classList.remove("open"); return; }
+  card.classList.add("open");
+  card._mode = mode;
+  if(mode === "edit"){
+    body.innerHTML = "";
+    var ta = document.createElement("textarea");
+    ta.className = "draft-edit";
+    ta.value = DRAFTS[id];
+    body.appendChild(ta);
+    ta.focus();
+    card._edited = ta;
+  } else {
+    card._edited = null;
+    body.classList.add("typing");
+    typeInto(body, DRAFTS[id], 6, function(){ body.classList.remove("typing"); });
+  }
+}
+
+function approveCard(card, batch){
+  if(card.classList.contains("leaving")) return;
+  var id = card.getAttribute("data-id");
+  var edited = !!card._edited;
+  card.classList.add("leaving");
+  card.classList.remove("open");
+  logEvent("YOU","approved reply → \""+APPR_TITLES[id]+"\""+(edited?" (edited)":""),"c");
+  setTimeout(function(){
+    logEvent("DRAFTER","sent reply → \""+APPR_TITLES[id]+"\" — thread marked REPLIED","a");
+  }, 600);
+  doneToday++; /* the send counts */
+  setTimeout(function(){
+    card.remove();
+    if(!batch) refreshApprCount();
+  }, 480);
+  if(batch) setTimeout(refreshApprCount, 500);
+}
+
+$("#appr-list").addEventListener("click", function(e){
+  var btn = e.target.closest("[data-act]");
+  if(!btn) return;
+  var card = btn.closest(".appr");
+  var act = btn.getAttribute("data-act");
+  if(act === "review") openDraft(card,"review");
+  else if(act === "edit") openDraft(card,"edit");
+  else if(act === "approve") approveCard(card,false);
+});
+
+$("#approve-all").addEventListener("click", function(){
+  var cards = $$("#appr-list .appr:not(.leaving)");
+  logEvent("YOU","batch approval — "+cards.length+" replies released","c");
+  cards.forEach(function(c,i){
+    setTimeout(function(){ approveCard(c,true); }, i*280);
+  });
+});
+
+/* ---------- meters ---------- */
+var METER_PROFILE = {
+  working:  {tok:[180,520], que:[1,5], load:[28,72]},
+  awaiting: {tok:[20,60],   que:[3,3], load:[10,24]},
+  idle:     {tok:[0,8],     que:[0,1], load:[3,9]}
+};
+function meterTick(){
+  Object.keys(AGENTS).forEach(function(k){
+    var a = AGENTS[k];
+    var p = METER_PROFILE[a.state] || METER_PROFILE.idle;
+    var tok = ri(p.tok[0],p.tok[1]), que = ri(p.que[0],p.que[1]), load = ri(p.load[0],p.load[1]);
+    var cls = a.state==="working" ? "" : (a.state==="awaiting" ? "warn" : "low");
+    [["tok",tok,Math.min(tok/6,100)],["que",que,que*18],["load",load,load]].forEach(function(m){
+      var bar = a.el.querySelector("[data-m="+m[0]+"]");
+      var val = a.el.querySelector("[data-v="+m[0]+"]");
+      if(bar){ bar.style.width = Math.min(m[2],100)+"%"; bar.className = cls; }
+      if(val) val.textContent = m[0]==="load" ? m[1]+"%" : m[1];
+    });
+  });
+}
+setInterval(meterTick, 2200);
+
+/* ---------- status bar ---------- */
+var tokBurn = 128.4;
+setInterval(function(){
+  $("#sb-lat").textContent = ri(34,58)+"ms";
+  tokBurn += rnd(.1,.9);
+  $("#sb-tok").textContent = tokBurn.toFixed(1)+"k";
+},2500);
+
+/* ---------- rail active state on scroll ---------- */
+var navLinks = $$(".rail nav a");
+var sections = ["overview","agents","pipeline","approvals","timeline"];
+window.addEventListener("scroll", function(){
+  var pos = window.scrollY + 140;
+  var current = "overview";
+  sections.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el && el.offsetTop <= pos) current = id;
+  });
+  navLinks.forEach(function(l){
+    l.classList.toggle("active", l.getAttribute("href") === "#"+current);
+  });
+},{passive:true});
+
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;left:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

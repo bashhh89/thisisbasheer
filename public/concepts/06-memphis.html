@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 06 — Memphis · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — Systems builder & operator. I build systems that run companies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF5EC;
+    --ink:#111111;
+    --cobalt:#2244FF;
+    --acid:#FFD500;
+    --coral:#FF5C4D;
+    --mint:#B8F2D6;
+    --bw:3px;
+    --shadow:8px 8px 0 var(--ink);
+    --shadow-sm:5px 5px 0 var(--ink);
+    --shadow-lg:12px 12px 0 var(--ink);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--acid);color:var(--ink)}
+
+  h1,h2,h3,.display{
+    font-family:'Archivo Black',sans-serif;
+    font-weight:400;
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+  /* ============ subtle grid texture ============ */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(17,17,17,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(17,17,17,.045) 1px,transparent 1px);
+    background-size:48px 48px;
+    pointer-events:none;
+    z-index:0;
+  }
+  .site{position:relative;z-index:1}
+
+  /* ============ buttons ============ */
+  .btn{
+    display:inline-flex;align-items:center;gap:.6em;
+    font-family:'Archivo Black',sans-serif;
+    font-size:1rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    text-decoration:none;
+    color:var(--ink);
+    background:var(--acid);
+    border:var(--bw) solid var(--ink);
+    border-radius:999px;
+    padding:1.05rem 2.1rem;
+    box-shadow:var(--shadow-sm);
+    cursor:pointer;
+    transition:transform .12s cubic-bezier(.2,.9,.3,1.4),box-shadow .12s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+  .btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink)}
+  .btn--cobalt{background:var(--cobalt);color:#fff}
+  .btn--ghost{background:#fff}
+  .btn .arrow{display:inline-block;transition:transform .15s ease}
+  .btn:hover .arrow{transform:translateX(4px)}
+
+  /* ============ sticker badge ============ */
+  .sticker{
+    display:inline-flex;align-items:center;gap:.45em;
+    font-family:'Archivo Black',sans-serif;
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    border:var(--bw) solid var(--ink);
+    border-radius:999px;
+    padding:.5rem 1.1rem;
+    background:#fff;
+    box-shadow:4px 4px 0 var(--ink);
+  }
+  .sticker--coral{background:var(--coral);color:#fff}
+  .sticker--acid{background:var(--acid)}
+  .sticker--cobalt{background:var(--cobalt);color:#fff}
+  .sticker--mint{background:var(--mint)}
+  .dot{width:.6em;height:.6em;border-radius:50%;background:var(--ink);flex:none}
+  .dot--pulse{background:#0c8a3e;animation:pulse 1.4s ease-in-out infinite}
+  .sticker--coral .dot--pulse{background:#fff}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+
+  /* ============ header ============ */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--paper);
+    border-bottom:var(--bw) solid var(--ink);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;max-width:1180px;margin:0 auto;
+  }
+  .logo{
+    font-family:'Archivo Black',sans-serif;
+    font-size:1.15rem;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;gap:.55em;
+  }
+  .logo-mark{
+    width:34px;height:34px;flex:none;
+    background:var(--cobalt);
+    border:var(--bw) solid var(--ink);
+    border-radius:9px;
+    box-shadow:3px 3px 0 var(--ink);
+    display:grid;place-items:center;
+    color:#fff;font-size:.95rem;
+    transform:rotate(-6deg);
+    transition:transform .2s ease;
+  }
+  .logo:hover .logo-mark{transform:rotate(6deg)}
+  .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+  .nav-links a{
+    text-decoration:none;color:var(--ink);
+    font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:.03em;
+    border-bottom:3px solid transparent;
+    padding-bottom:2px;
+    transition:border-color .15s ease;
+  }
+  .nav-links a:hover{border-color:var(--coral)}
+  .nav .btn{padding:.65rem 1.4rem;font-size:.85rem}
+  @media(max-width:760px){.nav-links li:not(.nav-cta){display:none}}
+
+  /* ============ hero ============ */
+  .hero{position:relative;padding:80px 0 96px;overflow:hidden}
+  .hero h1{
+    font-size:clamp(2.7rem,7.2vw,5.6rem);
+    max-width:13ch;
+    margin:28px 0 26px;
+  }
+  .hero h1 .hl{
+    position:relative;display:inline-block;color:var(--cobalt);
+  }
+  .hero h1 .hl::after{
+    content:"";position:absolute;left:-2%;right:-2%;bottom:.04em;height:.3em;
+    background:var(--acid);z-index:-1;
+    border:2px solid var(--ink);
+  }
+  .hero .sub{
+    font-size:clamp(1.05rem,1.8vw,1.3rem);
+    font-weight:500;
+    max-width:46ch;
+    margin-bottom:40px;
+  }
+  .hero-ctas{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .hero-badges{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-badges .sticker:nth-child(1){transform:rotate(-3deg)}
+  .hero-badges .sticker:nth-child(2){transform:rotate(2deg)}
+  .hero-badges .sticker:nth-child(3){transform:rotate(-1.5deg)}
+
+  /* hero geometric scatter */
+  .shape{position:absolute;border:var(--bw) solid var(--ink);pointer-events:none}
+  .shape--circle{border-radius:50%}
+  .shape--sq{border-radius:14px}
+  .sh1{width:120px;height:120px;background:var(--coral);top:8%;right:6%;transform:rotate(12deg);box-shadow:var(--shadow-sm);animation:float 7s ease-in-out infinite}
+  .sh2{width:74px;height:74px;background:var(--acid);top:46%;right:18%;animation:float 9s ease-in-out infinite reverse}
+  .sh3{width:54px;height:54px;background:var(--cobalt);bottom:14%;right:9%;transform:rotate(-10deg);box-shadow:4px 4px 0 var(--ink);animation:float 8s ease-in-out infinite}
+  .sh4{width:0;height:0;border:none;
+    border-left:38px solid transparent;border-right:38px solid transparent;
+    border-bottom:66px solid var(--ink);
+    top:22%;right:26%;transform:rotate(18deg);animation:spinSlow 24s linear infinite}
+  .sh5{width:150px;height:30px;background:repeating-linear-gradient(-45deg,var(--ink) 0 6px,transparent 6px 14px);border:none;bottom:8%;right:30%;transform:rotate(-6deg)}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -14px}}
+  @keyframes spinSlow{to{transform:rotate(378deg)}}
+  @media(max-width:900px){.sh4,.sh5{display:none}.sh1{width:84px;height:84px;right:4%}.sh2{display:none}}
+
+  /* ============ marquee ============ */
+  .marquee{
+    border-top:var(--bw) solid var(--ink);
+    border-bottom:var(--bw) solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    overflow:hidden;
+    padding:16px 0;
+    transform:rotate(0deg);
+  }
+  .marquee-track{
+    display:flex;gap:0;width:max-content;
+    animation:marquee 28s linear infinite;
+  }
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee span{
+    font-family:'Archivo Black',sans-serif;
+    font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em;
+    padding:0 1.4rem;white-space:nowrap;
+    display:flex;align-items:center;gap:1.4rem;
+  }
+  .marquee .star{color:var(--acid)}
+  @keyframes marquee{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){
+    .marquee-track{animation:none}
+    .sh1,.sh2,.sh3,.sh4{animation:none}
+    [data-reveal]{opacity:1 !important;transform:none !important}
+  }
+
+  /* ============ section scaffolding ============ */
+  section{padding:96px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:52px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(2rem,4.6vw,3.4rem)}
+  .kicker{
+    display:inline-block;
+    font-family:'Archivo Black',sans-serif;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.1em;
+    background:var(--ink);color:var(--paper);
+    padding:.45rem 1rem;border-radius:6px;
+    transform:rotate(-1.5deg);
+    margin-bottom:18px;
+  }
+
+  /* ============ stats ============ */
+  .stats{background:var(--cobalt);border-bottom:var(--bw) solid var(--ink);padding:72px 0}
+  .stats .kicker{background:var(--acid);color:var(--ink)}
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  }
+  .stat{
+    background:var(--paper);
+    border:var(--bw) solid var(--ink);
+    border-radius:18px;
+    box-shadow:6px 6px 0 var(--ink);
+    padding:26px 24px 22px;
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .stat:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--ink)}
+  .stat .num{
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(1.9rem,3.4vw,2.7rem);
+    display:block;line-height:1;
+    margin-bottom:8px;
+  }
+  .stat .lbl{font-weight:600;font-size:.95rem;text-transform:uppercase;letter-spacing:.03em}
+  .stat:nth-child(2) .num{color:var(--cobalt)}
+  .stat:nth-child(4) .num{color:var(--coral)}
+  .stat:nth-child(6) .num{color:var(--cobalt)}
+  .stat .tag{
+    display:inline-block;margin-top:10px;
+    font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--acid);border:2px solid var(--ink);border-radius:999px;
+    padding:.15rem .6rem;
+  }
+  @media(max-width:880px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.stats-grid{grid-template-columns:1fr}}
+
+  /* ============ work ============ */
+  .work-grid{display:grid;gap:30px}
+  .work-card{
+    border:var(--bw) solid var(--ink);
+    border-radius:22px;
+    background:#fff;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:grid;grid-template-columns:240px 1fr;
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .work-card:hover{transform:translate(-4px,-4px);box-shadow:var(--shadow-lg)}
+  .work-card .panel{
+    border-right:var(--bw) solid var(--ink);
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:26px;
+    position:relative;overflow:hidden;
+  }
+  .work-card:nth-child(1) .panel{background:var(--cobalt);color:#fff}
+  .work-card:nth-child(2) .panel{background:var(--acid)}
+  .work-card:nth-child(3) .panel{background:var(--coral);color:#fff}
+  .panel .idx{font-family:'Archivo Black',sans-serif;font-size:2.6rem;line-height:1}
+  .panel .panel-shape{
+    position:absolute;right:-26px;bottom:-26px;
+    width:110px;height:110px;border:var(--bw) solid var(--ink);border-radius:50%;
+    background:rgba(255,255,255,.25);
+  }
+  .work-card:nth-child(2) .panel .panel-shape{border-radius:18px;transform:rotate(14deg);background:rgba(17,17,17,.08)}
+  .panel .panel-sticker{
+    align-self:flex-start;
+    transform:rotate(-4deg);
+    font-size:.7rem;padding:.35rem .8rem;box-shadow:3px 3px 0 var(--ink);
+  }
+  .work-body{padding:30px 32px 28px}
+  .work-body h3{font-size:clamp(1.25rem,2.4vw,1.7rem);margin-bottom:12px}
+  .work-body p{font-weight:500;max-width:62ch;margin-bottom:18px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{
+    font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    border:2px solid var(--ink);border-radius:999px;
+    padding:.3rem .85rem;background:var(--paper);
+  }
+  .chip--hot{background:var(--acid)}
+  @media(max-width:760px){
+    .work-card{grid-template-columns:1fr}
+    .work-card .panel{border-right:none;border-bottom:var(--bw) solid var(--ink);flex-direction:row;align-items:center;min-height:0;padding:20px 24px}
+    .panel .panel-shape{display:none}
+  }
+
+  /* ============ capabilities ============ */
+  .caps{background:var(--acid);border-top:var(--bw) solid var(--ink);border-bottom:var(--bw) solid var(--ink)}
+  .caps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .cap{
+    background:var(--paper);
+    border:var(--bw) solid var(--ink);
+    border-radius:18px;
+    box-shadow:6px 6px 0 var(--ink);
+    padding:26px 24px;
+    display:flex;flex-direction:column;gap:14px;
+    transition:transform .12s ease,box-shadow .12s ease;
+  }
+  .cap:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+  .cap-icon{
+    width:46px;height:46px;flex:none;
+    border:var(--bw) solid var(--ink);border-radius:12px;
+    display:grid;place-items:center;
+    font-size:1.2rem;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .cap:nth-child(1) .cap-icon{background:var(--cobalt)}
+  .cap:nth-child(2) .cap-icon{background:var(--coral)}
+  .cap:nth-child(3) .cap-icon{background:var(--mint)}
+  .cap:nth-child(4) .cap-icon{background:var(--acid)}
+  .cap:nth-child(5) .cap-icon{background:var(--coral)}
+  .cap:nth-child(6) .cap-icon{background:var(--cobalt)}
+  .cap h3{font-size:1.05rem}
+  .cap p{font-size:.92rem;font-weight:500}
+  @media(max-width:880px){.caps-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.caps-grid{grid-template-columns:1fr}}
+
+  /* ============ CTA ============ */
+  .cta{padding:110px 0;position:relative;overflow:hidden}
+  .cta-box{
+    position:relative;
+    background:var(--ink);color:var(--paper);
+    border:var(--bw) solid var(--ink);
+    border-radius:26px;
+    box-shadow:10px 10px 0 var(--cobalt);
+    padding:clamp(44px,7vw,80px);
+    text-align:center;
+    overflow:hidden;
+  }
+  .cta-box h2{font-size:clamp(2.1rem,5vw,3.8rem);margin-bottom:18px}
+  .cta-box h2 .y{color:var(--acid)}
+  .cta-box p{font-size:1.1rem;font-weight:500;max-width:48ch;margin:0 auto 36px;color:#e8e2d6}
+  .cta-box .btn{font-size:1.1rem;padding:1.2rem 2.6rem}
+  .cta-sticker{
+    position:absolute;top:26px;right:30px;
+    transform:rotate(8deg);
+  }
+  .cta-shape-a{position:absolute;left:-30px;bottom:-30px;width:130px;height:130px;border-radius:50%;background:var(--coral);border:var(--bw) solid var(--paper)}
+  .cta-shape-b{position:absolute;left:90px;top:-24px;width:70px;height:70px;border-radius:16px;background:var(--cobalt);border:var(--bw) solid var(--paper);transform:rotate(18deg)}
+  .cta-mail{
+    display:inline-block;margin-top:22px;
+    font-weight:700;color:var(--paper);text-decoration:none;
+    border-bottom:3px solid var(--acid);
+    transition:color .15s ease;
+  }
+  .cta-mail:hover{color:var(--acid)}
+  @media(max-width:640px){.cta-sticker{display:none}}
+
+  /* ============ footer ============ */
+  footer{
+    border-top:var(--bw) solid var(--ink);
+    background:var(--paper);
+    padding:30px 0;
+  }
+  .foot{
+    display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+    font-weight:600;font-size:.9rem;text-transform:uppercase;letter-spacing:.04em;
+  }
+  .foot a{color:var(--ink);text-decoration:none;border-bottom:3px solid var(--acid)}
+  .foot a:hover{border-color:var(--coral)}
+
+  /* ============ reveal on scroll ============ */
+  [data-reveal]{
+    opacity:0;transform:translateY(26px);
+    transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.3,1);
+  }
+  [data-reveal].in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="site">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <nav class="nav" aria-label="Main">
+      <a class="logo" href="#top">
+        <span class="logo-mark" aria-hidden="true">AB</span>
+        Ahmad Basheer
+      </a>
+      <ul class="nav-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#numbers">Numbers</a></li>
+        <li class="nav-cta"><a class="btn btn--cobalt" href="mailto:ahmad@basheer.app">Start a project</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="shape shape--sq sh1" aria-hidden="true"></div>
+      <div class="shape shape--circle sh2" aria-hidden="true"></div>
+      <div class="shape shape--sq sh3" aria-hidden="true"></div>
+      <div class="shape sh4" aria-hidden="true"></div>
+      <div class="shape sh5" aria-hidden="true"></div>
+
+      <div class="wrap">
+        <div class="hero-badges" data-reveal>
+          <span class="sticker sticker--coral"><span class="dot dot--pulse"></span>Live</span>
+          <span class="sticker sticker--acid">43+ Venues</span>
+          <span class="sticker">Systems builder &amp; operator</span>
+        </div>
+
+        <h1 data-reveal>I build systems that <span class="hl">run companies.</span></h1>
+
+        <p class="sub" data-reveal>Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+
+        <div class="hero-ctas" data-reveal>
+          <a class="btn" href="mailto:ahmad@basheer.app">Start a project <span class="arrow">→</span></a>
+          <a class="btn btn--ghost" href="#work">See the work</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marqueeTrack">
+        <span>Designed <i class="star">★</i> Built <i class="star">★</i> Operated <i class="star">★</i> 100+ containers in production <i class="star">★</i> 43+ venues live <i class="star">★</i> 150 field technicians <i class="star">★</i> Proposals in under an hour <i class="star">★</i> 30,000+ records <i class="star">★</i> 250+ events a season <i class="star">★</i></span>
+      </div>
+    </div>
+
+    <!-- ============ STATS ============ -->
+    <section class="stats" id="numbers">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <span class="kicker">The scoreboard</span>
+            <h2 style="color:#fff">Numbers, not adjectives.</h2>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat" data-reveal><span class="num" data-count="100" data-suffix="+">100+</span><span class="lbl">Containers in production</span></div>
+          <div class="stat" data-reveal><span class="num" data-count="43" data-suffix="+">43+</span><span class="lbl">Venues live</span><span class="tag">and counting</span></div>
+          <div class="stat" data-reveal><span class="num" data-count="150">150</span><span class="lbl">Field technicians coordinated</span></div>
+          <div class="stat" data-reveal><span class="num">&lt;1 hr</span><span class="lbl">Proposal turnaround</span><span class="tag">was: days</span></div>
+          <div class="stat" data-reveal><span class="num" data-count="30000" data-suffix="+">30,000+</span><span class="lbl">CRM records migrated</span></div>
+          <div class="stat" data-reveal><span class="num" data-count="250" data-suffix="+">250+</span><span class="lbl">Events per season</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WORK ============ -->
+    <section id="work">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <div>
+            <span class="kicker">Selected work</span>
+            <h2>Built. Shipped.<br>Still running.</h2>
+          </div>
+          <span class="sticker sticker--mint" style="transform:rotate(2deg)">In production today</span>
+        </div>
+
+        <div class="work-grid">
+          <article class="work-card" data-reveal>
+            <div class="panel">
+              <span class="idx">01</span>
+              <span class="sticker panel-sticker">Days → &lt;1 hr</span>
+              <span class="panel-shape" aria-hidden="true"></span>
+            </div>
+            <div class="work-body">
+              <h3>Proposal Engine</h3>
+              <p>Sales proposals used to take days of spreadsheet wrangling. Now they take under an hour — with versioned pricing, locked-down logic, and proposals you can reproduce exactly, months later.</p>
+              <div class="chips">
+                <span class="chip chip--hot">Versioned pricing</span>
+                <span class="chip">Reproducible output</span>
+                <span class="chip">End-to-end</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="work-card" data-reveal>
+            <div class="panel">
+              <span class="idx">02</span>
+              <span class="sticker panel-sticker">43+ venues</span>
+              <span class="panel-shape" aria-hidden="true"></span>
+            </div>
+            <div class="work-body">
+              <h3>Venue Operations Platform</h3>
+              <p>43+ venues, 150 field technicians, 15 markets — events, schedules, check-ins, and labor on one screen. One screen replaced four separate reports.</p>
+              <div class="chips">
+                <span class="chip chip--hot">15 markets</span>
+                <span class="chip">150 technicians</span>
+                <span class="chip">4 reports → 1 screen</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="work-card" data-reveal>
+            <div class="panel">
+              <span class="idx">03</span>
+              <span class="sticker panel-sticker">30,000+ records</span>
+              <span class="panel-shape" aria-hidden="true"></span>
+            </div>
+            <div class="work-body">
+              <h3>CRM Platform Extension</h3>
+              <p>13 custom objects modeling how the business actually works. 30,000+ records migrated and reconciled — not just dumped. 16 live dashboards the team checks every morning.</p>
+              <div class="chips">
+                <span class="chip chip--hot">13 custom objects</span>
+                <span class="chip">Migrated + reconciled</span>
+                <span class="chip">16 live dashboards</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CAPABILITIES ============ -->
+    <section class="caps" id="capabilities">
+      <div class="wrap">
+        <div class="sec-head" data-reveal>
+          <div>
+            <span class="kicker">Capabilities</span>
+            <h2>What I build.</h2>
+          </div>
+        </div>
+        <div class="caps-grid">
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">◎</span>
+            <h3>CRM Platforms</h3>
+            <p>Customer systems shaped around how your team actually sells — not the other way around.</p>
+          </div>
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">▤</span>
+            <h3>Proposal Engines</h3>
+            <p>Pricing, documents, and approvals that go out the same day the request comes in.</p>
+          </div>
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">▦</span>
+            <h3>Operations Platforms</h3>
+            <p>Scheduling, field teams, and live status — every moving part on one screen.</p>
+          </div>
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">⟳</span>
+            <h3>Automation Systems</h3>
+            <p>The repetitive work nobody should be doing by hand, done by the system instead.</p>
+          </div>
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">⬡</span>
+            <h3>Platform Integrations</h3>
+            <p>Your tools talking to each other so data lives in one place and stays right.</p>
+          </div>
+          <div class="cap" data-reveal>
+            <span class="cap-icon" aria-hidden="true">✦</span>
+            <h3>AI Inside the Workflow</h3>
+            <p>Assistants embedded where the work happens — not a chatbot bolted on the side.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="cta">
+      <div class="wrap">
+        <div class="cta-box" data-reveal>
+          <span class="sticker sticker--acid cta-sticker">Taking projects</span>
+          <span class="cta-shape-a" aria-hidden="true"></span>
+          <span class="cta-shape-b" aria-hidden="true"></span>
+          <h2>Got an operation that runs on <span class="y">spreadsheets &amp; memory?</span></h2>
+          <p>Tell me what's slow, manual, or held together with duct tape. I'll tell you what a system looks like.</p>
+          <a class="btn" href="mailto:ahmad@basheer.app">Start a project <span class="arrow">→</span></a>
+          <br>
+          <a class="cta-mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="wrap foot">
+      <span>© <span id="yr">2026</span> Ahmad Basheer</span>
+      <span>Systems builder &amp; operator</span>
+      <a href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Year
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  // Marquee: duplicate track content so translateX(-50%) loops seamlessly
+  var track = document.getElementById("marqueeTrack");
+  track.innerHTML += track.innerHTML;
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Reveal on scroll
+  var revealEls = document.querySelectorAll("[data-reveal]");
+  if (!reduced && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  // Count-up on stats
+  function countUp(el){
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    var suffix = el.getAttribute("data-suffix") || "";
+    var dur = 900, start = null;
+    function fmt(n){ return n.toLocaleString("en-US"); }
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * eased)) + (p === 1 ? suffix : "");
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var nums = document.querySelectorAll("[data-count]");
+  if (!reduced && "IntersectionObserver" in window) {
+    var nio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { countUp(e.target); nio.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    nums.forEach(function(el){ nio.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>

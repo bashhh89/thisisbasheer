@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 01 — Terminal · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder &amp; operator. Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --green: #33ff66;
+    --green-dim: #1d9940;
+    --grey: #8b918b;
+    --grey-dim: #4c524c;
+    --grey-dark: #2a2e2a;
+    --line: #1d231d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--grey);
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--green); color: #000; }
+
+  a { color: var(--green); text-decoration: none; }
+  a:hover { background: var(--green); color: #000; }
+
+  /* ---------- layout ---------- */
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---------- top status bar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--grey-dim);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .topbar .host { color: var(--green); font-weight: 700; }
+  .topbar .ok::before { content: "● "; color: var(--green); }
+  .topbar nav { display: flex; gap: 18px; }
+  .topbar nav a { color: var(--grey); padding: 0 2px; }
+  .topbar nav a:hover { color: #000; }
+  #clock { color: var(--grey); font-variant-numeric: tabular-nums; }
+
+  /* ---------- ascii dividers ---------- */
+  .rule {
+    color: var(--grey-dark);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+    margin: 64px 0 0;
+  }
+
+  /* ---------- prompt lines ---------- */
+  .prompt {
+    color: var(--grey);
+    margin-bottom: 20px;
+    word-break: break-word;
+  }
+  .prompt .ps1 { color: var(--green-dim); }
+  .prompt .cmd { color: var(--green); font-weight: 500; }
+  .comment { color: var(--grey-dim); }
+
+  section { padding-top: 56px; }
+
+  /* ---------- boot block ---------- */
+  .boot {
+    padding-top: 40px;
+    font-size: 13px;
+    color: var(--grey-dim);
+    line-height: 1.8;
+  }
+  .boot .ok { color: var(--green-dim); }
+
+  /* ---------- hero ---------- */
+  .hero { padding-top: 48px; }
+  .hero .ident {
+    color: var(--grey);
+    margin-bottom: 36px;
+    word-break: break-word;
+  }
+  .hero .ident b { color: #d8ded8; font-weight: 700; letter-spacing: 0.06em; }
+
+  h1 {
+    font-size: clamp(28px, 6vw, 58px);
+    font-weight: 800;
+    line-height: 1.12;
+    color: var(--green);
+    letter-spacing: -0.015em;
+    min-height: 2.3em;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  @media (min-width: 700px) { h1 { min-height: 1.2em; } }
+
+  .cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 1.06s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .sub {
+    max-width: 620px;
+    color: var(--grey);
+    margin-bottom: 40px;
+  }
+
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+  .btn {
+    display: inline-block;
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+  .btn:hover { background: var(--green); color: #000; }
+  .btn.ghost { border-color: var(--grey-dark); color: var(--grey); }
+  .btn.ghost:hover { background: var(--grey); border-color: var(--grey); color: #000; }
+
+  /* ---------- status / stats ---------- */
+  .statusline {
+    margin-bottom: 28px;
+    color: var(--grey);
+    font-size: 14px;
+  }
+  .statusline .live { color: var(--green); font-weight: 700; }
+  .statusline .live::before { content: "● "; animation: blink 2.2s steps(1) infinite; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line);
+  }
+  .stat {
+    padding: 26px 22px 22px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:nth-child(3n) { border-right: none; }
+  .stat:nth-child(n+4) { border-bottom: none; }
+  .stat .num {
+    display: block;
+    color: var(--green);
+    font-size: clamp(24px, 3.6vw, 36px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .lbl {
+    display: block;
+    font-size: 12px;
+    color: var(--grey-dim);
+    letter-spacing: 0.05em;
+  }
+  .stat .lbl::before { content: "└─ "; color: var(--grey-dark); }
+  .stat .delta {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--green-dim);
+  }
+
+  @media (max-width: 700px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(3n) { border-right: 1px solid var(--line); }
+    .stat:nth-child(2n) { border-right: none; }
+    .stat:nth-child(n+4) { border-bottom: 1px solid var(--line); }
+    .stat:nth-child(n+5) { border-bottom: none; }
+  }
+  @media (max-width: 420px) {
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none !important; border-bottom: 1px solid var(--line) !important; }
+    .stat:last-child { border-bottom: none !important; }
+  }
+
+  /* ---------- work / log entries ---------- */
+  .log-entry {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--green-dim);
+    padding: 24px 26px 26px;
+    margin-bottom: 22px;
+  }
+  .log-entry:hover { border-left-color: var(--green); }
+
+  .log-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 12px;
+    color: var(--grey-dim);
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .log-meta .tag { color: var(--green-dim); }
+  .log-meta .ok { color: var(--green); }
+
+  .log-entry h3 {
+    color: #d8ded8;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 0.01em;
+  }
+  .log-entry h3::before { content: "> "; color: var(--green); }
+
+  .log-entry p { color: var(--grey); max-width: 640px; margin-bottom: 16px; font-size: 14px; }
+
+  .kv { font-size: 13px; line-height: 2; }
+  .kv .k { color: var(--grey-dim); }
+  .kv .k::before { content: "  "; }
+  .kv .dots { color: var(--grey-dark); }
+  .kv .v { color: var(--green); font-weight: 500; }
+
+  /* ---------- capabilities ---------- */
+  .caps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .cap {
+    background: var(--bg);
+    padding: 20px 22px;
+    font-size: 14px;
+    color: var(--grey);
+  }
+  .cap b { color: var(--green); font-weight: 500; display: block; }
+  .cap b::before { content: "drwxr-x  "; color: var(--grey-dark); font-size: 11px; }
+  .cap span { color: var(--grey-dim); font-size: 12px; }
+  .cap:hover { background: #061107; }
+  @media (max-width: 700px) { .caps { grid-template-columns: 1fr; } }
+
+  /* ---------- contact ---------- */
+  .contact-box {
+    border: 1px solid var(--green-dim);
+    padding: 44px 30px;
+    text-align: left;
+  }
+  .contact-box .lead {
+    color: #d8ded8;
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .contact-box .note { color: var(--grey-dim); font-size: 13px; margin-bottom: 28px; max-width: 560px; }
+  .mail {
+    display: inline-block;
+    font-size: clamp(17px, 3.4vw, 26px);
+    font-weight: 800;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 14px 26px;
+    letter-spacing: 0.01em;
+    word-break: break-all;
+  }
+  .mail:hover { background: var(--green); color: #000; }
+  .mail::before { content: "→ "; }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 72px;
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    font-size: 12px;
+    color: var(--grey-dim);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  footer .keepalive::after {
+    content: "▮";
+    color: var(--green);
+    margin-left: 6px;
+    animation: blink 1.06s steps(1) infinite;
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(8px); transition: opacity .45s ease, transform .45s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .cursor, .statusline .live::before, footer .keepalive::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="host">ahmad@basheer.app</span>:~$</span>
+    <nav aria-label="Sections">
+      <a href="#status">status</a>
+      <a href="#work">work</a>
+      <a href="#capabilities">capabilities</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <span class="ok">live · <span id="clock">--:--:-- UTC</span></span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- boot sequence -->
+  <div class="boot" aria-hidden="true">
+    $ ssh ahmad@basheer.app<br>
+    Authenticating... <span class="ok">[ OK ]</span><br>
+    Loading operator profile... <span class="ok">[ OK ]</span><br>
+    <span id="lastlogin">Last login: from production</span>
+  </div>
+
+  <!-- hero -->
+  <section class="hero" id="top">
+    <p class="prompt ident"><span class="ps1">$</span> <span class="cmd">whoami</span><br>
+    <b>AHMAD BASHEER</b> <span class="comment">// systems builder &amp; operator</span></p>
+
+    <p class="prompt"><span class="ps1">$</span> <span class="cmd">cat /etc/motd</span></p>
+    <h1><span id="typed"></span><span class="cursor" aria-hidden="true"></span><span class="sr" style="position:absolute;left:-9999px;">I build systems that run companies.</span></h1>
+
+    <p class="sub">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="mailto:ahmad@basheer.app">start a project</a>
+      <a class="btn ghost" href="#work">tail -f work.log</a>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤</div>
+
+  <!-- status / stats -->
+  <section id="status" class="reveal">
+    <p class="prompt"><span class="ps1">$</span> <span class="cmd">basheer --status</span></p>
+    <p class="statusline"><span class="live">OPERATIONAL</span> &nbsp;<span class="comment">// all systems below are running in production right now — not demos, not decks.</span></p>
+
+    <div class="stats">
+      <div class="stat"><span class="num">100+</span><span class="lbl">containers in production</span><span class="delta">self-hosted · self-operated</span></div>
+      <div class="stat"><span class="num">43+</span><span class="lbl">venues live</span><span class="delta">across 15 markets</span></div>
+      <div class="stat"><span class="num">150</span><span class="lbl">field technicians</span><span class="delta">scheduled daily</span></div>
+      <div class="stat"><span class="num">&lt;1 hr</span><span class="lbl">proposal turnaround</span><span class="delta">down from days</span></div>
+      <div class="stat"><span class="num">30,000+</span><span class="lbl">CRM records</span><span class="delta">migrated &amp; reconciled</span></div>
+      <div class="stat"><span class="num">250+</span><span class="lbl">events per season</span><span class="delta">covered without misses</span></div>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤</div>
+
+  <!-- work log -->
+  <section id="work" class="reveal">
+    <p class="prompt"><span class="ps1">$</span> <span class="cmd">tail -n 3 /var/log/shipped.log</span></p>
+
+    <article class="log-entry">
+      <div class="log-meta">
+        <span>[ENTRY 003]</span>
+        <span class="tag">proc=proposal-engine</span>
+        <span class="ok">STATUS=LIVE</span>
+      </div>
+      <h3>Proposal Engine for ANC</h3>
+      <p>Proposal production used to take days of manual assembly. Now it takes under an hour — same inputs, same pricing rules, every time.</p>
+      <div class="kv">
+        <span class="k">turnaround</span> <span class="dots">..............</span> <span class="v">days → under 1 hour</span><br>
+        <span class="k">pricing</span> <span class="dots">.................</span> <span class="v">versioned — every quote traceable</span><br>
+        <span class="k">output</span> <span class="dots">..................</span> <span class="v">reproducible proposals, zero drift</span>
+      </div>
+    </article>
+
+    <article class="log-entry">
+      <div class="log-meta">
+        <span>[ENTRY 002]</span>
+        <span class="tag">proc=venue-operations</span>
+        <span class="ok">STATUS=LIVE</span>
+      </div>
+      <h3>Venue Operations Platform</h3>
+      <p>Event coverage, technician scheduling, and venue status across an entire national footprint — visible on one screen. It replaced four separate reports.</p>
+      <div class="kv">
+        <span class="k">venues</span> <span class="dots">..................</span> <span class="v">43+ live</span><br>
+        <span class="k">technicians</span> <span class="dots">.............</span> <span class="v">150 in the field</span><br>
+        <span class="k">markets</span> <span class="dots">.................</span> <span class="v">15</span><br>
+        <span class="k">reports_replaced</span> <span class="dots">........</span> <span class="v">4 → 1 screen</span>
+      </div>
+    </article>
+
+    <article class="log-entry">
+      <div class="log-meta">
+        <span>[ENTRY 001]</span>
+        <span class="tag">proc=crm-extension</span>
+        <span class="ok">STATUS=LIVE</span>
+      </div>
+      <h3>CRM Platform Extension</h3>
+      <p>Extended a CRM into the company's operating system: custom objects for the real business model, full historical migration, and dashboards the team actually opens.</p>
+      <div class="kv">
+        <span class="k">custom_objects</span> <span class="dots">..........</span> <span class="v">13</span><br>
+        <span class="k">records</span> <span class="dots">.................</span> <span class="v">30,000+ migrated &amp; reconciled</span><br>
+        <span class="k">dashboards</span> <span class="dots">..............</span> <span class="v">16 live</span>
+      </div>
+    </article>
+  </section>
+
+  <div class="rule" aria-hidden="true">├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤</div>
+
+  <!-- capabilities -->
+  <section id="capabilities" class="reveal">
+    <p class="prompt"><span class="ps1">$</span> <span class="cmd">ls -l /srv/capabilities/</span></p>
+    <div class="caps">
+      <div class="cap"><b>crm-platforms/</b><span>built around how you actually sell</span></div>
+      <div class="cap"><b>proposal-engines/</b><span>priced, versioned, reproducible</span></div>
+      <div class="cap"><b>operations-platforms/</b><span>one screen instead of four reports</span></div>
+      <div class="cap"><b>automation-systems/</b><span>the work that shouldn't need a human</span></div>
+      <div class="cap"><b>platform-integrations/</b><span>your systems, finally talking</span></div>
+      <div class="cap"><b>ai-inside-the-workflow/</b><span>where it earns its keep — not a chatbot bolted on</span></div>
+    </div>
+  </section>
+
+  <div class="rule" aria-hidden="true">├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤</div>
+
+  <!-- contact -->
+  <section id="contact" class="reveal">
+    <p class="prompt"><span class="ps1">$</span> <span class="cmd">contact --start</span></p>
+    <div class="contact-box">
+      <p class="lead">Start a project.</p>
+      <p class="note">One email. Describe the operation you're running and where it leaks time. You'll get a straight answer on whether a system can fix it.</p>
+      <a class="mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+    </div>
+  </section>
+
+  <footer>
+    <span class="keepalive">connection kept alive</span>
+    <span>© <span id="year">2026</span> ahmad basheer · systems builder &amp; operator</span>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // live UTC clock
+  var clock = document.getElementById("clock");
+  function tick() {
+    var d = new Date();
+    function p(n) { return (n < 10 ? "0" : "") + n; }
+    clock.textContent = p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + ":" + p(d.getUTCSeconds()) + " UTC";
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // last login line + year
+  var d = new Date();
+  var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById("lastlogin").textContent =
+    "Last login: " + days[d.getUTCDay()] + " " + months[d.getUTCMonth()] + " " + d.getUTCDate() + " " + d.getUTCFullYear() + " from production";
+  document.getElementById("year").textContent = d.getFullYear();
+
+  // typewriter hero
+  var target = document.getElementById("typed");
+  var text = "I build systems that run companies.";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    target.textContent = text;
+  } else {
+    var i = 0;
+    (function type() {
+      if (i <= text.length) {
+        target.textContent = text.slice(0, i);
+        i++;
+        setTimeout(type, i < 3 ? 360 : 42 + Math.random() * 48);
+      }
+    })();
+  }
+
+  // reveal on scroll
+  var revealed = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && !reduced) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    revealed.forEach(function (el) { io.observe(el); });
+  } else {
+    revealed.forEach(function (el) { el.classList.add("in"); });
+  }
+})();
+</script>
+
+</body>
+</html>

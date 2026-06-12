@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ahmad Basheer — systems builder & operator. Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.">
+<meta name="theme-color" content="#13100c">
+<title>Concept 19 — Receipt · Ahmad Basheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f1e4;
+    --paper-dim:#efe9d9;
+    --ink:#26221a;
+    --ink-soft:#4d4739;
+    --ink-faint:#857d68;
+    --desk:#13100c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    background-color:var(--desk);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:64px 16px 90px;
+    overflow-x:hidden;
+  }
+  /* desk light — fixed so the lamp pool stays put on a long receipt */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    z-index:-1;
+    background:radial-gradient(120% 100% at 50% 0%, #211b13 0%, #16120d 52%, #0b0907 100%);
+  }
+  /* desk grain */
+  body::after{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:.07;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  }
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ---------- scene / paper ---------- */
+  .scene{position:relative;width:min(420px,100%);}
+  .tilt{position:relative;transform:rotate(.45deg)}
+  /* paper-curl shadows under the bottom corners */
+  .tilt::before,.tilt::after{
+    content:"";position:absolute;bottom:10px;width:44%;height:22px;
+    background:rgba(0,0,0,.55);filter:blur(11px);z-index:0;border-radius:50%;
+  }
+  .tilt::before{left:10px;transform:rotate(-2.6deg) translateY(8px)}
+  .tilt::after{right:10px;transform:rotate(2.6deg) translateY(8px)}
+
+  .paper{
+    position:relative;z-index:1;
+    background:
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-dim) 52%, var(--paper) 100%);
+    padding:34px 24px 40px;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.5),
+      0 14px 30px rgba(0,0,0,.45),
+      0 36px 70px rgba(0,0,0,.35);
+    animation:feed .7s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes feed{from{transform:translateY(-22px)}to{transform:translateY(0)}}
+
+  /* serrated / perforated tear edges */
+  .edge{position:absolute;left:0;right:0;height:10px;background-repeat:repeat-x;background-size:14px 10px;pointer-events:none}
+  .edge-top{
+    top:-9px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10'%3E%3Cpath d='M0 10 L7 0 L14 10 Z' fill='%23f6f1e4'/%3E%3C/svg%3E");
+    filter:drop-shadow(0 -1px 1px rgba(0,0,0,.25));
+  }
+  .edge-bot{
+    bottom:-9px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10'%3E%3Cpath d='M0 0 L7 10 L14 0 Z' fill='%23f6f1e4'/%3E%3C/svg%3E");
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));
+  }
+
+  /* thermal-fade streaks + paper grain, over the ink */
+  .streaks{
+    position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(246,241,228,0) 0 22px, rgba(246,241,228,.20) 22px 25px,
+        rgba(246,241,228,0) 25px 59px, rgba(246,241,228,.12) 59px 61px,
+        rgba(246,241,228,0) 61px 97px, rgba(246,241,228,.17) 97px 101px),
+      linear-gradient(180deg,
+        rgba(246,241,228,0) 0 31%, rgba(246,241,228,.15) 35% 38%,
+        rgba(246,241,228,0) 42% 71%, rgba(246,241,228,.10) 74% 76%,
+        rgba(246,241,228,0) 79%);
+  }
+  .grain{
+    position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- type ---------- */
+  .body{position:relative;z-index:2;font-size:12.5px;line-height:1.62;letter-spacing:.01em;
+    text-shadow:0 0 .45px rgba(38,34,26,.6);} /* slight ink bleed */
+  .c{text-align:center}
+  .faint{color:var(--ink-faint)}
+  .soft{color:var(--ink-soft)}
+  .sm{font-size:11px;line-height:1.7}
+  .xs{font-size:10px;line-height:1.7;letter-spacing:.04em}
+  .b{font-weight:600}
+
+  /* segments print in, top to bottom */
+  .seg{opacity:0;animation:print .34s steps(2,end) forwards;animation-delay:calc(var(--i,0)*70ms + .25s)}
+  @keyframes print{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+  .noanim .seg{animation:none!important;opacity:0!important}
+
+  /* character rules — receipts draw their own lines */
+  .rl{overflow:hidden;white-space:nowrap;user-select:none;color:var(--ink);opacity:.75;font-size:11px;margin:10px 0}
+  .rl.eq{opacity:.95;font-weight:600}
+  .stars{overflow:hidden;white-space:nowrap;user-select:none;text-align:center;letter-spacing:.45ch;font-size:11px;margin:4px 0}
+
+  /* dot-leader line items */
+  .li{display:flex;align-items:baseline;gap:.6ch}
+  .li .lbl{flex:0 1 auto;white-space:nowrap}
+  .li .fill{flex:1 1 0;min-width:1.5ch;overflow:hidden;white-space:nowrap;color:var(--ink-faint)}
+  .li .fill::before{content:"......................................................................................"}
+  .li .val{flex:0 0 auto;font-weight:600;white-space:nowrap}
+  .sub{padding-left:3ch;font-size:11.5px;color:var(--ink-soft)}
+  .sub .val{font-weight:500}
+  .sku{padding-left:3ch;font-size:10px;letter-spacing:.06em;color:var(--ink-faint)}
+  .itm{margin:11px 0}
+  .itm > .li > .lbl{font-weight:600}
+  .qty{display:inline-block;width:2ch;color:var(--ink-soft);font-weight:500}
+
+  /* header */
+  .name{font-size:17px;font-weight:700;letter-spacing:.42ch;margin-right:-.42ch;text-shadow:.6px 0 0 currentColor, 0 0 .45px rgba(38,34,26,.6)}
+  .meta-row{display:flex;justify-content:space-between;gap:1ch;font-size:10.5px;letter-spacing:.03em;color:var(--ink-soft)}
+
+  /* hero */
+  .hero{font-size:20px;line-height:1.34;font-weight:700;letter-spacing:.02em;
+    text-shadow:.7px 0 0 currentColor, 0 0 .5px rgba(38,34,26,.55);text-transform:uppercase;margin:6px 0}
+  .hero-sub{font-size:11.5px;color:var(--ink-soft);max-width:34ch;margin:6px auto 2px}
+
+  /* totals */
+  .total{display:flex;justify-content:space-between;align-items:flex-start;gap:2ch;
+    font-size:15px;font-weight:700;letter-spacing:.02em;
+    text-shadow:.65px 0 0 currentColor, 0 0 .5px rgba(38,34,26,.55);margin:2px 0}
+  .total .rhs{text-align:right;text-transform:uppercase;line-height:1.45}
+
+  /* coupon */
+  .cut{display:flex;align-items:center;gap:1ch;color:var(--ink-soft);margin:16px 0 12px;user-select:none}
+  .cut .dash{flex:1;overflow:hidden;white-space:nowrap;font-size:11px}
+  .cut .scis{font-size:13px;transform:scaleX(-1);display:inline-block}
+  .coupon{border:1.5px dashed var(--ink);padding:20px 14px 18px;text-align:center;margin:2px 0 6px}
+  .coupon h2{font-size:15px;font-weight:700;letter-spacing:.18ch;margin:4px 0 8px;text-transform:uppercase;
+    text-shadow:.6px 0 0 currentColor}
+  .mail{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;
+    font-weight:700;font-size:12.5px;letter-spacing:.08em;padding:10px 18px;margin:10px 0 8px;
+    transition:transform .12s ease, box-shadow .12s ease}
+  .mail:hover{transform:translateY(-1px);box-shadow:0 3px 0 rgba(38,34,26,.3)}
+  .mail:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
+
+  /* barcode + qr */
+  .bars{display:flex;align-items:stretch;justify-content:center;height:52px;margin:14px auto 4px}
+  .bars i{display:block;background:var(--ink);height:100%}
+  .bcode{letter-spacing:.5ch;margin-right:-.5ch}
+  .qrwrap{display:flex;justify-content:center;margin:16px 0 4px}
+  #qr{image-rendering:pixelated;width:96px;height:96px;display:block}
+
+  /* desk furniture */
+  .desk-label{margin-top:34px;color:rgba(246,241,228,.28);font-size:10px;letter-spacing:.3ch;text-transform:uppercase;text-align:center}
+  .reprint{margin-top:12px;background:none;border:1px solid rgba(246,241,228,.18);color:rgba(246,241,228,.45);
+    font-family:inherit;font-size:10.5px;letter-spacing:.22ch;text-transform:uppercase;padding:9px 18px;cursor:pointer;
+    transition:color .15s ease,border-color .15s ease}
+  .reprint:hover{color:rgba(246,241,228,.85);border-color:rgba(246,241,228,.45)}
+  .reprint:focus-visible{outline:1px dashed rgba(246,241,228,.6);outline-offset:3px}
+
+  .gap-s{height:8px}.gap-m{height:14px}.gap-l{height:22px}
+
+  a.plain{color:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+  a.plain:hover{text-decoration-style:solid}
+
+  @media (max-width:460px){
+    body{padding:40px 10px 70px}
+    .tilt{transform:none}
+    .paper{padding:30px 16px 34px}
+    .hero{font-size:18px}
+    .name{font-size:15px;letter-spacing:.3ch;margin-right:-.3ch}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .seg{animation:none;opacity:1}
+    .paper{animation:none}
+    .mail{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="tilt">
+    <div class="paper" id="paper">
+      <div class="edge edge-top" aria-hidden="true"></div>
+      <div class="edge edge-bot" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+      <div class="streaks" aria-hidden="true"></div>
+
+      <div class="body">
+
+        <!-- ============ HEADER ============ -->
+        <header class="c seg">
+          <h1 class="name">AHMAD BASHEER</h1>
+          <p class="sm soft" style="margin-top:4px">SYSTEMS BUILDER &amp; OPERATOR</p>
+          <p class="xs faint">WWW.BASHEER.APP · OPEN 24/7 · SHIPS DAILY</p>
+        </header>
+
+        <div class="rl seg" aria-hidden="true">--------------------------------------------------------------</div>
+
+        <div class="seg">
+          <div class="meta-row"><span>TXN 2026-0019</span><span>REG 01</span><span>OP: AHMAD</span></div>
+          <div class="meta-row"><span>DATE <span id="dateNow">06/12/26</span></span><span>TIME <span id="timeNow">09:41:07</span></span></div>
+        </div>
+
+        <!-- ============ HERO ============ -->
+        <div class="gap-m"></div>
+        <div class="stars seg" aria-hidden="true">* * * * * * * * * * * *</div>
+        <p class="hero c seg">I build systems<br>that run companies.</p>
+        <div class="stars seg" aria-hidden="true">* * * * * * * * * * * *</div>
+        <p class="hero-sub c seg">CUSTOM PLATFORMS FOR OPERATIONS, SALES, AND SERVICE — DESIGNED, BUILT, AND OPERATED END-TO-END.</p>
+
+        <div class="rl seg" aria-hidden="true">--------------------------------------------------------------</div>
+
+        <!-- ============ ITEMS ============ -->
+        <div class="seg">
+          <div class="li xs faint"><span class="lbl">QTY&nbsp;&nbsp;ITEM</span><span class="fill"></span><span class="val" style="font-weight:500">AMT</span></div>
+        </div>
+
+        <div class="itm seg">
+          <div class="li"><span class="lbl"><span class="qty">1</span> PROPOSAL ENGINE — ANC</span><span class="fill"></span><span class="val">&lt;1 HR</span></div>
+          <p class="sku">SKU 0001-PE · PRICING / PROPOSALS</p>
+          <div class="li sub"><span class="lbl">TURNAROUND: DAYS</span><span class="fill"></span><span class="val">→ UNDER 1 HR</span></div>
+          <div class="li sub"><span class="lbl">VERSIONED PRICING</span><span class="fill"></span><span class="val">INCL</span></div>
+          <div class="li sub"><span class="lbl">REPRODUCIBLE PROPOSALS</span><span class="fill"></span><span class="val">INCL</span></div>
+        </div>
+
+        <div class="itm seg">
+          <div class="li"><span class="lbl"><span class="qty">1</span> VENUE OPERATIONS PLATFORM</span><span class="fill"></span><span class="val">LIVE</span></div>
+          <p class="sku">SKU 0002-VO · FIELD OPERATIONS</p>
+          <div class="li sub"><span class="lbl">VENUES ON PLATFORM</span><span class="fill"></span><span class="val">43+</span></div>
+          <div class="li sub"><span class="lbl">FIELD TECHNICIANS</span><span class="fill"></span><span class="val">150</span></div>
+          <div class="li sub"><span class="lbl">MARKETS</span><span class="fill"></span><span class="val">15</span></div>
+          <div class="li sub"><span class="lbl">ONE SCREEN REPLACED</span><span class="fill"></span><span class="val">4 REPORTS</span></div>
+        </div>
+
+        <div class="itm seg">
+          <div class="li"><span class="lbl"><span class="qty">1</span> CRM PLATFORM EXTENSION</span><span class="fill"></span><span class="val">LIVE</span></div>
+          <p class="sku">SKU 0003-CX · DATA / DASHBOARDS</p>
+          <div class="li sub"><span class="lbl">CUSTOM OBJECTS</span><span class="fill"></span><span class="val">13</span></div>
+          <div class="li sub"><span class="lbl">RECORDS MIGRATED + RECONCILED</span><span class="fill"></span><span class="val">30,000+</span></div>
+          <div class="li sub"><span class="lbl">LIVE DASHBOARDS</span><span class="fill"></span><span class="val">16</span></div>
+        </div>
+
+        <div class="rl seg" aria-hidden="true">--------------------------------------------------------------</div>
+        <div class="li sm seg"><span class="lbl soft">ITEMS SOLD</span><span class="fill"></span><span class="val">3</span></div>
+
+        <!-- ============ RUNNING COUNTS ============ -->
+        <div class="gap-m"></div>
+        <p class="c sm b seg">*** RUNNING COUNTS ***</p>
+        <div class="gap-s"></div>
+        <div class="seg">
+          <div class="li"><span class="lbl">CONTAINERS IN PRODUCTION</span><span class="fill"></span><span class="val">100+</span></div>
+          <div class="li"><span class="lbl">VENUES LIVE</span><span class="fill"></span><span class="val">43+</span></div>
+          <div class="li"><span class="lbl">FIELD TECHNICIANS</span><span class="fill"></span><span class="val">150</span></div>
+          <div class="li"><span class="lbl">PROPOSAL TURNAROUND</span><span class="fill"></span><span class="val">&lt;1 HR</span></div>
+          <p class="sub xs faint" style="padding-left:0;text-align:right">( DOWN FROM DAYS )</p>
+          <div class="li"><span class="lbl">CRM RECORDS</span><span class="fill"></span><span class="val">30,000+</span></div>
+          <div class="li"><span class="lbl">EVENTS PER SEASON</span><span class="fill"></span><span class="val">250+</span></div>
+        </div>
+
+        <!-- ============ DEPARTMENTS ============ -->
+        <div class="gap-m"></div>
+        <p class="c sm b seg">*** DEPARTMENTS ***</p>
+        <div class="gap-s"></div>
+        <div class="seg sm">
+          <div class="li"><span class="lbl faint">DEPT 01</span><span class="fill"></span><span class="val">CRM PLATFORMS</span></div>
+          <div class="li"><span class="lbl faint">DEPT 02</span><span class="fill"></span><span class="val">PROPOSAL ENGINES</span></div>
+          <div class="li"><span class="lbl faint">DEPT 03</span><span class="fill"></span><span class="val">OPERATIONS PLATFORMS</span></div>
+          <div class="li"><span class="lbl faint">DEPT 04</span><span class="fill"></span><span class="val">AUTOMATION SYSTEMS</span></div>
+          <div class="li"><span class="lbl faint">DEPT 05</span><span class="fill"></span><span class="val">PLATFORM INTEGRATIONS</span></div>
+          <div class="li"><span class="lbl faint">DEPT 06</span><span class="fill"></span><span class="val">AI INSIDE THE WORKFLOW</span></div>
+        </div>
+
+        <!-- ============ TOTALS ============ -->
+        <div class="rl seg" aria-hidden="true">--------------------------------------------------------------</div>
+        <div class="seg">
+          <div class="li"><span class="lbl">SUBTOTAL</span><span class="fill"></span><span class="val">3 SYSTEMS</span></div>
+          <div class="li"><span class="lbl">HYPE TAX</span><span class="fill"></span><span class="val">0.00</span></div>
+          <div class="li"><span class="lbl">BUZZWORD SURCHARGE</span><span class="fill"></span><span class="val">0.00</span></div>
+          <div class="li"><span class="lbl">HAND-OFF FEE</span><span class="fill"></span><span class="val">0.00</span></div>
+        </div>
+        <div class="rl eq seg" aria-hidden="true">==============================================================</div>
+        <div class="total seg"><span>TOTAL</span><span class="rhs">One operator<br>— end to end</span></div>
+        <div class="rl eq seg" aria-hidden="true">==============================================================</div>
+        <div class="seg sm">
+          <div class="li"><span class="lbl">TENDERED</span><span class="fill"></span><span class="val">DESIGN · BUILD · RUN</span></div>
+          <div class="li"><span class="lbl">CHANGE DUE</span><span class="fill"></span><span class="val">NONE</span></div>
+          <div class="li"><span class="lbl">YOU SAVED</span><span class="fill"></span><span class="val">DAYS, PER PROPOSAL</span></div>
+        </div>
+
+        <!-- ============ COUPON / CTA ============ -->
+        <div class="cut seg" aria-hidden="true"><span class="scis">✂</span><span class="dash">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span></div>
+        <div class="coupon seg">
+          <p class="xs faint">COUPON · KEEP THIS PORTION</p>
+          <h2>Start a project</h2>
+          <p class="sm soft">GOOD FOR: ONE SYSTEM THAT<br>RUNS YOUR COMPANY</p>
+          <a class="mail" href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+          <p class="xs faint">NO EXPIRY · NO FINE PRINT</p>
+        </div>
+        <div class="cut seg" aria-hidden="true"><span class="scis">✂</span><span class="dash">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span></div>
+
+        <!-- ============ BARCODE / QR ============ -->
+        <div class="seg">
+          <div class="bars" id="bars" aria-hidden="true"></div>
+          <p class="c xs faint bcode">*OPERATOR-19*</p>
+        </div>
+
+        <div class="seg">
+          <div class="qrwrap"><canvas id="qr" width="84" height="84" aria-hidden="true"></canvas></div>
+          <p class="c xs faint">VERIFIED · RUNS IN PRODUCTION</p>
+        </div>
+
+        <!-- ============ FOOTER ============ -->
+        <div class="gap-m"></div>
+        <p class="c b seg" style="letter-spacing:.12ch">THANK YOU FOR YOUR BUSINESS</p>
+        <div class="gap-s"></div>
+        <p class="c sm soft seg">RETURNS: RARELY NEEDED —<br>EVERY SYSTEM COMES WITH ITS OPERATOR.</p>
+        <div class="gap-s"></div>
+        <p class="c xs faint seg">TELL US HOW WE DID:<br><a class="plain" href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a> · SURVEY CODE 19-RCPT</p>
+
+        <div class="rl seg" aria-hidden="true">--------------------------------------------------------------</div>
+        <p class="c xs faint seg">REPRINT #<span id="copyNum">02</span> · <span id="reprintTs">06/12/26 09:41:07</span></p>
+        <div class="gap-s"></div>
+        <p class="c sm b seg" style="letter-spacing:.2ch">*** CUSTOMER COPY ***</p>
+
+      </div><!-- /.body -->
+    </div><!-- /.paper -->
+  </div><!-- /.tilt -->
+
+  <p class="desk-label">Concept 19 — Thermal Receipt</p>
+  <div style="text-align:center"><button class="reprint" id="reprint" type="button">⟳&nbsp; Reprint</button></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- deterministic PRNG ---------- */
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+  function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+
+  /* ---------- timestamps ---------- */
+  function pad(n){return String(n).padStart(2,"0")}
+  function dstr(d){return pad(d.getMonth()+1)+"/"+pad(d.getDate())+"/"+String(d.getFullYear()).slice(2)}
+  function tstr(d){return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())}
+  var now=new Date();
+  document.getElementById("dateNow").textContent=dstr(now);
+  document.getElementById("timeNow").textContent=tstr(now);
+  document.getElementById("reprintTs").textContent=dstr(now)+" "+tstr(now);
+
+  /* ---------- barcode (deterministic from string) ---------- */
+  (function(){
+    var el=document.getElementById("bars");
+    var rnd=mulberry32(hash("OPERATOR-19-BASHEER"));
+    var widths=[1,1,2,2,3,4], gaps=[1,2,2,3];
+    var html='<i style="width:2px;margin-right:2px"></i><i style="width:1px;margin-right:5px"></i>';
+    for(var i=0;i<44;i++){
+      var w=widths[Math.floor(rnd()*widths.length)];
+      var g=gaps[Math.floor(rnd()*gaps.length)];
+      html+='<i style="width:'+w+'px;margin-right:'+g+'px"></i>';
+    }
+    html+='<i style="width:1px;margin-right:2px"></i><i style="width:2px"></i>';
+    el.innerHTML=html;
+  })();
+
+  /* ---------- QR-style block (finder patterns + timing + deterministic data) ---------- */
+  (function(){
+    var n=21,s=4,c=document.getElementById("qr");
+    c.width=n*s;c.height=n*s;
+    var ctx=c.getContext("2d");
+    ctx.fillStyle="#f6f1e4";ctx.fillRect(0,0,n*s,n*s);
+    var rnd=mulberry32(hash("AHMAD@BASHEER.APP"));
+    var m=[],x,y;
+    for(y=0;y<n;y++){m[y]=[];for(x=0;x<n;x++){m[y][x]=rnd()<0.46?1:0}}
+    for(var i=0;i<n;i++){m[6][i]=i%2?0:1;m[i][6]=i%2?0:1}        /* timing */
+    function finder(cx,cy){
+      for(var dy=-1;dy<=7;dy++)for(var dx=-1;dx<=7;dx++){
+        var yy=cy+dy,xx=cx+dx;
+        if(yy<0||yy>=n||xx<0||xx>=n)continue;
+        if(dy<0||dy>6||dx<0||dx>6){m[yy][xx]=0;continue}          /* separator */
+        var on=(dx===0||dx===6||dy===0||dy===6||(dx>=2&&dx<=4&&dy>=2&&dy<=4));
+        m[yy][xx]=on?1:0;
+      }
+    }
+    finder(0,0);finder(n-7,0);finder(0,n-7);
+    m[n-8][8]=1;                                                  /* dark module */
+    ctx.fillStyle="#26221a";
+    for(y=0;y<n;y++)for(x=0;x<n;x++)if(m[y][x])ctx.fillRect(x*s,y*s,s,s);
+  })();
+
+  /* ---------- print-in stagger ---------- */
+  var segs=Array.prototype.slice.call(document.querySelectorAll(".seg"));
+  segs.forEach(function(el,i){el.style.setProperty("--i",i)});
+
+  /* ---------- reprint ---------- */
+  var copies=2;
+  document.getElementById("reprint").addEventListener("click",function(){
+    copies++;
+    document.getElementById("copyNum").textContent=pad(copies);
+    var d=new Date();
+    document.getElementById("reprintTs").textContent=dstr(d)+" "+tstr(d);
+    document.getElementById("timeNow").textContent=tstr(d);
+    var p=document.getElementById("paper");
+    p.classList.add("noanim");
+    void p.offsetWidth;                                           /* reflow → restart animations */
+    p.classList.remove("noanim");
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

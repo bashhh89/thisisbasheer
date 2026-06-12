@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 13 — Arcade · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — Systems builder &amp; operator. I build systems that run companies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONCEPT 13 — ARCADE
+   16-color palette · pixel borders · CRT scanlines
+   ============================================================ */
+:root{
+  /* the 16 colors */
+  --c00:#0b0a10; /* near-black bg        */
+  --c01:#13111c; /* panel                */
+  --c02:#1a1730; /* panel raised         */
+  --c03:#272346; /* line / dim border    */
+  --c04:#1d2b53; /* dark blue            */
+  --c05:#5d5a88; /* purple-gray          */
+  --c06:#8b8aa3; /* dim text             */
+  --c07:#f2f2e9; /* ink / white          */
+  --c08:#ff004d; /* red                  */
+  --c09:#ffa300; /* orange               */
+  --c10:#ffec27; /* yellow               */
+  --c11:#00e436; /* green                */
+  --c12:#29adff; /* blue                 */
+  --c13:#00b8a8; /* teal                 */
+  --c14:#ff77a8; /* pink                 */
+  --c15:#ffccaa; /* peach                */
+
+  --bw:4px;              /* pixel border weight */
+  --head:'Press Start 2P', monospace;
+  --mono:'IBM Plex Mono', monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+::selection{background:var(--c10);color:var(--c00)}
+
+body{
+  background:
+    radial-gradient(900px 480px at 50% -120px, rgba(29,43,83,.55), transparent 70%),
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+    var(--c00);
+  background-size:auto, 24px 24px, 24px 24px, auto;
+  color:var(--c07);
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+  -webkit-font-smoothing:none;
+}
+
+/* ---------- CRT overlay ---------- */
+.crt-scan{
+  position:fixed;inset:0;z-index:9000;pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.18) 2px 4px);
+  animation:flicker 4s steps(8) infinite;
+}
+.crt-glow{
+  position:fixed;inset:0;z-index:9001;pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,0,77,.022) 0 1px, rgba(0,228,54,.018) 1px 2px, rgba(41,173,255,.022) 2px 3px),
+    radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.46) 100%);
+}
+@keyframes flicker{
+  0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.82} 94%{opacity:1} 97%{opacity:.92} 98%{opacity:1}
+}
+
+/* ---------- pixel border primitive ----------
+   four side-shadows leave notched corners = pixel-art panel */
+.pix{
+  position:relative;
+  background:var(--c01);
+  box-shadow:
+    0 calc(var(--bw)*-1) 0 0 var(--bc,var(--c03)),
+    0 var(--bw)          0 0 var(--bc,var(--c03)),
+    calc(var(--bw)*-1) 0 0 0 var(--bc,var(--c03)),
+    var(--bw)          0 0 0 var(--bc,var(--c03)),
+    var(--bw) calc(var(--bw)*2) 0 0 rgba(0,0,0,.5),
+    calc(var(--bw)*2) var(--bw) 0 0 rgba(0,0,0,.5);
+}
+
+/* ---------- type ---------- */
+.h{
+  font-family:var(--head);
+  line-height:1.6;
+  letter-spacing:0;
+  text-transform:uppercase;
+}
+a{color:var(--c12);text-decoration:none}
+a:hover{color:var(--c10)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ============================================================
+   HUD (fixed top bar)
+   ============================================================ */
+.hud{
+  position:fixed;top:0;left:0;right:0;z-index:8000;
+  background:var(--c00);
+  border-bottom:var(--bw) solid var(--c03);
+  font-family:var(--head);
+  font-size:9px;
+}
+.hud-in{
+  max-width:1080px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;gap:28px;
+}
+.hud .p1{color:var(--c08);animation:blink 1.1s steps(1) infinite}
+.hud .who{color:var(--c07)}
+.hud .score{color:var(--c10)}
+.hud .lives{display:flex;align-items:center;gap:6px;color:var(--c06)}
+.hud .lives svg{display:block}
+.hud nav{margin-left:auto;display:flex;gap:22px}
+.hud nav a{color:var(--c06)}
+.hud nav a:hover{color:var(--c10)}
+.hud .x30{color:var(--c11);display:none}
+body.god .hud .x30{display:inline}
+
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+
+/* ============================================================
+   HERO — attract screen
+   ============================================================ */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:120px 0 0;
+  position:relative;
+}
+.hero-stage{position:relative;text-align:center;padding:48px 24px 56px}
+
+.hero .mode{
+  font-family:var(--head);font-size:9px;color:var(--c06);
+  margin-bottom:30px;
+}
+.hero .mode b{color:var(--c14);font-weight:400}
+
+.hero h1{
+  font-family:var(--head);
+  font-size:clamp(15px, 4.1vw, 42px);
+  line-height:1.65;
+  text-transform:uppercase;
+  max-width:21ch;margin:0 auto 8px;
+  text-shadow:
+    0 4px 0 var(--c04),
+    0 8px 0 rgba(0,0,0,.55);
+}
+.hero h1 .run{color:var(--c10)}
+
+.hero .sub{
+  color:var(--c06);
+  max-width:52ch;margin:26px auto 0;
+  font-size:15px;
+}
+
+.start{
+  display:inline-block;
+  margin-top:48px;
+  font-family:var(--head);
+  font-size:clamp(11px,1.8vw,15px);
+  color:var(--c11);
+  background:none;border:0;cursor:pointer;
+  padding:18px 26px;
+  animation:blink 1.2s steps(1) infinite;
+}
+.start:hover{animation:none;color:var(--c10)}
+.start:focus-visible{outline:var(--bw) solid var(--c11);animation:none}
+
+.credit{
+  margin-top:26px;
+  font-family:var(--head);font-size:8px;color:var(--c05);
+}
+.credit b{color:var(--c09);font-weight:400}
+
+/* floating sprites */
+.sprite{position:absolute;pointer-events:none;image-rendering:pixelated}
+.sprite svg{display:block}
+.inv-a{top:8%;left:6%;animation:hover-l 3.2s steps(2) infinite}
+.inv-b{top:14%;right:8%;animation:hover-r 2.8s steps(2) infinite}
+.inv-c{bottom:16%;left:12%;animation:hover-r 3.6s steps(2) infinite}
+.coin-f{bottom:22%;right:13%;animation:hover-l 2.4s steps(2) infinite}
+@keyframes hover-l{0%,100%{transform:translate(0,0)}50%{transform:translate(-8px,8px)}}
+@keyframes hover-r{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-8px)}}
+
+/* attract-mode ticker */
+.ticker{
+  border-top:var(--bw) solid var(--c03);
+  border-bottom:var(--bw) solid var(--c03);
+  background:var(--c01);
+  overflow:hidden;white-space:nowrap;
+  padding:13px 0;
+  font-family:var(--head);font-size:9px;color:var(--c06);
+}
+.ticker-track{display:inline-block;animation:ticker 38s linear infinite}
+.ticker b{font-weight:400;color:var(--c10)}
+.ticker .sep{color:var(--c08);margin:0 22px}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section{padding:104px 0}
+.sec-head{margin-bottom:52px}
+.world{
+  font-family:var(--head);font-size:9px;color:var(--c05);
+  margin-bottom:16px;
+}
+.sec-head h2{
+  font-family:var(--head);
+  font-size:clamp(15px,2.6vw,24px);
+  text-transform:uppercase;line-height:1.6;
+}
+.sec-head h2 .blip{color:var(--c08)}
+.sec-head p{color:var(--c06);margin-top:14px;max-width:56ch}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(14px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .35s steps(4),transform .35s steps(4)}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none}
+}
+
+/* ============================================================
+   STATS — player status screen
+   ============================================================ */
+.status{--bc:var(--c03);padding:40px 36px}
+.status-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:30px 48px;
+}
+.stat{min-width:0}
+.stat .row1{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  font-family:var(--head);font-size:9px;margin-bottom:10px;
+}
+.stat .abbr{color:var(--stat-c)}
+.stat .val{color:var(--c07);font-size:11px;white-space:nowrap}
+.stat .name{color:var(--c06);font-size:12.5px;margin-bottom:10px;display:block}
+.bar{
+  height:18px;background:var(--c00);position:relative;
+  box-shadow:
+    0 -3px 0 0 var(--c03), 0 3px 0 0 var(--c03),
+    -3px 0 0 0 var(--c03), 3px 0 0 0 var(--c03);
+}
+.bar i{
+  display:block;height:100%;width:var(--w);
+  background:var(--stat-c);
+  box-shadow:inset 0 5px 0 rgba(255,255,255,.28), inset 0 -4px 0 rgba(0,0,0,.3);
+  position:relative;z-index:1;
+}
+.bar::after{ /* segment notches over the fill */
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(90deg, transparent 0 16px, var(--c00) 16px 19px);
+}
+.bar.anim i{animation:fill 1.1s steps(18) backwards}
+@keyframes fill{from{width:0}}
+.stat .note{font-family:var(--head);font-size:8px;color:var(--c05);margin-top:9px;display:block}
+.stat .note em{font-style:normal;color:var(--c11)}
+
+/* trophy shelf */
+.trophies{
+  margin-top:34px;padding-top:30px;
+  border-top:var(--bw) solid var(--c03);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+}
+.trophy{display:flex;align-items:center;gap:16px}
+.trophy svg{flex:none}
+.trophy .t-name{font-family:var(--head);font-size:8.5px;color:var(--c10);line-height:1.8}
+.trophy .t-sub{color:var(--c06);font-size:12px;display:block;font-family:var(--mono)}
+
+/* ============================================================
+   QUEST LOG
+   ============================================================ */
+.quests{display:grid;gap:46px}
+.quest{
+  --bc:var(--c03);
+  padding:34px 36px 36px;
+  transition:transform .12s steps(2);
+}
+.quest:hover{transform:translate(-4px,-4px);--bc:var(--c05)}
+.q-top{
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;
+  font-family:var(--head);font-size:9px;
+  margin-bottom:20px;
+}
+.q-num{color:var(--c05)}
+.q-done{color:var(--c11)}
+.q-done::after{content:" ✓"}
+.quest h3{
+  font-family:var(--head);
+  font-size:clamp(13px,2vw,18px);
+  text-transform:uppercase;line-height:1.7;
+  margin-bottom:6px;
+}
+.quest:hover h3::before{content:"▸ ";color:var(--c10)}
+.q-for{
+  font-family:var(--head);font-size:8.5px;color:var(--c14);
+  display:block;margin-bottom:18px;
+}
+.quest p{color:var(--c06);max-width:62ch}
+.quest p b{color:var(--c07);font-weight:500}
+.xp{
+  display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;
+}
+.xp span{
+  font-family:var(--head);font-size:8.5px;line-height:1;
+  padding:9px 12px 8px;
+  color:var(--xp-c,var(--c10));
+  background:var(--c00);
+  box-shadow:
+    0 -3px 0 0 var(--xp-c,var(--c10)), 0 3px 0 0 var(--xp-c,var(--c10)),
+    -3px 0 0 0 var(--xp-c,var(--c10)), 3px 0 0 0 var(--xp-c,var(--c10));
+}
+.xp-label{
+  font-family:var(--head);font-size:8px;color:var(--c05);
+  align-self:center;margin-right:4px;
+}
+
+/* ============================================================
+   INVENTORY
+   ============================================================ */
+.inv-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
+}
+.slot{
+  --bc:var(--c03);
+  padding:28px 26px 26px;
+  transition:transform .12s steps(2);
+}
+.slot:hover{transform:translate(-3px,-3px);--bc:var(--c05)}
+.slot-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.slot-ico{
+  width:64px;height:64px;background:var(--c00);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:
+    0 -3px 0 0 var(--c03), 0 3px 0 0 var(--c03),
+    -3px 0 0 0 var(--c03), 3px 0 0 0 var(--c03);
+}
+.slot-no{font-family:var(--head);font-size:8px;color:var(--c05)}
+.slot h3{
+  font-family:var(--head);font-size:10.5px;line-height:1.8;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.slot p{color:var(--c06);font-size:13px;line-height:1.65}
+.slot .eq{
+  display:inline-block;margin-top:16px;
+  font-family:var(--head);font-size:7.5px;color:var(--c11);
+}
+.slot .eq::before{content:"■ ";}
+
+/* ============================================================
+   CTA — NEW GAME menu
+   ============================================================ */
+.cta{padding-bottom:140px}
+.menu{
+  --bc:var(--c04);
+  background:var(--c01);
+  padding:56px 48px;
+  text-align:center;
+}
+.menu .gameover{
+  font-family:var(--head);font-size:9px;color:var(--c05);margin-bottom:26px;
+}
+.menu h2{
+  font-family:var(--head);
+  font-size:clamp(17px,3vw,28px);
+  text-transform:uppercase;line-height:1.6;
+  margin-bottom:14px;
+}
+.menu .pitch{color:var(--c06);max-width:46ch;margin:0 auto 42px}
+.menu-rows{display:inline-block;text-align:left}
+.menu-row{
+  display:flex;align-items:baseline;gap:20px;
+  font-family:var(--head);font-size:clamp(10px,1.7vw,13px);
+  padding:13px 6px;
+}
+.menu-row .cur{width:1.2em;color:var(--c10)}
+.menu-row.sel .cur{animation:blink 1s steps(1) infinite}
+.menu-row a{color:var(--c07)}
+.menu-row a:hover{color:var(--c10)}
+.menu-row .arrow{color:var(--c08)}
+.menu-row .dest{color:var(--c12);font-size:.82em}
+.menu-row:hover .dest{color:var(--c10)}
+.menu .freeplay{
+  margin-top:40px;
+  font-family:var(--head);font-size:8px;color:var(--c05);
+}
+.menu .freeplay b{color:var(--c09);font-weight:400}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  border-top:var(--bw) solid var(--c03);
+  padding:34px 0 46px;
+  font-family:var(--head);font-size:8px;color:var(--c05);
+}
+.foot-in{
+  max-width:1080px;margin:0 auto;padding:0 24px;
+  display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between;
+  line-height:2.2;
+}
+.konami-hint{color:var(--c03);letter-spacing:2px}
+body.god .konami-hint{color:var(--c11)}
+
+/* ============================================================
+   GOD MODE
+   ============================================================ */
+.toast{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  z-index:9500;
+  background:var(--c00);
+  --bc:var(--c11);
+  padding:34px 44px;text-align:center;
+  font-family:var(--head);font-size:11px;line-height:2.4;color:var(--c11);
+  display:none;
+}
+.toast small{display:block;font-size:8px;color:var(--c06)}
+body.god .toast.show{display:block}
+body.god .hero h1{
+  animation:godhue 1.6s steps(8) infinite;
+}
+@keyframes godhue{
+  0%{color:var(--c07)} 25%{color:var(--c10)} 50%{color:var(--c11)} 75%{color:var(--c14)} 100%{color:var(--c07)}
+}
+.confetto{
+  position:fixed;top:-12px;width:8px;height:8px;z-index:9400;pointer-events:none;
+  animation:fall linear forwards;
+}
+@keyframes fall{to{transform:translateY(110vh)}}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:880px){
+  .inv-grid{grid-template-columns:repeat(2,1fr)}
+  .trophies{grid-template-columns:1fr;gap:18px}
+}
+@media (max-width:720px){
+  .hud nav{display:none}
+  .hud-in{gap:18px;justify-content:space-between}
+  .status-grid{grid-template-columns:1fr;gap:26px}
+  .status{padding:30px 22px}
+  .quest{padding:26px 22px 28px}
+  .menu{padding:44px 22px}
+  .sprite{display:none}
+  section{padding:80px 0}
+}
+@media (max-width:560px){
+  .inv-grid{grid-template-columns:1fr}
+  .menu-row{flex-wrap:wrap;gap:10px 14px}
+}
+@media (max-width:400px){
+  .hero h1{font-size:13px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .start,.hud .p1,.menu-row.sel .cur{animation:none}
+  .crt-scan{animation:none}
+  .ticker-track{animation:none}
+  .sprite{animation:none}
+  .bar.anim i{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="crt-scan" aria-hidden="true"></div>
+<div class="crt-glow" aria-hidden="true"></div>
+
+<!-- ================= HUD ================= -->
+<header class="hud">
+  <div class="hud-in">
+    <span><span class="p1">1UP</span> <span class="who">AHMAD</span></span>
+    <span class="score">SCORE <span id="score">0000000</span></span>
+    <span class="lives" aria-label="lives">
+      <svg width="14" height="14" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ff004d"><rect x="1" y="0" width="2" height="1"/><rect x="5" y="0" width="2" height="1"/><rect x="0" y="1" width="8" height="3"/><rect x="1" y="4" width="6" height="1"/><rect x="2" y="5" width="4" height="1"/><rect x="3" y="6" width="2" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#ff77a8"/></svg>
+      <svg width="14" height="14" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ff004d"><rect x="1" y="0" width="2" height="1"/><rect x="5" y="0" width="2" height="1"/><rect x="0" y="1" width="8" height="3"/><rect x="1" y="4" width="6" height="1"/><rect x="2" y="5" width="4" height="1"/><rect x="3" y="6" width="2" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#ff77a8"/></svg>
+      <svg width="14" height="14" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ff004d"><rect x="1" y="0" width="2" height="1"/><rect x="5" y="0" width="2" height="1"/><rect x="0" y="1" width="8" height="3"/><rect x="1" y="4" width="6" height="1"/><rect x="2" y="5" width="4" height="1"/><rect x="3" y="6" width="2" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#ff77a8"/></svg>
+      <span class="x30">×30</span>
+    </span>
+    <nav>
+      <a href="#stats">STATS</a>
+      <a href="#quests">QUESTS</a>
+      <a href="#inventory">ITEMS</a>
+      <a href="#newgame">NEW GAME</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<main>
+<section class="hero" id="top">
+  <div class="wrap hero-stage">
+
+    <span class="sprite inv-a" aria-hidden="true">
+      <svg width="33" height="24" viewBox="0 0 11 8" shape-rendering="crispEdges"><g fill="#00e436"><rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="2" y="2" width="7" height="1"/><rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/><rect x="0" y="4" width="11" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/></g></svg>
+    </span>
+    <span class="sprite inv-b" aria-hidden="true">
+      <svg width="33" height="24" viewBox="0 0 11 8" shape-rendering="crispEdges"><g fill="#29adff"><rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="2" y="2" width="7" height="1"/><rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/><rect x="0" y="4" width="11" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/></g></svg>
+    </span>
+    <span class="sprite inv-c" aria-hidden="true">
+      <svg width="27" height="20" viewBox="0 0 11 8" shape-rendering="crispEdges"><g fill="#ff77a8"><rect x="2" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="3" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="2" y="2" width="7" height="1"/><rect x="1" y="3" width="2" height="1"/><rect x="4" y="3" width="3" height="1"/><rect x="8" y="3" width="2" height="1"/><rect x="0" y="4" width="11" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="2" y="5" width="7" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="6" y="7" width="2" height="1"/></g></svg>
+    </span>
+    <span class="sprite coin-f" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 8 8" shape-rendering="crispEdges"><g fill="#ffec27"><rect x="2" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="0" y="2" width="8" height="4"/><rect x="1" y="6" width="6" height="1"/><rect x="2" y="7" width="4" height="1"/></g><rect x="3" y="2" width="2" height="4" fill="#ffa300"/><rect x="1" y="1" width="1" height="1" fill="#f2f2e9"/></svg>
+    </span>
+
+    <p class="mode">1 PLAYER MODE — <b>AHMAD BASHEER</b> · SYSTEMS BUILDER &amp; OPERATOR</p>
+
+    <h1>I build systems that <span class="run">run</span> companies.</h1>
+
+    <p class="sub">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+
+    <button class="start" id="pressStart" type="button">▶ PRESS START</button>
+
+    <p class="credit">INSERT COIN · <b>CREDIT 1</b></p>
+  </div>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker">
+      <span><b>100+</b> CONTAINERS IN PRODUCTION<i class="sep">◆</i><b>43+</b> VENUES LIVE<i class="sep">◆</i><b>150</b> FIELD TECHNICIANS<i class="sep">◆</i><b>&lt;1 HR</b> PROPOSAL TURNAROUND<i class="sep">◆</i><b>30,000+</b> CRM RECORDS<i class="sep">◆</i><b>250+</b> EVENTS / SEASON<i class="sep">◆</i></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section id="stats">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="world">WORLD 1-1</p>
+      <h2><span class="blip">■</span> PLAYER STATUS</h2>
+      <p>Numbers from systems running in production today. Not projections.</p>
+    </div>
+
+    <div class="status pix reveal">
+      <div class="status-grid">
+
+        <div class="stat" style="--stat-c:var(--c11)">
+          <div class="row1"><span class="abbr">HP — INFRA</span><span class="val"><span class="count" data-n="100" data-suf="+">100+</span></span></div>
+          <span class="name">Containers in production</span>
+          <div class="bar" data-fill><i style="--w:100%"></i></div>
+        </div>
+
+        <div class="stat" style="--stat-c:var(--c12)">
+          <div class="row1"><span class="abbr">MP — REACH</span><span class="val"><span class="count" data-n="43" data-suf="+">43+</span></span></div>
+          <span class="name">Venues live</span>
+          <div class="bar" data-fill><i style="--w:84%"></i></div>
+        </div>
+
+        <div class="stat" style="--stat-c:var(--c09)">
+          <div class="row1"><span class="abbr">ATK — FIELD</span><span class="val"><span class="count" data-n="150">150</span></span></div>
+          <span class="name">Field technicians coordinated</span>
+          <div class="bar" data-fill><i style="--w:76%"></i></div>
+        </div>
+
+        <div class="stat" style="--stat-c:var(--c10)">
+          <div class="row1"><span class="abbr">SPD — OUTPUT</span><span class="val">&lt;1 HR</span></div>
+          <span class="name">Proposal turnaround</span>
+          <div class="bar" data-fill><i style="--w:97%"></i></div>
+          <span class="note">PREV: DAYS → NOW: <em>&lt;1 HR</em></span>
+        </div>
+
+        <div class="stat" style="--stat-c:var(--c14)">
+          <div class="row1"><span class="abbr">MEM — DATA</span><span class="val"><span class="count" data-n="30000" data-suf="+" data-fmt="1">30,000+</span></span></div>
+          <span class="name">CRM records under management</span>
+          <div class="bar" data-fill><i style="--w:90%"></i></div>
+        </div>
+
+        <div class="stat" style="--stat-c:var(--c08)">
+          <div class="row1"><span class="abbr">STA — LOAD</span><span class="val"><span class="count" data-n="250" data-suf="+">250+</span></span></div>
+          <span class="name">Events supported per season</span>
+          <div class="bar" data-fill><i style="--w:82%"></i></div>
+        </div>
+
+      </div>
+
+      <div class="trophies">
+        <div class="trophy">
+          <svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffec27"><rect x="1" y="0" width="6" height="1"/><rect x="0" y="1" width="8" height="2"/><rect x="1" y="3" width="6" height="1"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="5" width="2" height="1"/><rect x="2" y="6" width="4" height="1"/><rect x="1" y="7" width="6" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#f2f2e9"/></svg>
+          <div><span class="t-name">DAYS → UNDER AN HOUR</span><span class="t-sub">proposal cycle, measured</span></div>
+        </div>
+        <div class="trophy">
+          <svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffec27"><rect x="1" y="0" width="6" height="1"/><rect x="0" y="1" width="8" height="2"/><rect x="1" y="3" width="6" height="1"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="5" width="2" height="1"/><rect x="2" y="6" width="4" height="1"/><rect x="1" y="7" width="6" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#f2f2e9"/></svg>
+          <div><span class="t-name">FOUR REPORTS → ONE SCREEN</span><span class="t-sub">operations, consolidated</span></div>
+        </div>
+        <div class="trophy">
+          <svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffec27"><rect x="1" y="0" width="6" height="1"/><rect x="0" y="1" width="8" height="2"/><rect x="1" y="3" width="6" height="1"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="5" width="2" height="1"/><rect x="2" y="6" width="4" height="1"/><rect x="1" y="7" width="6" height="1"/></g><rect x="1" y="1" width="1" height="1" fill="#f2f2e9"/></svg>
+          <div><span class="t-name">15 MARKETS COVERED</span><span class="t-sub">one platform, live</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUEST LOG ================= -->
+<section id="quests">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="world">WORLD 1-2</p>
+      <h2><span class="blip">■</span> QUEST LOG</h2>
+      <p>Three campaigns. All shipped, all running.</p>
+    </div>
+
+    <div class="quests">
+
+      <article class="quest pix reveal">
+        <div class="q-top">
+          <span class="q-num">QUEST 01</span>
+          <span class="q-done">COMPLETED</span>
+        </div>
+        <h3>Proposal Engine</h3>
+        <span class="q-for">FOR ANC</span>
+        <p>Proposal production cut from <b>days to under an hour</b>. Pricing is versioned, every output is reproducible — the same inputs always build the same proposal. The sales team stopped rebuilding spreadsheets and started sending documents.</p>
+        <div class="xp">
+          <span class="xp-label">XP EARNED</span>
+          <span style="--xp-c:var(--c10)">DAYS → &lt;1 HR</span>
+          <span style="--xp-c:var(--c11)">+VERSIONED PRICING</span>
+          <span style="--xp-c:var(--c12)">+REPRODUCIBLE PROPOSALS</span>
+        </div>
+      </article>
+
+      <article class="quest pix reveal">
+        <div class="q-top">
+          <span class="q-num">QUEST 02</span>
+          <span class="q-done">COMPLETED</span>
+        </div>
+        <h3>Venue Operations Platform</h3>
+        <span class="q-for">LIVE ACROSS 15 MARKETS</span>
+        <p><b>43+ venues</b> and <b>150 field technicians</b> coordinated from a single view — schedules, coverage, check-ins, labor. One screen replaced four separate reports that used to be assembled by hand.</p>
+        <div class="xp">
+          <span class="xp-label">XP EARNED</span>
+          <span style="--xp-c:var(--c12)">+43 VENUES</span>
+          <span style="--xp-c:var(--c09)">+150 TECHS</span>
+          <span style="--xp-c:var(--c14)">+15 MARKETS</span>
+        </div>
+      </article>
+
+      <article class="quest pix reveal">
+        <div class="q-top">
+          <span class="q-num">QUEST 03</span>
+          <span class="q-done">COMPLETED</span>
+        </div>
+        <h3>CRM Platform Extension</h3>
+        <span class="q-for">PRODUCTION SYSTEM OF RECORD</span>
+        <p><b>13 custom objects</b> modeled to how the business actually works. <b>30,000+ records</b> migrated and reconciled against the source system — not just moved. <b>16 live dashboards</b> the team checks daily.</p>
+        <div class="xp">
+          <span class="xp-label">XP EARNED</span>
+          <span style="--xp-c:var(--c14)">+13 OBJECTS</span>
+          <span style="--xp-c:var(--c11)">+30,000 RECORDS</span>
+          <span style="--xp-c:var(--c10)">+16 DASHBOARDS</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= INVENTORY ================= -->
+<section id="inventory">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="world">WORLD 1-3</p>
+      <h2><span class="blip">■</span> INVENTORY</h2>
+      <p>Six items. All equipped, all battle-tested in production.</p>
+    </div>
+
+    <div class="inv-grid">
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#29adff"><rect x="1" y="0" width="6" height="1"/><rect x="0" y="1" width="8" height="1"/><rect x="0" y="3" width="8" height="1"/><rect x="0" y="5" width="8" height="1"/><rect x="1" y="6" width="6" height="1"/></g><g fill="#1d2b53"><rect x="1" y="2" width="6" height="1"/><rect x="1" y="4" width="6" height="1"/></g></svg></span>
+          <span class="slot-no">SLOT 01</span>
+        </div>
+        <h3>CRM Platforms</h3>
+        <p>Objects, records, and pipelines shaped to how the company actually sells — not the other way around.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#f2f2e9"><rect x="1" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="7"/></g><rect x="5" y="0" width="1" height="1" fill="#8b8aa3"/><g fill="#1d2b53"><rect x="2" y="2" width="3" height="1"/><rect x="2" y="4" width="4" height="1"/><rect x="2" y="6" width="3" height="1"/></g></svg></span>
+          <span class="slot-no">SLOT 02</span>
+        </div>
+        <h3>Proposal Engines</h3>
+        <p>Pricing logic, versioning, and document output. Quotes in minutes, identical every time.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffa300"><rect x="3" y="0" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="3" y="1" width="2" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="1" y="2" width="6" height="1"/><rect x="0" y="3" width="3" height="1"/><rect x="5" y="3" width="3" height="1"/><rect x="0" y="4" width="3" height="1"/><rect x="5" y="4" width="3" height="1"/><rect x="1" y="5" width="6" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="3" y="6" width="2" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="3" y="7" width="2" height="1"/></g></svg></span>
+          <span class="slot-no">SLOT 03</span>
+        </div>
+        <h3>Operations Platforms</h3>
+        <p>Venues, schedules, field teams, and labor on one screen — built for the people running the floor.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffec27"><rect x="3" y="0" width="3" height="1"/><rect x="2" y="1" width="3" height="1"/><rect x="1" y="2" width="3" height="1"/><rect x="1" y="3" width="5" height="1"/><rect x="3" y="4" width="2" height="1"/><rect x="2" y="5" width="2" height="1"/><rect x="1" y="6" width="2" height="1"/><rect x="1" y="7" width="1" height="1"/></g></svg></span>
+          <span class="slot-no">SLOT 04</span>
+        </div>
+        <h3>Automation Systems</h3>
+        <p>Recurring work that runs itself — handoffs, notifications, reports nobody has to remember.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#00b8a8"><rect x="2" y="0" width="1" height="2"/><rect x="5" y="0" width="1" height="2"/><rect x="1" y="2" width="6" height="2"/><rect x="2" y="4" width="4" height="1"/><rect x="3" y="5" width="2" height="3"/></g><rect x="2" y="2" width="1" height="1" fill="#f2f2e9"/></svg></span>
+          <span class="slot-no">SLOT 05</span>
+        </div>
+        <h3>Platform Integrations</h3>
+        <p>Systems that talk to each other directly. No copy-paste between tools, no double entry.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+      <div class="slot pix reveal">
+        <div class="slot-top">
+          <span class="slot-ico"><svg width="36" height="36" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ff77a8"><rect x="1" y="1" width="6" height="6"/></g><g fill="#ff77a8"><rect x="2" y="0" width="1" height="1"/><rect x="5" y="0" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="5" y="7" width="1" height="1"/><rect x="0" y="2" width="1" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="7" y="5" width="1" height="1"/></g><rect x="3" y="3" width="2" height="2" fill="#ffec27"/></svg></span>
+          <span class="slot-no">SLOT 06</span>
+        </div>
+        <h3>AI Inside the Workflow</h3>
+        <p>Applied where it saves real time inside the work — and nowhere else.</p>
+        <span class="eq">EQUIPPED</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" id="newgame">
+  <div class="wrap">
+    <div class="menu pix reveal">
+      <p class="gameover">— ALL QUESTS COMPLETE — NEXT CAMPAIGN UNLOCKED —</p>
+      <h2>New Game</h2>
+      <p class="pitch">Start a project. One message — describe the operation you want to run better.</p>
+
+      <div class="menu-rows">
+        <div class="menu-row sel">
+          <span class="cur">▸</span>
+          <a href="mailto:ahmad@basheer.app">NEW GAME</a>
+          <span class="arrow">→</span>
+          <a class="dest" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+        </div>
+        <div class="menu-row">
+          <span class="cur"></span>
+          <a href="#quests">CONTINUE</a>
+          <span class="arrow">→</span>
+          <a class="dest" href="#quests">REVIEW QUEST LOG</a>
+        </div>
+      </div>
+
+      <p class="freeplay">NO COIN REQUIRED · <b>FREE PLAY</b> · REPLIES WITHIN ONE BUSINESS DAY</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="foot-in">
+    <span>© 2026 AHMAD BASHEER — SYSTEMS BUILDER &amp; OPERATOR</span>
+    <span>DESIGNED · BUILT · OPERATED END-TO-END</span>
+    <span class="konami-hint" title="try it">↑ ↑ ↓ ↓ ← → ← → B A</span>
+  </div>
+</footer>
+
+<!-- ================= GOD MODE TOAST ================= -->
+<div class="toast pix" id="toast" role="status">
+  GOD MODE ON<br>+30 LIVES · +50,000 PTS
+  <small>same systems. same uptime. more confetti.</small>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- HUD score: scroll depth = points ---------- */
+  var scoreEl = document.getElementById("score");
+  var bonus = 0;
+  function pad(n){ n = String(Math.floor(n)); while(n.length < 7) n = "0" + n; return n; }
+  function updScore(){
+    var s = Math.min(9999999, Math.floor(window.scrollY * 8) + bonus);
+    scoreEl.textContent = pad(s);
+  }
+  window.addEventListener("scroll", updScore, {passive:true});
+  updScore();
+
+  /* ---------- PRESS START → drop into the game ---------- */
+  document.getElementById("pressStart").addEventListener("click", function(){
+    blip([660, 880]);
+    document.getElementById("stats").scrollIntoView({behavior: reduced ? "auto" : "smooth"});
+  });
+
+  /* ---------- duplicate ticker for seamless loop ---------- */
+  var tick = document.getElementById("ticker");
+  tick.innerHTML += tick.innerHTML;
+
+  /* ---------- reveals + bar fills + counters ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll("[data-fill]").forEach(function(b){ b.classList.add("anim"); });
+      e.target.querySelectorAll(".count").forEach(runCounter);
+      io.unobserve(e.target);
+    });
+  }, {threshold:.18});
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+
+  function runCounter(el){
+    if(reduced || el.dataset.done) return;
+    el.dataset.done = "1";
+    var target = parseInt(el.dataset.n, 10);
+    var suf = el.dataset.suf || "";
+    var fmt = el.dataset.fmt === "1";
+    var t0 = null, dur = 950;
+    function frame(t){
+      if(!t0) t0 = t;
+      var p = Math.min(1, (t - t0) / dur);
+      var v = Math.floor(target * (1 - Math.pow(1 - p, 3)));
+      el.textContent = (fmt ? v.toLocaleString("en-US") : v) + (p === 1 ? suf : "");
+      if(p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- tiny square-wave blip (no assets) ---------- */
+  var actx = null;
+  function blip(freqs){
+    if(reduced) return;
+    try{
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      freqs.forEach(function(f, i){
+        var o = actx.createOscillator(), g = actx.createGain();
+        o.type = "square"; o.frequency.value = f;
+        g.gain.setValueAtTime(.04, actx.currentTime + i * .09);
+        g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + i * .09 + .12);
+        o.connect(g); g.connect(actx.destination);
+        o.start(actx.currentTime + i * .09);
+        o.stop(actx.currentTime + i * .09 + .14);
+      });
+    }catch(e){}
+  }
+
+  /* ---------- KONAMI CODE → GOD MODE ---------- */
+  var seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+  var pos = 0;
+  document.addEventListener("keydown", function(ev){
+    var k = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
+    pos = (k === seq[pos]) ? pos + 1 : (k === seq[0] ? 1 : 0);
+    if(pos === seq.length){ pos = 0; godMode(); }
+  });
+
+  var godOn = false;
+  function godMode(){
+    if(godOn) return;
+    godOn = true;
+    document.body.classList.add("god");
+    bonus += 50000;
+    updScore();
+    blip([523, 659, 784, 1047]);
+    var toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(function(){ toast.classList.remove("show"); }, 3200);
+    if(!reduced) confetti();
+  }
+
+  function confetti(){
+    var colors = ["#ff004d","#ffa300","#ffec27","#00e436","#29adff","#ff77a8","#f2f2e9"];
+    for(var i = 0; i < 90; i++){
+      var d = document.createElement("div");
+      d.className = "confetto";
+      d.style.left = Math.random() * 100 + "vw";
+      d.style.background = colors[i % colors.length];
+      d.style.animationDuration = (1.4 + Math.random() * 1.8) + "s";
+      d.style.animationDelay = (Math.random() * .9) + "s";
+      d.style.animationTimingFunction = "steps(" + (10 + Math.floor(Math.random() * 14)) + ")";
+      document.body.appendChild(d);
+      d.addEventListener("animationend", function(){ this.remove(); });
+    }
+  }
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

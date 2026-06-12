@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>10 Concepts · Ahmad Basheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Newsreader:ital,wght@0,300..600;1,300..600&display=swap" rel="stylesheet" />
+<style>
+  :root { --ink:#08080A; --paper:#F5F5F4; --dim:#78716C; --line:#27272A; --gold:#E8C28E; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--ink); color:var(--paper); font-family:Geist,system-ui,sans-serif; min-height:100vh; }
+  .wrap { max-width:72rem; margin:0 auto; padding:6rem 1.5rem 8rem; }
+  .eyebrow { font-family:"Geist Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); display:flex; align-items:center; gap:1rem; margin-bottom:3rem; }
+  .eyebrow::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--gold); }
+  h1 { font-family:Newsreader,serif; font-weight:400; font-size:clamp(2.5rem,6vw,4.5rem); line-height:1; letter-spacing:-0.02em; margin-bottom:1.5rem; }
+  h1 em { color:var(--gold); font-style:italic; }
+  .sub { color:#A8A29E; max-width:38rem; line-height:1.7; margin-bottom:5rem; }
+  .list { border-top:1px solid var(--line); }
+  a.row { display:grid; grid-template-columns:3rem 1fr auto; gap:1.5rem; align-items:baseline; padding:1.75rem 0; border-bottom:1px solid var(--line); text-decoration:none; color:inherit; transition:padding-left .3s cubic-bezier(.16,1,.3,1); }
+  a.row:hover { padding-left:.75rem; }
+  a.row:hover .name { color:var(--gold); }
+  .num { font-family:"Geist Mono",monospace; font-size:10px; letter-spacing:.2em; color:var(--dim); }
+  .name { font-family:Newsreader,serif; font-size:clamp(1.4rem,3vw,2rem); letter-spacing:-0.01em; transition:color .3s; }
+  .vibe { font-family:"Geist Mono",monospace; font-size:11px; color:var(--dim); text-align:right; }
+  @media (max-width:640px){ .vibe{display:none} }
+  .foot { margin-top:4rem; font-family:"Geist Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); }
+  .foot a { color:var(--gold); text-decoration:none; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">Ahmad Basheer — Design exploration</div>
+  <h1>Ten portfolios.<br /><em>One operator.</em></h1>
+  <p class="sub">Same content, twenty completely different visual languages. Each one is a full homepage concept — open them, live with them for a minute, see which one feels like the house style. 01–10 are the range; 11–20 are off the leash.</p>
+  <nav class="list">
+    <a class="row" href="/concepts/01-terminal.html"><span class="num">01</span><span class="name">Terminal</span><span class="vibe">brutalist ops-log · phosphor green</span></a>
+    <a class="row" href="/concepts/02-swiss.html"><span class="num">02</span><span class="name">Swiss</span><span class="vibe">white grid · grotesk · red</span></a>
+    <a class="row" href="/concepts/03-blueprint.html"><span class="num">03</span><span class="name">Blueprint</span><span class="vibe">engineering drawing · cyanotype</span></a>
+    <a class="row" href="/concepts/04-atelier.html"><span class="num">04</span><span class="name">Atelier</span><span class="vibe">luxury print · cream &amp; gold foil</span></a>
+    <a class="row" href="/concepts/05-cockpit.html"><span class="num">05</span><span class="name">Cockpit</span><span class="vibe">flight-deck HUD · amber gauges</span></a>
+    <a class="row" href="/concepts/06-memphis.html"><span class="num">06</span><span class="name">Memphis</span><span class="vibe">neobrutalist pop · cobalt &amp; acid</span></a>
+    <a class="row" href="/concepts/07-architect.html"><span class="num">07</span><span class="name">Architect</span><span class="vibe">monochrome · vast whitespace</span></a>
+    <a class="row" href="/concepts/08-retro.html"><span class="num">08</span><span class="name">Retro</span><span class="vibe">70s NASA-punk · sunset stripes</span></a>
+    <a class="row" href="/concepts/09-ledger.html"><span class="num">09</span><span class="name">Ledger</span><span class="vibe">broadsheet newspaper · newsprint</span></a>
+    <a class="row" href="/concepts/10-aurora.html"><span class="num">10</span><span class="name">Aurora</span><span class="vibe">deep-space glass · slow gradients</span></a>
+    <a class="row" href="/concepts/11-chrome.html"><span class="num">11</span><span class="name">Chrome</span><span class="vibe">Y2K liquid metal · iridescent</span></a>
+    <a class="row" href="/concepts/12-constructivist.html"><span class="num">12</span><span class="name">Constructivist</span><span class="vibe">bauhaus poster · diagonals &amp; red</span></a>
+    <a class="row" href="/concepts/13-arcade.html"><span class="num">13</span><span class="name">Arcade</span><span class="vibe">8-bit quest log · press start</span></a>
+    <a class="row" href="/concepts/14-concrete.html"><span class="num">14</span><span class="name">Concrete</span><span class="vibe">monolith brutalism · poured slabs</span></a>
+    <a class="row" href="/concepts/15-botanical.html"><span class="num">15</span><span class="name">Botanical</span><span class="vibe">apothecary luxe · forest &amp; cream</span></a>
+    <a class="row" href="/concepts/16-generative.html"><span class="num">16</span><span class="name">Generative</span><span class="vibe">live node-graph canvas</span></a>
+    <a class="row" href="/concepts/17-noir.html"><span class="num">17</span><span class="name">Noir</span><span class="vibe">film grain · title cards · credits</span></a>
+    <a class="row" href="/concepts/18-bilingual.html"><span class="num">18</span><span class="name">Bilingual</span><span class="vibe">arabic ✕ english editorial</span></a>
+    <a class="row" href="/concepts/19-receipt.html"><span class="num">19</span><span class="name">Receipt</span><span class="vibe">thermal print · line items</span></a>
+    <a class="row" href="/concepts/20-kinetic.html"><span class="num">20</span><span class="name">Kinetic</span><span class="vibe">scroll-driven type film</span></a>
+    <a class="row" href="/concepts/21-swiss-story.html"><span class="num">21</span><span class="name">Swiss Story</span><span class="vibe">scroll-film · timeline · live iframes</span></a>
+    <a class="row" href="/concepts/22-kinetic-max.html"><span class="num">22</span><span class="name">Kinetic Max</span><span class="vibe">20, escalated · physics · cinema</span></a>
+    <a class="row" href="/concepts/24-build-your-own.html"><span class="num">24</span><span class="name">Build Your Own</span><span class="vibe">describe it · watch it assemble</span></a>
+  </nav>
+  <div class="eyebrow" style="margin-top:5rem">Cockpit — AI-native dashboard concepts</div>
+  <nav class="list">
+    <a class="row" href="/concepts/dash-01-conversational.html"><span class="num">D1</span><span class="name">Conversational OS</span><span class="vibe">zero UI until you ask</span></a>
+    <a class="row" href="/concepts/dash-02-copilot.html"><span class="num">D2</span><span class="name">Copilot Deck</span><span class="vibe">a senior operator beside you</span></a>
+    <a class="row" href="/concepts/dash-03-command.html"><span class="num">D3</span><span class="name">Command Palette</span><span class="vibe">⌘K runs the whole site</span></a>
+    <a class="row" href="/concepts/dash-04-agents.html"><span class="num">D4</span><span class="name">Agent Ops Center</span><span class="vibe">supervise, don't do</span></a>
+    <a class="row" href="/concepts/dash-05-generative.html"><span class="num">D5</span><span class="name">Generative Canvas</span><span class="vibe">describe it, it assembles</span></a>
+  </nav>
+  <div class="eyebrow" style="margin-top:5rem">ANC — client portal concepts (services.ancsports.net/customer)</div>
+  <nav class="list">
+    <a class="row" href="/concepts/anc-customer-01-arena.html"><span class="num">A1</span><span class="name">Arena Control</span><span class="vibe">stadium-night mission control</span></a>
+    <a class="row" href="/concepts/anc-customer-02-concierge.html"><span class="num">A2</span><span class="name">Concierge</span><span class="vibe">white-glove · warm · human status</span></a>
+    <a class="row" href="/concepts/anc-customer-03-live.html"><span class="num">A3</span><span class="name">Live Board</span><span class="vibe">real-time ops · SLA meter · ticker</span></a>
+  </nav>
+  <div class="eyebrow" style="margin-top:5rem">Kinetic Max — raw escalation previews (final = 22)</div>
+  <nav class="list">
+    <a class="row" href="/concepts/22-preview-physics.html"><span class="num">P1</span><span class="name">Physics</span><span class="vibe">scroll velocity bends the type</span></a>
+    <a class="row" href="/concepts/22-preview-spectacle.html"><span class="num">P2</span><span class="name">Spectacle</span><span class="vibe">particle shatter &amp; reassemble</span></a>
+    <a class="row" href="/concepts/22-preview-cinema.html"><span class="num">P3</span><span class="name">Cinema</span><span class="vibe">pinned acts · credits roll</span></a>
+  </nav>
+  <p class="foot">← <a href="/">back to the current site</a></p>
+</main>
+</body>
+</html>

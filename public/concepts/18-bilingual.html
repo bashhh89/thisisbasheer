@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 18 — Bilingual · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder &amp; operator. Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     CONCEPT 18 — BILINGUAL EDITORIAL
+     Deep teal · sand · ink. Amiri (Arabic) × Schibsted Grotesk.
+     English flush-left, Arabic flush-right — tension as design.
+     ============================================================ */
+
+  :root{
+    --teal:        #0E3B3B;
+    --teal-deep:   #0A2E2E;
+    --teal-ink:    #082424;
+    --sand:        #E4D5B7;
+    --sand-bright: #F0E6D2;
+    --sand-dim:    rgba(228,213,183,.62);
+    --sand-faint:  rgba(228,213,183,.34);
+    --sand-hair:   rgba(228,213,183,.16);
+    --ink:         #101414;
+    --ink-dim:     rgba(16,20,20,.66);
+    --ink-hair:    rgba(14,59,59,.18);
+    --gold:        #C9A85C;
+
+    --sans: "Schibsted Grotesk", sans-serif;
+    --ar:   "Amiri", serif;
+    --mono: "Spline Sans Mono", monospace;
+
+    --pad: clamp(1.25rem, 4vw, 4rem);
+    --maxw: 1440px;
+
+    /* eight-point star band — sand stroke (for teal sections) */
+    --band-sand: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='40' viewBox='0 0 56 40'%3E%3Cg fill='none' stroke='%23E4D5B7' stroke-opacity='0.30'%3E%3Crect x='17.5' y='9.5' width='21' height='21'/%3E%3Crect x='17.5' y='9.5' width='21' height='21' transform='rotate(45 28 20)'/%3E%3Crect x='-3.5' y='16.5' width='7' height='7' transform='rotate(45 0 20)'/%3E%3Crect x='52.5' y='16.5' width='7' height='7' transform='rotate(45 56 20)'/%3E%3C/g%3E%3C/svg%3E");
+    /* eight-point star band — teal stroke (for sand sections) */
+    --band-teal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='40' viewBox='0 0 56 40'%3E%3Cg fill='none' stroke='%230E3B3B' stroke-opacity='0.28'%3E%3Crect x='17.5' y='9.5' width='21' height='21'/%3E%3Crect x='17.5' y='9.5' width='21' height='21' transform='rotate(45 28 20)'/%3E%3Crect x='-3.5' y='16.5' width='7' height='7' transform='rotate(45 0 20)'/%3E%3Crect x='52.5' y='16.5' width='7' height='7' transform='rotate(45 56 20)'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--teal);
+    color: var(--sand);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection{ background: var(--sand); color: var(--teal); }
+  a{ color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--gold); outline-offset: 4px; }
+
+  [lang="ar"]{ font-family: var(--ar); direction: rtl; }
+
+  .wrap{ max-width: var(--maxw); margin: 0 auto; padding-inline: var(--pad); }
+
+  /* ---------- ornament bands ---------- */
+  .band{
+    height: 40px;
+    background-image: var(--band-sand);
+    background-repeat: repeat-x;
+    background-position: center;
+    border-top: 1px solid var(--sand-hair);
+    border-bottom: 1px solid var(--sand-hair);
+  }
+  .band--teal{
+    background-image: var(--band-teal);
+    border-color: var(--ink-hair);
+  }
+
+  /* ---------- mirrored row (the compositional device) ---------- */
+  .mirror{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap: 2rem;
+  }
+  .mirror .en{ text-align:left; }
+  .mirror .ar{ text-align:right; }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .reveal.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    *{ animation: none !important; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ============ HEADER ============ */
+  header{
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    transition: background .35s ease, box-shadow .35s ease;
+  }
+  header .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--sand-hair);
+  }
+  header.scrolled{
+    background: rgba(8,36,36,.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .brand{ display:flex; align-items:center; gap:.9rem; }
+  .brand-mark{ width: 30px; height: 30px; flex: none; }
+  .brand-mark svg{ display:block; width:100%; height:100%; }
+  .brand-name{
+    font-weight: 700; letter-spacing: .01em; font-size: .95rem; color: var(--sand-bright);
+  }
+  .brand-name small{
+    display:block; font-family: var(--mono); font-weight:400;
+    font-size: .6rem; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--sand-faint); margin-top: .15rem;
+  }
+  nav{ display:flex; align-items:center; gap: clamp(1rem, 3vw, 2.4rem); }
+  nav a{
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--sand-dim); position: relative; padding-block: .3rem;
+    transition: color .25s ease;
+  }
+  nav a::after{
+    content:""; position:absolute; left:0; bottom:0; height:1px; width:100%;
+    background: var(--gold); transform: scaleX(0); transform-origin: right;
+    transition: transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  nav a:hover{ color: var(--sand-bright); }
+  nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
+  nav .ar-name{
+    font-family: var(--ar); font-size: 1.25rem; line-height: 1; letter-spacing: 0;
+    text-transform: none; color: var(--sand);
+  }
+  nav .ar-name::after{ display:none; }
+
+  /* ============ HERO ============ */
+  .hero{
+    position: relative;
+    min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-top: 7rem;
+    overflow: hidden;
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(228,213,183,.07), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(0,0,0,.35), transparent 60%),
+      var(--teal);
+  }
+  /* slow-turning eight-point star, off-canvas right */
+  .hero-star{
+    position:absolute; top: 50%; right: -14vw;
+    width: clamp(420px, 46vw, 760px); aspect-ratio: 1;
+    transform: translateY(-58%);
+    opacity: .5; pointer-events:none;
+  }
+  .hero-star svg{ width:100%; height:100%; animation: turn 240s linear infinite; }
+  @keyframes turn{ to{ transform: rotate(360deg); } }
+
+  .hero .wrap{ position: relative; z-index: 2; width: 100%; }
+
+  .hero-kicker{
+    display:flex; align-items: baseline; justify-content: space-between; gap: 1.5rem;
+    border-bottom: 1px solid var(--sand-hair);
+    padding-bottom: 1.1rem; margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  }
+  .hero-kicker .en{
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
+    color: var(--sand-dim);
+  }
+  .hero-kicker .en b{ color: var(--sand-bright); font-weight: 500; }
+  .hero-kicker .ar{
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem); color: var(--sand-dim); line-height: 1.4;
+  }
+
+  .hero-title{
+    font-weight: 800;
+    font-size: clamp(2.6rem, 7.4vw, 7rem);
+    line-height: .98;
+    letter-spacing: -.025em;
+    color: var(--sand-bright);
+    max-width: 18ch;
+  }
+  .hero-title em{ font-style: italic; font-weight: 500; }
+  .hero-title .dot{ color: var(--gold); }
+
+  .hero-title-ar{
+    margin-top: clamp(1.2rem, 3vh, 2.2rem);
+    text-align: right;
+    font-size: clamp(1.9rem, 4.6vw, 4.4rem);
+    line-height: 1.65;
+    color: var(--sand);
+    font-weight: 400;
+  }
+  .hero-rule{
+    display:flex; align-items:center; gap: 1.25rem;
+    margin-block: clamp(1.4rem, 3.5vh, 2.4rem);
+  }
+  .hero-rule .line{ flex:1; height:1px; background: var(--sand-hair); }
+  .hero-rule .star8{ width: 16px; height: 16px; flex:none; opacity:.7; }
+
+  .hero-foot{
+    display:flex; align-items:flex-end; justify-content:space-between; gap: 2.5rem;
+    padding-bottom: clamp(2.5rem, 7vh, 5rem);
+  }
+  .hero-sub{
+    max-width: 46ch;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    line-height: 1.7;
+    color: var(--sand-dim);
+    font-weight: 400;
+  }
+  .hero-cta{ display:flex; gap: 1rem; flex:none; }
+  .btn{
+    display:inline-flex; align-items:center; gap:.7rem;
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+    padding: 1rem 1.6rem;
+    border: 1px solid var(--sand-faint);
+    color: var(--sand-bright);
+    transition: background .3s ease, color .3s ease, border-color .3s ease;
+    cursor: pointer; background: transparent;
+  }
+  .btn .arrow{ transition: transform .3s cubic-bezier(.22,1,.36,1); }
+  .btn:hover .arrow{ transform: translateX(5px); }
+  .btn--solid{ background: var(--sand); color: var(--teal); border-color: var(--sand); font-weight:500; }
+  .btn--solid:hover{ background: var(--sand-bright); }
+  .btn--ghost:hover{ border-color: var(--sand); }
+
+  /* ============ NAME BAND — أحمد بشير ============ */
+  .nameband{
+    position: relative;
+    background: var(--teal-deep);
+    overflow: hidden;
+  }
+  .nameband .inner{
+    text-align: center;
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(3rem, 8vw, 6.5rem);
+  }
+  .nameband .ar-display{
+    font-size: clamp(4.2rem, 16vw, 15rem);
+    line-height: 1.45;
+    color: var(--sand);
+    font-weight: 400;
+    display:block;
+  }
+  .nameband .latin{
+    display:block;
+    margin-top: -0.4em;
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .55em; text-transform: uppercase;
+    color: var(--sand-faint);
+    padding-left: .55em; /* optical: balances tracking */
+  }
+  .nameband .corner{
+    position:absolute; width: 84px; height: 84px; opacity:.4; pointer-events:none;
+  }
+  .nameband .corner svg{ width:100%; height:100%; }
+  .corner.tl{ top: 18px; left: 18px; }
+  .corner.tr{ top: 18px; right: 18px; transform: scaleX(-1); }
+  .corner.bl{ bottom: 18px; left: 18px; transform: scaleY(-1); }
+  .corner.br{ bottom: 18px; right: 18px; transform: scale(-1); }
+
+  /* ============ STATS ============ */
+  .stats{ background: var(--teal); }
+  .section-head{
+    display:flex; align-items: baseline; justify-content: space-between; gap: 2rem;
+    padding-top: clamp(3rem, 7vw, 5.5rem);
+    margin-bottom: clamp(2.2rem, 5vw, 4rem);
+  }
+  .section-head .en{
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--sand-dim);
+  }
+  .section-head .en::before{
+    content: attr(data-num) " — ";
+    color: var(--gold);
+  }
+  .section-head .ar{
+    font-size: clamp(1.35rem, 2.4vw, 2rem); line-height: 1.4; color: var(--sand);
+  }
+
+  .stat-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--sand-hair);
+    border-left: 1px solid var(--sand-hair);
+    margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .stat{
+    border-right: 1px solid var(--sand-hair);
+    border-bottom: 1px solid var(--sand-hair);
+    padding: clamp(1.4rem, 2.6vw, 2.4rem);
+    position: relative;
+    transition: background .35s ease;
+  }
+  .stat:hover{ background: rgba(228,213,183,.04); }
+  .stat .num{
+    font-weight: 800; letter-spacing: -.02em;
+    font-size: clamp(2.1rem, 4vw, 3.4rem);
+    line-height: 1.05;
+    color: var(--sand-bright);
+  }
+  .stat .num sup{ font-size:.45em; font-weight:700; color: var(--gold); vertical-align: .7em; }
+  .stat .label{
+    margin-top: .7rem;
+    font-family: var(--mono); font-size: .64rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--sand-dim); line-height: 1.7;
+    max-width: 22ch;
+  }
+  .stat .ar-num{
+    position:absolute; top: clamp(1.1rem, 2vw, 1.8rem); right: clamp(1.2rem, 2.2vw, 2rem);
+    font-family: var(--ar); font-size: 1.05rem; color: var(--sand-faint); line-height:1;
+  }
+
+  /* ============ WORK (sand section) ============ */
+  .work{
+    background: var(--sand);
+    color: var(--ink);
+  }
+  .work .section-head .en{ color: var(--ink-dim); }
+  .work .section-head .en::before{ color: var(--teal); }
+  .work .section-head .ar{ color: var(--teal); }
+
+  .case{
+    display:grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    padding-block: clamp(2.2rem, 5vw, 3.8rem);
+    border-top: 1px solid var(--ink-hair);
+    position: relative;
+  }
+  .case:last-of-type{
+    border-bottom: 1px solid var(--ink-hair);
+    margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .case-id{
+    display:flex; align-items: baseline; gap: .8rem;
+  }
+  .case-id .lat{
+    font-family: var(--mono); font-size: .8rem; letter-spacing: .25em; color: var(--teal);
+  }
+  .case-id .arn{
+    font-family: var(--ar); font-size: 1.15rem; color: rgba(14,59,59,.5); line-height: 1;
+  }
+  .case h3{
+    margin-top: .9rem;
+    font-weight: 800; letter-spacing: -.02em;
+    font-size: clamp(1.6rem, 2.9vw, 2.5rem);
+    line-height: 1.08;
+    color: var(--teal);
+    max-width: 14ch;
+  }
+  .case-right p{
+    font-size: clamp(1rem, 1.35vw, 1.15rem);
+    line-height: 1.75;
+    color: var(--ink-dim);
+    max-width: 56ch;
+  }
+  .case-meta{
+    display:flex; flex-wrap: wrap; gap: .6rem;
+    margin-top: 1.5rem;
+  }
+  .chip{
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase;
+    border: 1px solid var(--ink-hair);
+    padding: .45rem .8rem;
+    color: var(--teal);
+    transition: background .3s ease, color .3s ease, border-color .3s ease;
+  }
+  .case:hover .chip{ border-color: rgba(14,59,59,.4); }
+  .chip--key{ background: var(--teal); color: var(--sand); border-color: var(--teal); }
+  .case .star-bullet{ width: 14px; height: 14px; display:inline-block; vertical-align: -1px; margin-right:.55rem; }
+
+  /* ============ CAPABILITIES ============ */
+  .caps{ background: var(--teal); }
+  .caps-grid{
+    display:grid; grid-template-columns: repeat(2, 1fr);
+    gap: 0 clamp(2rem, 5vw, 5rem);
+    margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .cap{
+    display:flex; align-items: center; gap: 1.2rem;
+    padding-block: 1.4rem;
+    border-bottom: 1px solid var(--sand-hair);
+    transition: padding-left .35s cubic-bezier(.22,1,.36,1);
+  }
+  .cap:hover{ padding-left: .8rem; }
+  .cap .glyph{ width: 17px; height: 17px; flex:none; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+  .cap:hover .glyph{ transform: rotate(45deg); }
+  .cap .cap-name{
+    font-weight: 700; font-size: clamp(1.15rem, 1.9vw, 1.6rem); letter-spacing: -.01em;
+    color: var(--sand-bright);
+  }
+  .cap .cap-idx{
+    margin-left:auto;
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .2em; color: var(--sand-faint);
+  }
+
+  /* ============ CTA (ink section) ============ */
+  .cta{
+    background: var(--ink);
+    color: var(--sand);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(900px 500px at 50% 120%, rgba(14,59,59,.85), transparent 70%);
+    pointer-events:none;
+  }
+  .cta .wrap{ position:relative; z-index:1; }
+  .cta-head{
+    padding-top: clamp(3.5rem, 8vw, 6.5rem);
+    display:flex; align-items: baseline; justify-content: space-between; gap: 2rem;
+  }
+  .cta-head .en{
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--sand-dim);
+  }
+  .cta-head .en::before{ content: attr(data-num) " — "; color: var(--gold); }
+  .cta-head .ar{ font-size: clamp(1.35rem, 2.4vw, 2rem); color: var(--sand); line-height:1.5; }
+  .cta-title{
+    margin-top: clamp(1.6rem, 4vw, 3rem);
+    font-weight: 800; letter-spacing: -.025em;
+    font-size: clamp(2.2rem, 5.6vw, 5rem);
+    line-height: 1.02;
+    color: var(--sand-bright);
+    max-width: 16ch;
+  }
+  .cta-mail{
+    display:inline-block;
+    margin-top: clamp(1.8rem, 4vw, 3rem);
+    margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+    font-weight: 500; font-style: italic;
+    font-size: clamp(1.4rem, 3.4vw, 3rem);
+    letter-spacing: -.01em;
+    color: var(--sand);
+    border-bottom: 1px solid var(--sand-faint);
+    padding-bottom: .25em;
+    transition: color .3s ease, border-color .3s ease;
+  }
+  .cta-mail:hover{ color: var(--sand-bright); border-color: var(--gold); }
+  .cta-mail .arrow{ font-style: normal; color: var(--gold); margin-right: .35em; }
+
+  /* ============ FOOTER ============ */
+  footer{ background: var(--teal-ink); }
+  footer .wrap{
+    display:flex; align-items:center; justify-content:space-between; gap:1.5rem;
+    padding-block: 1.6rem;
+  }
+  footer .en{
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--sand-faint);
+  }
+  footer .ar{ font-size: 1.2rem; color: var(--sand-dim); line-height:1; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 920px){
+    .stat-grid{ grid-template-columns: repeat(2, 1fr); }
+    .caps-grid{ grid-template-columns: 1fr; }
+    .case{ grid-template-columns: 1fr; gap: 1.2rem; }
+    .case h3{ max-width: none; }
+  }
+  @media (max-width: 680px){
+    nav a:not(.ar-name){ display:none; }
+    .hero-foot{ flex-direction: column; align-items: flex-start; gap: 1.8rem; }
+    .hero-kicker{ flex-direction: column; gap:.6rem; }
+    .hero-kicker .ar{ text-align: right; width: 100%; }
+    .section-head{ flex-direction: column; gap:.5rem; }
+    .section-head .ar{ text-align: right; width: 100%; }
+    .cta-head{ flex-direction: column; gap:.5rem; }
+    .cta-head .ar{ text-align: right; width: 100%; }
+    .stat-grid{ grid-template-columns: 1fr; }
+    .nameband .corner{ width: 52px; height: 52px; }
+    footer .wrap{ flex-direction: column; gap:.8rem; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- reusable eight-point star glyphs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="star8" fill="none" stroke="currentColor">
+      <rect x="26" y="26" width="48" height="48" stroke-width="2.5"/>
+      <rect x="26" y="26" width="48" height="48" stroke-width="2.5" transform="rotate(45 50 50)"/>
+    </g>
+    <g id="corner-orn" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M2 50 L2 2 L50 2"/>
+      <path d="M10 42 L10 10 L42 10"/>
+      <rect x="14" y="14" width="14" height="14" transform="rotate(45 21 21)"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header id="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Ahmad Basheer — home">
+      <span class="brand-mark" style="color:var(--sand)">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#star8"/></svg>
+      </span>
+      <span class="brand-name">Ahmad Basheer
+        <small>Systems builder &amp; operator</small>
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#contact">Contact</a>
+      <a class="ar-name" href="#top" lang="ar" dir="rtl">أحمد بشير</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-star" aria-hidden="true">
+    <svg viewBox="0 0 100 100" style="color:rgba(228,213,183,.14)"><use href="#star8"/></svg>
+  </div>
+  <div class="wrap">
+    <div class="hero-kicker reveal in mirror">
+      <span class="en"><b>Ahmad Basheer</b> — Systems builder &amp; operator</span>
+      <span class="ar" lang="ar" dir="rtl">باني أنظمة ومشغّلها</span>
+    </div>
+
+    <h1 class="hero-title reveal in" style="transition-delay:.08s">I build systems<br>that <em>run</em> companies<span class="dot">.</span></h1>
+
+    <p class="hero-title-ar reveal in" lang="ar" dir="rtl" style="transition-delay:.16s">أبني أنظمة تُدير الشركات</p>
+
+    <div class="hero-rule reveal in" style="transition-delay:.22s" aria-hidden="true">
+      <span class="line"></span>
+      <span class="star8" style="color:var(--gold)">
+        <svg viewBox="0 0 100 100" width="16" height="16"><use href="#star8"/></svg>
+      </span>
+      <span class="line"></span>
+    </div>
+
+    <div class="hero-foot reveal in" style="transition-delay:.3s">
+      <p class="hero-sub">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end. Not advice. Not mockups. Working systems, in production, with real load on them.</p>
+      <div class="hero-cta">
+        <a class="btn btn--solid" href="#work">Selected work <span class="arrow">→</span></a>
+        <a class="btn btn--ghost" href="#contact">Start a project <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ NAME BAND ============ -->
+<section class="nameband" aria-label="Ahmad Basheer in Arabic">
+  <span class="corner tl" style="color:var(--sand)" aria-hidden="true"><svg viewBox="0 0 52 52"><use href="#corner-orn"/></svg></span>
+  <span class="corner tr" style="color:var(--sand)" aria-hidden="true"><svg viewBox="0 0 52 52"><use href="#corner-orn"/></svg></span>
+  <span class="corner bl" style="color:var(--sand)" aria-hidden="true"><svg viewBox="0 0 52 52"><use href="#corner-orn"/></svg></span>
+  <span class="corner br" style="color:var(--sand)" aria-hidden="true"><svg viewBox="0 0 52 52"><use href="#corner-orn"/></svg></span>
+  <div class="wrap inner reveal">
+    <span class="ar-display" lang="ar" dir="rtl">أحمد بشير</span>
+    <span class="latin">Ahmad Basheer</span>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ STATS ============ -->
+<section class="stats" aria-label="In production">
+  <div class="wrap">
+    <div class="section-head mirror reveal">
+      <span class="en" data-num="01">In production</span>
+      <span class="ar" lang="ar" dir="rtl">قيد التشغيل</span>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal">
+        <span class="ar-num" lang="ar" aria-hidden="true">١٠٠+</span>
+        <div class="num">100<sup>+</sup></div>
+        <div class="label">Containers in production</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.06s">
+        <span class="ar-num" lang="ar" aria-hidden="true">٤٣+</span>
+        <div class="num">43<sup>+</sup></div>
+        <div class="label">Venues live</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.12s">
+        <span class="ar-num" lang="ar" aria-hidden="true">١٥٠</span>
+        <div class="num">150</div>
+        <div class="label">Field technicians</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.18s">
+        <span class="ar-num" lang="ar" aria-hidden="true">أقل من ساعة</span>
+        <div class="num">&lt;1 hr</div>
+        <div class="label">Proposal turnaround — from days</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.24s">
+        <span class="ar-num" lang="ar" aria-hidden="true">٣٠٬٠٠٠+</span>
+        <div class="num">30,000<sup>+</sup></div>
+        <div class="label">CRM records</div>
+      </div>
+      <div class="stat reveal" style="transition-delay:.3s">
+        <span class="ar-num" lang="ar" aria-hidden="true">٢٥٠+</span>
+        <div class="num">250<sup>+</sup></div>
+        <div class="label">Events per season</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ WORK ============ -->
+<section class="work" id="work">
+  <div class="wrap">
+    <div class="section-head mirror reveal">
+      <span class="en" data-num="02">Selected work</span>
+      <span class="ar" lang="ar" dir="rtl">أعمال مختارة</span>
+    </div>
+
+    <article class="case reveal">
+      <div class="case-left">
+        <div class="case-id">
+          <span class="lat">01</span>
+          <span class="arn" lang="ar" aria-hidden="true">٠١</span>
+        </div>
+        <h3>Proposal Engine for ANC</h3>
+      </div>
+      <div class="case-right">
+        <p>Proposal turnaround cut from days to under an hour. Pricing is versioned, every number is traceable to its source, and any proposal can be reproduced exactly — months later, line by line.</p>
+        <div class="case-meta">
+          <span class="chip chip--key">Days → under 1 hr</span>
+          <span class="chip">Versioned pricing</span>
+          <span class="chip">Reproducible proposals</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-left">
+        <div class="case-id">
+          <span class="lat">02</span>
+          <span class="arn" lang="ar" aria-hidden="true">٠٢</span>
+        </div>
+        <h3>Venue Operations Platform</h3>
+      </div>
+      <div class="case-right">
+        <p>43+ venues and 150 field technicians across 15 markets, scheduled and tracked from a single screen. One view replaced four separate reports — and the spreadsheets behind them.</p>
+        <div class="case-meta">
+          <span class="chip chip--key">43+ venues live</span>
+          <span class="chip">150 technicians</span>
+          <span class="chip">15 markets</span>
+          <span class="chip">1 screen, 4 reports retired</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-left">
+        <div class="case-id">
+          <span class="lat">03</span>
+          <span class="arn" lang="ar" aria-hidden="true">٠٣</span>
+        </div>
+        <h3>CRM Platform Extension</h3>
+      </div>
+      <div class="case-right">
+        <p>13 custom objects modeled around how the business actually sells and serves. 30,000+ records migrated and reconciled against the source system, feeding 16 live dashboards the team works from daily.</p>
+        <div class="case-meta">
+          <span class="chip chip--key">30,000+ records</span>
+          <span class="chip">13 custom objects</span>
+          <span class="chip">16 live dashboards</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="band band--teal" style="background-color:var(--sand)" aria-hidden="true"></div>
+
+<!-- ============ CAPABILITIES ============ -->
+<section class="caps" id="capabilities">
+  <div class="wrap">
+    <div class="section-head mirror reveal">
+      <span class="en" data-num="03">Capabilities</span>
+      <span class="ar" lang="ar" dir="rtl">القدرات</span>
+    </div>
+    <div class="caps-grid">
+      <div class="cap reveal">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">CRM Platforms</span>
+        <span class="cap-idx">01</span>
+      </div>
+      <div class="cap reveal" style="transition-delay:.05s">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">Proposal Engines</span>
+        <span class="cap-idx">02</span>
+      </div>
+      <div class="cap reveal" style="transition-delay:.1s">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">Operations Platforms</span>
+        <span class="cap-idx">03</span>
+      </div>
+      <div class="cap reveal" style="transition-delay:.15s">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">Automation Systems</span>
+        <span class="cap-idx">04</span>
+      </div>
+      <div class="cap reveal" style="transition-delay:.2s">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">Platform Integrations</span>
+        <span class="cap-idx">05</span>
+      </div>
+      <div class="cap reveal" style="transition-delay:.25s">
+        <span class="glyph" style="color:var(--gold)"><svg viewBox="0 0 100 100" width="17" height="17"><use href="#star8"/></svg></span>
+        <span class="cap-name">AI Inside the Workflow</span>
+        <span class="cap-idx">06</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ============ CTA ============ -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="cta-head mirror reveal">
+      <span class="en" data-num="04">Start a project</span>
+      <span class="ar" lang="ar" dir="rtl">ابدأ مشروعًا</span>
+    </div>
+    <h2 class="cta-title reveal">If it should run itself, it can be built<span style="color:var(--gold)">.</span></h2>
+    <a class="cta-mail reveal" href="mailto:ahmad@basheer.app"><span class="arrow">→</span>ahmad@basheer.app</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <span class="en">© <span id="yr">2026</span> Ahmad Basheer — Systems builder &amp; operator</span>
+    <span class="ar" lang="ar" dir="rtl">أحمد بشير — باني أنظمة ومشغّلها</span>
+  </div>
+</footer>
+
+<script>
+  // header state
+  const header = document.querySelector('header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // scroll reveals
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
+
+  // year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

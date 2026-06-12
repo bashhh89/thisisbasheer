@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ANC Customer Portal — Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #faf9f6;
+    --paper-2: #f4f2ec;
+    --card: #ffffff;
+    --ink: #1d2321;
+    --ink-soft: #4a534f;
+    --ink-faint: #828b86;
+    --line: #e7e3da;
+    --line-soft: #efece4;
+    --green: #1f4a3d;
+    --green-deep: #163a30;
+    --green-soft: #e9f0ec;
+    --green-tint: #f3f7f4;
+    --gold: #b08d57;
+    --gold-soft: #f6efe3;
+    --amber: #b07d2c;
+    --amber-soft: #f8efdc;
+    --shadow-sm: 0 1px 2px rgba(29,35,33,.04), 0 2px 8px rgba(29,35,33,.04);
+    --shadow-md: 0 4px 14px rgba(29,35,33,.06), 0 14px 40px rgba(29,35,33,.07);
+    --shadow-lg: 0 18px 60px rgba(22,58,48,.18);
+    --radius: 18px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+  h1, h2, h3, h4 { font-family: "Fraunces", Georgia, serif; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; }
+  ::selection { background: var(--green); color: #fff; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Layout shell ---------- */
+  .shell { display: grid; grid-template-columns: 264px 1fr; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    background: var(--green-deep);
+    color: #e8efe9;
+    padding: 30px 22px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 26px; }
+  .brand-mark {
+    width: 40px; height: 40px; border-radius: 11px;
+    background: linear-gradient(150deg, #2c6b58, #163a30);
+    border: 1px solid rgba(255,255,255,.14);
+    display: grid; place-items: center;
+    font-family: "Fraunces", serif; font-weight: 600; font-size: 19px; color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .brand-name { font-family: "Fraunces", serif; font-size: 19px; font-weight: 600; color: #fff; line-height: 1; }
+  .brand-sub { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8fb3a4; margin-top: 4px; }
+
+  .nav { display: flex; flex-direction: column; gap: 3px; margin-top: 8px; }
+  .nav-label { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #6f9384; padding: 14px 12px 8px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 13px;
+    padding: 11px 13px; border-radius: 11px;
+    color: #c4d6cd; font-size: 14.5px; font-weight: 450;
+    transition: background .18s ease, color .18s ease;
+    text-align: left; width: 100%;
+  }
+  .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .85; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,.1); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+  .nav-item .badge {
+    margin-left: auto; background: var(--gold); color: #2a1e0c;
+    font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 20px;
+  }
+
+  .sidebar-foot { margin-top: auto; padding-top: 22px; }
+  .concierge-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 15px;
+  }
+  .concierge-card .cc-eyebrow { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: #8fb3a4; }
+  .concierge-card .cc-name { font-family: "Fraunces", serif; font-size: 15px; color: #fff; margin-top: 6px; }
+  .concierge-card .cc-meta { font-size: 12.5px; color: #a9c2b7; margin-top: 3px; }
+  .concierge-card .cc-action { margin-top: 12px; font-size: 13px; color: #d8e6df; display: flex; align-items: center; gap: 7px; }
+  .concierge-card .cc-action svg { width: 15px; height: 15px; }
+
+  /* ---------- Main ---------- */
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar {
+    display: flex; align-items: center; gap: 18px;
+    padding: 20px 46px; border-bottom: 1px solid var(--line);
+    background: rgba(250,249,246,.82); backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 30;
+  }
+  .topbar .crumb { font-size: 13px; color: var(--ink-faint); }
+  .topbar .crumb b { color: var(--ink-soft); font-weight: 500; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--line);
+    background: var(--card); display: grid; place-items: center; color: var(--ink-soft);
+    transition: border-color .18s, box-shadow .18s, transform .18s; position: relative;
+  }
+  .icon-btn:hover { border-color: #d6d1c5; box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn .dot { position: absolute; top: 9px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); border: 1.5px solid var(--card); }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(150deg,#2c6b58,#163a30);
+    color: #fff; display: grid; place-items: center; font-weight: 600; font-size: 14px; font-family: "Fraunces", serif;
+  }
+
+  .content { padding: 40px 46px 70px; max-width: 1180px; width: 100%; }
+
+  /* ---------- Sections (tabs) ---------- */
+  .view { display: none; animation: fade .4s ease; }
+  .view.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Hero / greeting ---------- */
+  .hero {
+    background:
+      radial-gradient(120% 140% at 0% 0%, #205040 0%, #163a30 52%, #11302a 100%);
+    color: #eef4f0; border-radius: 24px; padding: 42px 44px;
+    position: relative; overflow: hidden; box-shadow: var(--shadow-lg);
+  }
+  .hero::after {
+    content: ""; position: absolute; right: -60px; top: -80px; width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(176,141,87,.32), transparent 62%); pointer-events: none;
+  }
+  .hero::before {
+    content: ""; position: absolute; right: 38px; bottom: -90px; width: 240px; height: 240px;
+    border: 1px solid rgba(255,255,255,.1); border-radius: 50%;
+  }
+  .hero .eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #9cc0b1; }
+  .hero h1 { font-size: 38px; margin-top: 12px; color: #fff; font-weight: 500; }
+  .hero h1 .accent { color: var(--gold); font-style: italic; }
+  .hero p.sub { margin-top: 12px; font-size: 16px; color: #c4d8cf; max-width: 560px; }
+  .hero-actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; position: relative; z-index: 2; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 13px 22px; border-radius: 13px; font-size: 14.5px; font-weight: 500;
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+  }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-gold { background: var(--gold); color: #241a09; box-shadow: 0 8px 24px rgba(176,141,87,.36); }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(176,141,87,.46); }
+  .btn-ghost { background: rgba(255,255,255,.08); color: #eaf2ee; border: 1px solid rgba(255,255,255,.18); }
+  .btn-ghost:hover { background: rgba(255,255,255,.14); transform: translateY(-2px); }
+  .btn-quiet { background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+  .btn-quiet:hover { border-color: #d6d1c5; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .btn-primary { background: var(--green); color: #fff; box-shadow: 0 8px 22px rgba(31,74,61,.28); }
+  .btn-primary:hover { background: var(--green-deep); transform: translateY(-2px); }
+
+  /* ---------- Stat tiles ---------- */
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 26px; }
+  .stat {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px 24px 22px; box-shadow: var(--shadow-sm); transition: transform .2s, box-shadow .2s;
+    position: relative; overflow: hidden;
+  }
+  .stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .stat .ic {
+    width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 16px;
+  }
+  .stat .ic svg { width: 20px; height: 20px; }
+  .stat.green .ic { background: var(--green-soft); color: var(--green); }
+  .stat.gold .ic { background: var(--gold-soft); color: var(--gold); }
+  .stat.ink .ic { background: var(--paper-2); color: var(--ink); }
+  .stat .num { font-family: "Fraunces", serif; font-size: 38px; font-weight: 500; line-height: 1; }
+  .stat .lbl { font-size: 14px; color: var(--ink-soft); margin-top: 9px; }
+  .stat .trend { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+  .stat .trend.up { color: var(--green); }
+
+  /* ---------- Section headings ---------- */
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin: 40px 0 18px; }
+  .sec-head h2 { font-size: 23px; }
+  .sec-head .sub { font-size: 14px; color: var(--ink-faint); }
+  .sec-head .link { margin-left: auto; font-size: 13.5px; color: var(--green); font-weight: 500; display: inline-flex; align-items: center; gap: 5px; }
+  .sec-head .link svg { width: 15px; height: 15px; transition: transform .18s; }
+  .sec-head .link:hover svg { transform: translateX(3px); }
+
+  /* ---------- Grid columns ---------- */
+  .two-col { display: grid; grid-template-columns: 1.55fr 1fr; gap: 22px; }
+
+  /* ---------- Request cards ---------- */
+  .req-list { display: flex; flex-direction: column; gap: 14px; }
+  .req-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px 22px; box-shadow: var(--shadow-sm);
+    transition: transform .18s, box-shadow .18s, border-color .18s; cursor: pointer;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  .req-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #ddd8cd; }
+  .req-rail { width: 4px; align-self: stretch; border-radius: 4px; flex-shrink: 0; }
+  .req-rail.progress { background: var(--amber); }
+  .req-rail.scheduled { background: var(--gold); }
+  .req-rail.review { background: #4f7bbf; }
+  .req-rail.resolved { background: var(--green); }
+  .req-body { flex: 1; min-width: 0; }
+  .req-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .req-id { font-size: 12.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .req-title { font-family: "Fraunces", serif; font-size: 18px; font-weight: 500; margin-top: 7px; }
+  .req-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 11px; font-size: 13px; color: var(--ink-soft); }
+  .req-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .req-meta svg { width: 14px; height: 14px; color: var(--ink-faint); }
+
+  .pill {
+    font-size: 12px; font-weight: 500; padding: 4px 11px; border-radius: 30px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pill .pdot { width: 6px; height: 6px; border-radius: 50%; }
+  .pill.progress { background: var(--amber-soft); color: #8a5f17; }
+  .pill.progress .pdot { background: var(--amber); animation: pulse 1.8s infinite; }
+  .pill.scheduled { background: var(--gold-soft); color: #7d5f24; }
+  .pill.scheduled .pdot { background: var(--gold); }
+  .pill.review { background: #eaf0f8; color: #3a5c8f; }
+  .pill.review .pdot { background: #4f7bbf; }
+  .pill.resolved { background: var(--green-soft); color: var(--green); }
+  .pill.resolved .pdot { background: var(--green); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
+  .req-human {
+    margin-top: 14px; padding: 11px 14px; background: var(--green-tint);
+    border: 1px solid var(--line-soft); border-radius: 11px;
+    font-size: 13px; color: var(--green); display: flex; align-items: center; gap: 9px;
+  }
+  .req-human svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .req-human.neutral { background: var(--paper-2); border-color: var(--line); color: var(--ink-soft); }
+
+  /* ---------- Side panels ---------- */
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow-sm);
+  }
+  .panel h3 { font-size: 17px; margin-bottom: 4px; }
+  .panel .p-sub { font-size: 13px; color: var(--ink-faint); margin-bottom: 18px; }
+
+  .timeline { position: relative; }
+  .tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before {
+    content: ""; position: absolute; left: 6px; top: 18px; bottom: -2px; width: 1.5px; background: var(--line);
+  }
+  .tl-item:last-child::before { display: none; }
+  .tl-node {
+    width: 13px; height: 13px; border-radius: 50%; background: var(--card);
+    border: 2.5px solid var(--green); flex-shrink: 0; margin-top: 3px; z-index: 1;
+  }
+  .tl-node.gold { border-color: var(--gold); }
+  .tl-node.faint { border-color: var(--line); }
+  .tl-content .tl-title { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .tl-content .tl-meta { font-size: 12px; color: var(--ink-faint); margin-top: 3px; }
+
+  .venue-row {
+    display: flex; align-items: center; gap: 13px; padding: 13px 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .venue-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .venue-ic {
+    width: 40px; height: 40px; border-radius: 11px; background: var(--paper-2);
+    display: grid; place-items: center; color: var(--green); flex-shrink: 0;
+  }
+  .venue-ic svg { width: 19px; height: 19px; }
+  .venue-name { font-size: 14.5px; font-weight: 500; }
+  .venue-meta { font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+  .venue-status { margin-left: auto; }
+  .badge-ok { font-size: 11.5px; font-weight: 500; color: var(--green); background: var(--green-soft); padding: 3px 10px; border-radius: 20px; }
+
+  /* ---------- Filters ---------- */
+  .filters { display: flex; gap: 9px; flex-wrap: wrap; margin: 4px 0 22px; }
+  .filter {
+    padding: 8px 16px; border-radius: 30px; border: 1px solid var(--line); background: var(--card);
+    font-size: 13.5px; color: var(--ink-soft); transition: all .16s;
+  }
+  .filter:hover { border-color: #d6d1c5; }
+  .filter.active { background: var(--green); color: #fff; border-color: var(--green); box-shadow: 0 6px 16px rgba(31,74,61,.22); }
+  .filter .cnt { opacity: .6; margin-left: 5px; font-variant-numeric: tabular-nums; }
+  .filter.active .cnt { opacity: .8; }
+
+  /* ---------- Displays / inventory ---------- */
+  .inv-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  .inv-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-sm); transition: transform .2s, box-shadow .2s;
+  }
+  .inv-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .inv-vis {
+    height: 132px; position: relative; display: grid; place-items: center;
+    background: radial-gradient(120% 120% at 50% 0%, #234c40, #14302a);
+    overflow: hidden;
+  }
+  .inv-vis .scan {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,.045) 0 2px, transparent 2px 5px);
+  }
+  .inv-vis .glow { position: absolute; width: 150px; height: 150px; background: radial-gradient(circle, rgba(176,141,87,.4), transparent 65%); }
+  .inv-vis .panel-mock {
+    width: 120px; height: 64px; border-radius: 8px; position: relative; z-index: 2;
+    background: linear-gradient(135deg, rgba(176,141,87,.95), rgba(176,141,87,.55));
+    box-shadow: 0 0 30px rgba(176,141,87,.5), inset 0 0 0 1px rgba(255,255,255,.25);
+    display: grid; place-items: center; color: #1a1305; font-family: "Fraunces", serif; font-weight: 600; font-size: 13px;
+  }
+  .inv-vis .panel-mock.fault {
+    background: linear-gradient(135deg, #3a4a44, #243832);
+    color: #b9c8c1;
+  }
+  .inv-vis .panel-mock.fault::after {
+    content: ""; position: absolute; top: 14px; left: 22px; width: 9px; height: 9px;
+    background: var(--amber); border-radius: 2px; box-shadow: 0 0 8px var(--amber); animation: blink 1.2s infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .2; } }
+  .inv-info { padding: 17px 18px 18px; }
+  .inv-info .inv-name { font-family: "Fraunces", serif; font-size: 16.5px; font-weight: 500; }
+  .inv-info .inv-venue { font-size: 12.5px; color: var(--ink-faint); margin-top: 3px; }
+  .inv-specs { display: flex; gap: 14px; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line-soft); }
+  .inv-spec .k { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .inv-spec .v { font-size: 13px; font-weight: 500; margin-top: 2px; }
+  .inv-foot { display: flex; align-items: center; margin-top: 15px; }
+  .inv-health { font-size: 12.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+  .inv-health .hd { width: 7px; height: 7px; border-radius: 50%; }
+  .inv-health.ok { color: var(--green); } .inv-health.ok .hd { background: var(--green); }
+  .inv-health.watch { color: var(--amber); } .inv-health.watch .hd { background: var(--amber); animation: pulse 1.8s infinite; }
+  .inv-link { margin-left: auto; font-size: 12.5px; color: var(--green); font-weight: 500; }
+
+  /* ---------- Documents library ---------- */
+  .doc-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .doc-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 18px 20px; box-shadow: var(--shadow-sm); display: flex; gap: 16px; align-items: center;
+    transition: transform .18s, box-shadow .18s, border-color .18s; cursor: pointer;
+  }
+  .doc-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #ddd8cd; }
+  .doc-ic {
+    width: 48px; height: 56px; border-radius: 8px; flex-shrink: 0; position: relative;
+    background: var(--green-tint); border: 1px solid var(--line); display: grid; place-items: center; color: var(--green);
+  }
+  .doc-ic svg { width: 22px; height: 22px; }
+  .doc-ic .corner { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: var(--paper); border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); border-bottom-left-radius: 5px; }
+  .doc-ic.gold { background: var(--gold-soft); color: var(--gold); }
+  .doc-name { font-size: 14.5px; font-weight: 500; }
+  .doc-meta { font-size: 12.5px; color: var(--ink-faint); margin-top: 3px; }
+  .doc-dl { margin-left: auto; color: var(--ink-faint); transition: color .16s, transform .16s; flex-shrink: 0; }
+  .doc-card:hover .doc-dl { color: var(--green); transform: translateY(2px); }
+  .doc-dl svg { width: 18px; height: 18px; }
+
+  .doc-cat { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin: 26px 0 14px; font-weight: 600; }
+  .doc-cat:first-of-type { margin-top: 4px; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(20,32,28,.42); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 100;
+    opacity: 0; pointer-events: none; transition: opacity .28s ease;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: var(--paper); border-radius: 24px; width: 100%; max-width: 620px; max-height: 92vh; overflow: hidden;
+    box-shadow: 0 40px 120px rgba(15,30,25,.4); transform: translateY(24px) scale(.97);
+    transition: transform .34s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column;
+  }
+  .overlay.open .modal { transform: none; }
+  .modal-head {
+    padding: 28px 32px 22px; position: relative;
+    background: radial-gradient(120% 160% at 0% 0%, #205040, #163a30);
+    color: #eef4f0;
+  }
+  .modal-head .eyebrow { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: #9cc0b1; }
+  .modal-head h2 { font-size: 25px; margin-top: 8px; color: #fff; }
+  .modal-head p { font-size: 14px; color: #c4d8cf; margin-top: 8px; max-width: 420px; }
+  .modal-close {
+    position: absolute; top: 22px; right: 22px; width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,.1); display: grid; place-items: center; color: #eef4f0; transition: background .16s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,.2); }
+  .modal-close svg { width: 17px; height: 17px; }
+  .modal-body { padding: 26px 32px 8px; overflow-y: auto; }
+
+  .field-label { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 11px; display: block; }
+  .field-label .step { color: var(--gold); font-family: "Fraunces", serif; margin-right: 7px; }
+
+  .type-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 24px; }
+  .type-opt {
+    border: 1.5px solid var(--line); background: var(--card); border-radius: 14px; padding: 16px;
+    display: flex; gap: 13px; align-items: flex-start; text-align: left; transition: all .18s;
+  }
+  .type-opt:hover { border-color: #c9c3b5; transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .type-opt.sel { border-color: var(--green); background: var(--green-tint); box-shadow: 0 0 0 3px rgba(31,74,61,.1); }
+  .type-opt .t-ic {
+    width: 38px; height: 38px; border-radius: 10px; background: var(--paper-2); color: var(--green);
+    display: grid; place-items: center; flex-shrink: 0; transition: background .18s;
+  }
+  .type-opt.sel .t-ic { background: var(--green); color: #fff; }
+  .type-opt .t-ic svg { width: 18px; height: 18px; }
+  .type-opt .t-name { font-size: 14px; font-weight: 500; }
+  .type-opt .t-desc { font-size: 12px; color: var(--ink-faint); margin-top: 3px; line-height: 1.4; }
+
+  .field { margin-bottom: 22px; }
+  .input, .textarea, .select {
+    width: 100%; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 12px;
+    background: var(--card); font-family: inherit; font-size: 14px; color: var(--ink); transition: border-color .16s, box-shadow .16s;
+  }
+  .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(31,74,61,.1); }
+  .textarea { resize: vertical; min-height: 96px; line-height: 1.55; }
+  .select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23828b86' stroke-width='2'%3E%3Cpath d='M3 5l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; padding-right: 40px; }
+
+  .urgency { display: flex; gap: 10px; }
+  .urg-opt { flex: 1; border: 1.5px solid var(--line); background: var(--card); border-radius: 11px; padding: 12px; text-align: center; font-size: 13px; transition: all .16s; }
+  .urg-opt:hover { border-color: #c9c3b5; }
+  .urg-opt.sel { border-color: var(--green); background: var(--green-tint); color: var(--green); font-weight: 500; }
+
+  .modal-foot {
+    padding: 20px 32px 26px; display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .modal-foot .reassure { font-size: 12.5px; color: var(--ink-faint); display: flex; align-items: center; gap: 7px; }
+  .modal-foot .reassure svg { width: 15px; height: 15px; color: var(--green); }
+  .modal-foot .spacer { margin-left: auto; }
+
+  /* ---------- Success state ---------- */
+  .success { text-align: center; padding: 40px 32px 30px; display: none; }
+  .success.show { display: block; animation: fade .4s ease; }
+  .success .check {
+    width: 76px; height: 76px; border-radius: 50%; background: var(--green-soft); color: var(--green);
+    display: grid; place-items: center; margin: 0 auto 22px; position: relative;
+  }
+  .success .check svg { width: 36px; height: 36px; }
+  .success .check::after {
+    content: ""; position: absolute; inset: -8px; border: 2px solid var(--green-soft); border-radius: 50%;
+    animation: ring 1.6s ease-out infinite;
+  }
+  @keyframes ring { 0% { transform: scale(.9); opacity: .7; } 100% { transform: scale(1.25); opacity: 0; } }
+  .success h2 { font-size: 26px; }
+  .success p { font-size: 14.5px; color: var(--ink-soft); margin-top: 10px; max-width: 380px; margin-left: auto; margin-right: auto; }
+  .success .ticket-ref { display: inline-block; margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 20px; font-family: "Fraunces", serif; }
+  .success .ticket-ref .k { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
+  .success .ticket-ref .v { font-size: 20px; font-weight: 600; color: var(--green); margin-top: 2px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(90px);
+    background: var(--green-deep); color: #eef4f0; padding: 14px 22px; border-radius: 14px;
+    font-size: 14px; display: flex; align-items: center; gap: 11px; box-shadow: var(--shadow-lg);
+    z-index: 120; transition: transform .4s cubic-bezier(.2,.8,.2,1); pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast svg { width: 18px; height: 18px; color: var(--gold); }
+
+  /* ---------- Helper / copilot float ---------- */
+  .copilot-fab {
+    position: fixed; bottom: 28px; right: 32px; z-index: 50;
+    display: flex; align-items: center; gap: 11px; padding: 13px 20px 13px 14px; border-radius: 40px;
+    background: var(--green-deep); color: #eef4f0; box-shadow: var(--shadow-lg);
+    transition: transform .18s, box-shadow .18s; font-size: 14px; font-weight: 450;
+  }
+  .copilot-fab:hover { transform: translateY(-3px); box-shadow: 0 24px 70px rgba(22,58,48,.3); }
+  .copilot-fab .cf-ic { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); color: #241a09; display: grid; place-items: center; }
+  .copilot-fab .cf-ic svg { width: 17px; height: 17px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1100px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; left: -280px; z-index: 200; width: 264px; transition: left .3s; }
+    .sidebar.open { left: 0; }
+    .menu-toggle { display: grid !important; }
+    .two-col { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .inv-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  .menu-toggle { display: none; }
+  @media (max-width: 820px) {
+    .topbar, .content { padding-left: 22px; padding-right: 22px; }
+    .hero { padding: 32px 26px; } .hero h1 { font-size: 30px; }
+    .inv-grid, .doc-grid, .type-grid { grid-template-columns: 1fr; }
+    .crumb { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="brand-name">ANC</div>
+        <div class="brand-sub">Client Care</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">Your Account</div>
+      <button class="nav-item active" data-view="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        Overview
+      </button>
+      <button class="nav-item" data-view="requests">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Service Requests
+        <span class="badge">2</span>
+      </button>
+      <button class="nav-item" data-view="displays">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Your Displays
+      </button>
+      <button class="nav-item" data-view="documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M14 2v6h6"/></svg>
+        Document Library
+      </button>
+
+      <div class="nav-label">Get Help</div>
+      <button class="nav-item" id="navNewRequest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        New Request
+      </button>
+      <button class="nav-item" data-view="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+        Help &amp; Guides
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="concierge-card">
+        <div class="cc-eyebrow">Your Concierge</div>
+        <div class="cc-name">Dedicated Account Team</div>
+        <div class="cc-meta">Mon–Sun · Game-day priority line</div>
+        <button class="cc-action" id="conciergeCall" style="cursor:pointer;width:100%;text-align:left;background:none;border:none;padding:0;color:inherit;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call us directly
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-toggle" id="menuToggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="crumb">Client Care · <b id="crumbView">Overview</b></div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" id="topNewRequest" style="padding:10px 18px;font-size:13.5px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          New Request
+        </button>
+        <button class="icon-btn" id="notifBtn"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+        <div class="avatar" title="Riverside Arena Group">RA</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ========== HOME / OVERVIEW ========== -->
+      <section class="view active" id="view-home">
+        <div class="hero">
+          <div class="eyebrow">Good afternoon, Riverside Arena Group</div>
+          <h1>How can we <span class="accent">help</span> today?</h1>
+          <p class="sub">Your displays are looked after by a dedicated team. Raise a request, check on what's in progress, or explore your equipment — we'll take it from here.</p>
+          <div class="hero-actions">
+            <button class="btn btn-gold" id="heroNewRequest">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Start a new request
+            </button>
+            <button class="btn btn-ghost" data-view="requests">
+              View open requests
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat green">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="num">2</div>
+            <div class="lbl">Open requests</div>
+            <div class="trend">Both actively being worked</div>
+          </div>
+          <div class="stat gold">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="num">14</div>
+            <div class="lbl">Resolved this year</div>
+            <div class="trend up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/></svg> Avg. resolution 1.8 days</div>
+          </div>
+          <div class="stat ink">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg></div>
+            <div class="num">3</div>
+            <div class="lbl">Venues under service</div>
+            <div class="trend">All systems healthy</div>
+          </div>
+        </div>
+
+        <div class="sec-head">
+          <h2>What we're working on</h2>
+          <span class="sub">Your active requests</span>
+          <a class="link" data-view="requests">View all
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div class="two-col">
+          <div class="req-list">
+            <div class="req-card">
+              <div class="req-rail progress"></div>
+              <div class="req-body">
+                <div class="req-top">
+                  <span class="req-id">#2041</span>
+                  <span class="pill progress"><span class="pdot"></span>In progress</span>
+                </div>
+                <div class="req-title">Ribbon board pixel fault</div>
+                <div class="req-meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Riverside Arena</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Opened June 9</span>
+                </div>
+                <div class="req-human">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  Our team is on it — a technician is scheduled on-site this Friday.
+                </div>
+              </div>
+            </div>
+
+            <div class="req-card">
+              <div class="req-rail review"></div>
+              <div class="req-body">
+                <div class="req-top">
+                  <span class="req-id">#2040</span>
+                  <span class="pill review"><span class="pdot"></span>Under review</span>
+                </div>
+                <div class="req-title">Concourse menu board color calibration</div>
+                <div class="req-meta">
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Lakeside Stadium</span>
+                  <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Opened June 10</span>
+                </div>
+                <div class="req-human">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  We're reviewing the details and will confirm next steps shortly.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="panel">
+            <h3>Recent activity</h3>
+            <div class="p-sub">A quiet record of everything we've handled.</div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-node"></div>
+                <div class="tl-content">
+                  <div class="tl-title">Technician scheduled for #2041</div>
+                  <div class="tl-meta">Riverside Arena · 2 hours ago</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-node gold"></div>
+                <div class="tl-content">
+                  <div class="tl-title">Request #2040 received & assigned</div>
+                  <div class="tl-meta">Lakeside Stadium · Yesterday</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-node"></div>
+                <div class="tl-content">
+                  <div class="tl-title">#2038 marked resolved</div>
+                  <div class="tl-meta">Scoreboard feed restored · June 6</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-node faint"></div>
+                <div class="tl-content">
+                  <div class="tl-title">Q1 maintenance report published</div>
+                  <div class="tl-meta">Added to your library · May 28</div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="sec-head">
+          <h2>Your venues</h2>
+          <span class="sub">Equipment under active service</span>
+          <a class="link" data-view="displays">See all displays
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div class="panel">
+          <div class="venue-row">
+            <div class="venue-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14"/></svg></div>
+            <div><div class="venue-name">Riverside Arena</div><div class="venue-meta">4 displays · 1 active request</div></div>
+            <div class="venue-status"><span class="badge-ok">Service active</span></div>
+          </div>
+          <div class="venue-row">
+            <div class="venue-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14"/></svg></div>
+            <div><div class="venue-name">Metro Civic Center</div><div class="venue-meta">3 displays · all healthy</div></div>
+            <div class="venue-status"><span class="badge-ok">Service active</span></div>
+          </div>
+          <div class="venue-row">
+            <div class="venue-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4 8 4v14"/></svg></div>
+            <div><div class="venue-name">Lakeside Stadium</div><div class="venue-meta">5 displays · 1 active request</div></div>
+            <div class="venue-status"><span class="badge-ok">Service active</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== REQUESTS ========== -->
+      <section class="view" id="view-requests">
+        <div class="sec-head" style="margin-top:0">
+          <div>
+            <h2>Service Requests</h2>
+            <span class="sub">Everything we've handled and everything in motion.</span>
+          </div>
+          <a class="link" id="reqNewRequest" style="cursor:pointer">+ New request</a>
+        </div>
+
+        <div class="filters" id="reqFilters">
+          <button class="filter active" data-filter="all">All<span class="cnt">16</span></button>
+          <button class="filter" data-filter="open">Open<span class="cnt">2</span></button>
+          <button class="filter" data-filter="resolved">Resolved<span class="cnt">14</span></button>
+        </div>
+
+        <div class="req-list" id="reqFullList">
+          <div class="req-card" data-status="open">
+            <div class="req-rail progress"></div>
+            <div class="req-body">
+              <div class="req-top"><span class="req-id">#2041</span><span class="pill progress"><span class="pdot"></span>In progress</span></div>
+              <div class="req-title">Ribbon board pixel fault</div>
+              <div class="req-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Riverside Arena</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Opened June 9</span>
+              </div>
+              <div class="req-human"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Our team is on it — a technician is scheduled on-site this Friday.</div>
+            </div>
+          </div>
+          <div class="req-card" data-status="open">
+            <div class="req-rail review"></div>
+            <div class="req-body">
+              <div class="req-top"><span class="req-id">#2040</span><span class="pill review"><span class="pdot"></span>Under review</span></div>
+              <div class="req-title">Concourse menu board color calibration</div>
+              <div class="req-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Lakeside Stadium</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Opened June 10</span>
+              </div>
+              <div class="req-human"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>We're reviewing the details and will confirm next steps shortly.</div>
+            </div>
+          </div>
+          <div class="req-card" data-status="resolved">
+            <div class="req-rail resolved"></div>
+            <div class="req-body">
+              <div class="req-top"><span class="req-id">#2038</span><span class="pill resolved"><span class="pdot"></span>Resolved</span></div>
+              <div class="req-title">Scoreboard feed dropout</div>
+              <div class="req-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Metro Civic Center</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Resolved June 6</span>
+              </div>
+              <div class="req-human neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Feed restored and confirmed stable across a full event. Closed in 1 day.</div>
+            </div>
+          </div>
+          <div class="req-card" data-status="resolved">
+            <div class="req-rail resolved"></div>
+            <div class="req-body">
+              <div class="req-top"><span class="req-id">#2034</span><span class="pill resolved"><span class="pdot"></span>Resolved</span></div>
+              <div class="req-title">Main scoreboard brightness adjustment</div>
+              <div class="req-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Riverside Arena</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Resolved May 22</span>
+              </div>
+              <div class="req-human neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Calibrated for daytime events. You confirmed the result looked great.</div>
+            </div>
+          </div>
+          <div class="req-card" data-status="resolved">
+            <div class="req-rail resolved"></div>
+            <div class="req-body">
+              <div class="req-top"><span class="req-id">#2029</span><span class="pill resolved"><span class="pdot"></span>Resolved</span></div>
+              <div class="req-title">North ribbon board content refresh</div>
+              <div class="req-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Metro Civic Center</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Resolved May 14</span>
+              </div>
+              <div class="req-human neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>New seasonal content loaded and scheduled across all game days.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== DISPLAYS ========== -->
+      <section class="view" id="view-displays">
+        <div class="sec-head" style="margin-top:0">
+          <div>
+            <h2>Your Displays</h2>
+            <span class="sub">A tidy inventory of every screen we look after.</span>
+          </div>
+        </div>
+
+        <div class="filters" id="dispFilters">
+          <button class="filter active" data-vfilter="all">All venues<span class="cnt">12</span></button>
+          <button class="filter" data-vfilter="riverside">Riverside Arena<span class="cnt">4</span></button>
+          <button class="filter" data-vfilter="metro">Metro Civic Center<span class="cnt">3</span></button>
+          <button class="filter" data-vfilter="lakeside">Lakeside Stadium<span class="cnt">5</span></button>
+        </div>
+
+        <div class="inv-grid" id="invGrid">
+          <div class="inv-card" data-venue="riverside">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock">ANC</div></div>
+            <div class="inv-info">
+              <div class="inv-name">Main scoreboard</div>
+              <div class="inv-venue">Riverside Arena</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Pitch</div><div class="v">6 mm</div></div>
+                <div class="inv-spec"><div class="k">Size</div><div class="v">32 × 18 ft</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2023</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health ok"><span class="hd"></span>Healthy</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+
+          <div class="inv-card" data-venue="riverside">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock fault"></div></div>
+            <div class="inv-info">
+              <div class="inv-name">North ribbon board</div>
+              <div class="inv-venue">Riverside Arena</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Pitch</div><div class="v">10 mm</div></div>
+                <div class="inv-spec"><div class="k">Length</div><div class="v">220 ft</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2022</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health watch"><span class="hd"></span>Under service</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+
+          <div class="inv-card" data-venue="riverside">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock">MENU</div></div>
+            <div class="inv-info">
+              <div class="inv-name">Concourse menu boards</div>
+              <div class="inv-venue">Riverside Arena</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Units</div><div class="v">18 screens</div></div>
+                <div class="inv-spec"><div class="k">Type</div><div class="v">Indoor</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2023</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health ok"><span class="hd"></span>Healthy</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+
+          <div class="inv-card" data-venue="metro">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock">CIVIC</div></div>
+            <div class="inv-info">
+              <div class="inv-name">Center-hung scoreboard</div>
+              <div class="inv-venue">Metro Civic Center</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Pitch</div><div class="v">5 mm</div></div>
+                <div class="inv-spec"><div class="k">Faces</div><div class="v">4-sided</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2024</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health ok"><span class="hd"></span>Healthy</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+
+          <div class="inv-card" data-venue="metro">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock">FASCIA</div></div>
+            <div class="inv-info">
+              <div class="inv-name">Lower fascia board</div>
+              <div class="inv-venue">Metro Civic Center</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Pitch</div><div class="v">8 mm</div></div>
+                <div class="inv-spec"><div class="k">Length</div><div class="v">340 ft</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2024</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health ok"><span class="hd"></span>Healthy</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+
+          <div class="inv-card" data-venue="lakeside">
+            <div class="inv-vis"><div class="scan"></div><div class="glow"></div><div class="panel-mock">LAKE</div></div>
+            <div class="inv-info">
+              <div class="inv-name">End-zone video wall</div>
+              <div class="inv-venue">Lakeside Stadium</div>
+              <div class="inv-specs">
+                <div class="inv-spec"><div class="k">Pitch</div><div class="v">10 mm</div></div>
+                <div class="inv-spec"><div class="k">Size</div><div class="v">60 × 30 ft</div></div>
+                <div class="inv-spec"><div class="k">Installed</div><div class="v">2021</div></div>
+              </div>
+              <div class="inv-foot"><span class="inv-health ok"><span class="hd"></span>Healthy</span><a class="inv-link">Details →</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== DOCUMENTS ========== -->
+      <section class="view" id="view-documents">
+        <div class="sec-head" style="margin-top:0">
+          <div>
+            <h2>Document Library</h2>
+            <span class="sub">Agreements, reports, and reference — all in one calm place.</span>
+          </div>
+        </div>
+
+        <div class="doc-cat">Agreements &amp; Contracts</div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-ic gold"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 13h6M9 17h6"/></svg></div>
+            <div><div class="doc-name">Service agreement 2026</div><div class="doc-meta">PDF · 2.4 MB · Signed Jan 2026</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-ic gold"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 13h6M9 17h6"/></svg></div>
+            <div><div class="doc-name">Warranty coverage summary</div><div class="doc-meta">PDF · 880 KB · Updated Feb 2026</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+        </div>
+
+        <div class="doc-cat">Maintenance Reports</div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-ic"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 14l2 2 4-4"/></svg></div>
+            <div><div class="doc-name">Q1 maintenance report</div><div class="doc-meta">PDF · 3.1 MB · Published May 28</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-ic"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 14l2 2 4-4"/></svg></div>
+            <div><div class="doc-name">Annual preventive maintenance plan</div><div class="doc-meta">PDF · 1.7 MB · Published Jan 2026</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+        </div>
+
+        <div class="doc-cat">Reference &amp; Specs</div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="doc-ic"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 12h6M9 16h4"/></svg></div>
+            <div><div class="doc-name">Display specification sheets</div><div class="doc-meta">PDF · 5.2 MB · All venues</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+          <div class="doc-card">
+            <div class="doc-ic"><div class="corner"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4a2 2 0 0 1 2-2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 12h6M9 16h4"/></svg></div>
+            <div><div class="doc-name">Game-day operations guide</div><div class="doc-meta">PDF · 4.0 MB · Updated Apr 2026</div></div>
+            <div class="doc-dl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ COPILOT FAB ============ -->
+<button class="copilot-fab" id="copilotFab">
+  <span class="cf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></span>
+  Ask the assistant
+</button>
+
+<!-- ============ NEW REQUEST MODAL ============ -->
+<div class="overlay" id="reqOverlay">
+  <div class="modal">
+    <div id="modalForm">
+      <div class="modal-head">
+        <button class="modal-close" id="modalClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        <div class="eyebrow">New Request</div>
+        <h2>How can we help?</h2>
+        <p>Tell us what's happening and we'll take it from there. A member of your account team picks this up right away.</p>
+      </div>
+      <div class="modal-body">
+        <label class="field-label"><span class="step">01</span>What kind of help do you need?</label>
+        <div class="type-grid" id="typeGrid">
+          <button class="type-opt" data-type="display">
+            <span class="t-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+            <span><span class="t-name">Display issue</span><span class="t-desc">Pixels, brightness, color, or a screen acting up.</span></span>
+          </button>
+          <button class="type-opt" data-type="content">
+            <span class="t-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h10"/></svg></span>
+            <span><span class="t-name">Content &amp; scheduling</span><span class="t-desc">Update what plays, when, and where.</span></span>
+          </button>
+          <button class="type-opt" data-type="maintenance">
+            <span class="t-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2-2z"/></svg></span>
+            <span><span class="t-name">Maintenance</span><span class="t-desc">Routine service, inspection, or a check-up.</span></span>
+          </button>
+          <button class="type-opt" data-type="other">
+            <span class="t-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".4" fill="currentColor"/></svg></span>
+            <span><span class="t-name">Something else</span><span class="t-desc">Not sure where it fits? Start here.</span></span>
+          </button>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="step">02</span>Which venue is this for?</label>
+          <select class="select" id="reqVenue">
+            <option>Riverside Arena</option>
+            <option>Metro Civic Center</option>
+            <option>Lakeside Stadium</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="step">03</span>Tell us a little more</label>
+          <textarea class="textarea" id="reqDetails" placeholder="A few words about what you're seeing — no technical detail needed. We'll follow up if we need anything."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="step">04</span>How time-sensitive is this?</label>
+          <div class="urgency" id="urgency">
+            <button class="urg-opt sel" data-urg="routine">Routine</button>
+            <button class="urg-opt" data-urg="soon">Soon</button>
+            <button class="urg-opt" data-urg="gameday">Game-day priority</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <span class="reassure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Picked up by your team right away</span>
+        <span class="spacer"></span>
+        <button class="btn btn-quiet" id="modalCancel">Cancel</button>
+        <button class="btn btn-primary" id="submitReq">Send request</button>
+      </div>
+    </div>
+
+    <!-- success -->
+    <div class="success" id="modalSuccess">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h2>We've got it from here.</h2>
+      <p>Your request is in good hands. A member of your dedicated account team is already reviewing it and will be in touch shortly.</p>
+      <div class="ticket-ref"><div class="k">Your reference</div><div class="v" id="newTicketId">#2042</div></div>
+      <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-quiet" id="successClose">Back to overview</button>
+        <button class="btn btn-primary" id="successView">View my requests</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastMsg">Done</span>
+</div>
+
+<script>
+(function () {
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+  /* ---------- View switching ---------- */
+  const views = { home: 'Overview', requests: 'Service Requests', displays: 'Your Displays', documents: 'Document Library' };
+  function switchView(name) {
+    if (!views[name]) return;
+    $$('.view').forEach(v => v.classList.remove('active'));
+    const target = $('#view-' + name);
+    if (target) target.classList.add('active');
+    $$('.nav-item[data-view]').forEach(n => n.classList.toggle('active', n.dataset.view === name));
+    $('#crumbView').textContent = views[name];
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('#sidebar').classList.remove('open');
+  }
+  $$('[data-view]').forEach(el => el.addEventListener('click', () => switchView(el.dataset.view)));
+
+  /* ---------- Mobile menu ---------- */
+  $('#menuToggle').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+
+  /* ---------- Modal ---------- */
+  const overlay = $('#reqOverlay');
+  let selectedType = null;
+
+  function openModal(preset) {
+    $('#modalForm').style.display = 'block';
+    $('#modalSuccess').classList.remove('show');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (preset) selectType($('.type-opt[data-type="' + preset + '"]'));
+  }
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function selectType(el) {
+    if (!el) return;
+    $$('.type-opt').forEach(t => t.classList.remove('sel'));
+    el.classList.add('sel');
+    selectedType = el.dataset.type;
+  }
+
+  $('#navNewRequest').addEventListener('click', () => openModal());
+  $('#topNewRequest').addEventListener('click', () => openModal());
+  $('#heroNewRequest').addEventListener('click', () => openModal());
+  $('#reqNewRequest').addEventListener('click', () => openModal());
+  $('#copilotFab').addEventListener('click', () => { showToast('Your assistant is one tap away — opening a request for you.'); openModal(); });
+  $('#modalClose').addEventListener('click', closeModal);
+  $('#modalCancel').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  $$('.type-opt').forEach(t => t.addEventListener('click', () => selectType(t)));
+
+  /* urgency */
+  $$('#urgency .urg-opt').forEach(u => u.addEventListener('click', () => {
+    $$('#urgency .urg-opt').forEach(x => x.classList.remove('sel'));
+    u.classList.add('sel');
+  }));
+
+  /* submit */
+  let nextTicket = 2042;
+  $('#submitReq').addEventListener('click', () => {
+    if (!selectedType) { selectType($('.type-opt[data-type="display"]')); }
+    $('#newTicketId').textContent = '#' + nextTicket;
+    $('#modalForm').style.display = 'none';
+    $('#modalSuccess').classList.add('show');
+  });
+
+  $('#successClose').addEventListener('click', () => { closeModal(); switchView('home'); resetForm(); });
+  $('#successView').addEventListener('click', () => { closeModal(); switchView('requests'); resetForm(); });
+
+  function resetForm() {
+    $$('.type-opt').forEach(t => t.classList.remove('sel'));
+    selectedType = null;
+    $('#reqDetails').value = '';
+    $$('#urgency .urg-opt').forEach((x,i) => x.classList.toggle('sel', i === 0));
+    nextTicket++;
+  }
+
+  /* ---------- Request filters ---------- */
+  $$('#reqFilters .filter').forEach(f => f.addEventListener('click', () => {
+    $$('#reqFilters .filter').forEach(x => x.classList.remove('active'));
+    f.classList.add('active');
+    const filter = f.dataset.filter;
+    $$('#reqFullList .req-card').forEach(c => {
+      c.style.display = (filter === 'all' || c.dataset.status === filter) ? 'flex' : 'none';
+    });
+  }));
+
+  /* ---------- Display venue filters ---------- */
+  $$('#dispFilters .filter').forEach(f => f.addEventListener('click', () => {
+    $$('#dispFilters .filter').forEach(x => x.classList.remove('active'));
+    f.classList.add('active');
+    const vf = f.dataset.vfilter;
+    $$('#invGrid .inv-card').forEach(c => {
+      c.style.display = (vf === 'all' || c.dataset.venue === vf) ? 'block' : 'none';
+    });
+  }));
+
+  /* ---------- Detail clicks (cards / docs / displays) ---------- */
+  $$('.req-card').forEach(c => c.addEventListener('click', () => {
+    const idEl = c.querySelector('.req-id');
+    const id = idEl ? idEl.textContent : 'this request';
+    showToast('Opening the full timeline for ' + id + ' …');
+  }));
+
+  /* ---------- Concierge / notifications ---------- */
+  $('#conciergeCall').addEventListener('click', () => showToast('Connecting you to your dedicated account team …'));
+  $('#notifBtn').addEventListener('click', () => showToast('You’re all caught up — no new notifications.'));
+  $$('.doc-card').forEach(d => d.addEventListener('click', () => {
+    const name = d.querySelector('.doc-name').textContent;
+    showToast('Preparing “' + name + '” for download …');
+  }));
+  $$('.inv-link').forEach(l => l.addEventListener('click', e => {
+    e.stopPropagation();
+    const name = l.closest('.inv-card').querySelector('.inv-name').textContent;
+    showToast('Opening service history for ' + name + ' …');
+  }));
+
+  /* ---------- Toast ---------- */
+  let toastTimer;
+  function showToast(msg) {
+    $('#toastMsg').textContent = msg;
+    const t = $('#toast');
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+})();
+</script>
+<a href="/concepts/" style="position:fixed;bottom:16px;left:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75">all concepts</a>
+</body>
+</html>

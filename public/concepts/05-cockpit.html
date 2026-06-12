@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 05 — Cockpit · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — Systems builder & operator. I build systems that run companies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONCEPT 05 — COCKPIT
+   Flight-deck HUD / instrument cluster
+   ============================================================ */
+:root{
+  --carbon-0:#070808;
+  --carbon-1:#0c0e0e;
+  --carbon-2:#111414;
+  --carbon-3:#171b1b;
+  --seam:#1f2424;
+  --seam-lit:#2a3131;
+  --amber:#FFB000;
+  --amber-dim:#8a6100;
+  --amber-glow:rgba(255,176,0,.18);
+  --teal:#37d6c5;
+  --teal-dim:#1a6b62;
+  --teal-glow:rgba(55,214,197,.14);
+  --ok:#3ddc73;
+  --txt:#cfd6d4;
+  --txt-dim:#7d8886;
+  --txt-faint:#4a5452;
+  --display:'Rajdhani',sans-serif;
+  --label:'Chakra Petch',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --bracket:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--carbon-0);
+  color:var(--txt);
+  font-family:var(--label);
+  font-weight:400;
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--amber);color:#0a0a0a}
+
+/* ---------- carbon weave + panel seam atmosphere ---------- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1100px 520px at 50% -10%, rgba(55,214,197,.05), transparent 60%),
+    radial-gradient(900px 600px at 85% 110%, rgba(255,176,0,.04), transparent 55%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.010) 0 2px, transparent 2px 5px);
+}
+/* scanline shimmer — kept subtle */
+body::after{
+  content:"";position:fixed;inset:0;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.085) 0 1px, transparent 1px 3px);
+  opacity:.5;
+}
+.sheen{
+  position:fixed;left:0;right:0;height:120px;z-index:61;pointer-events:none;
+  background:linear-gradient(180deg, transparent, rgba(190,255,245,.020), transparent);
+  animation:sheen 14s linear infinite;
+}
+@keyframes sheen{from{top:-15%}to{top:115%}}
+
+.wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 28px}
+
+/* ============================================================
+   MASTER STATUS BAR
+   ============================================================ */
+.statusbar{
+  position:sticky;top:0;z-index:50;
+  background:linear-gradient(180deg, rgba(12,14,14,.97), rgba(12,14,14,.92));
+  border-bottom:1px solid var(--seam);
+  backdrop-filter:blur(8px);
+}
+.statusbar .wrap{
+  display:flex;align-items:center;gap:22px;
+  height:56px;font-family:var(--mono);font-size:11px;
+}
+.sb-id{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.sb-mark{
+  width:30px;height:30px;border:1px solid var(--amber-dim);position:relative;
+  display:grid;place-items:center;color:var(--amber);
+  font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.05em;
+  box-shadow:inset 0 0 12px rgba(255,176,0,.10);
+}
+.sb-mark::after{content:"";position:absolute;inset:3px;border:1px solid rgba(255,176,0,.22)}
+.sb-name{letter-spacing:.22em;color:var(--txt);text-transform:uppercase}
+.sb-name b{color:var(--amber);font-weight:500}
+.sb-sys{display:flex;align-items:center;gap:18px;margin-left:auto;color:var(--txt-dim)}
+.lamp{display:inline-flex;align-items:center;gap:7px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.dot{
+  width:7px;height:7px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 6px var(--ok),0 0 14px rgba(61,220,115,.45);
+  animation:lamp 3.2s ease-in-out infinite;
+}
+.dot.d2{animation-delay:1.1s}.dot.d3{animation-delay:2.2s}
+@keyframes lamp{0%,100%{opacity:1}50%{opacity:.55}}
+.sb-clock{color:var(--teal);letter-spacing:.14em;text-shadow:0 0 10px var(--teal-glow);min-width:118px;text-align:right}
+.sb-nav{display:flex;gap:2px}
+.sb-nav a{
+  color:var(--txt-dim);text-decoration:none;letter-spacing:.16em;text-transform:uppercase;
+  padding:6px 12px;border:1px solid transparent;transition:.18s;
+}
+.sb-nav a:hover{color:var(--amber);border-color:var(--amber-dim);background:rgba(255,176,0,.05)}
+@media(max-width:980px){.sb-sys .lamp span{display:none}.sb-nav{display:none}}
+@media(max-width:620px){.sb-sys .lamp:nth-child(2){display:none}.sb-name{display:none}}
+
+/* ============================================================
+   TICKER STRIP
+   ============================================================ */
+.ticker{
+  border-bottom:1px solid var(--seam);background:var(--carbon-1);
+  overflow:hidden;position:relative;height:34px;display:flex;align-items:center;
+}
+.ticker::before,.ticker::after{
+  content:"";position:absolute;top:0;bottom:0;width:90px;z-index:2;pointer-events:none;
+}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--carbon-1),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--carbon-1),transparent)}
+.ticker-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:tick 52s linear infinite;will-change:transform;
+}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker-track span{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--txt-dim);padding:0 26px;position:relative;
+}
+.ticker-track span::after{
+  content:"";position:absolute;right:-2px;top:50%;width:4px;height:4px;
+  transform:translateY(-50%) rotate(45deg);background:var(--amber-dim);
+}
+.ticker-track span b{color:var(--teal);font-weight:400}
+
+/* ============================================================
+   PANEL CHROME — corner brackets
+   ============================================================ */
+.panel{position:relative;background:linear-gradient(180deg,var(--carbon-2),var(--carbon-1));border:1px solid var(--seam)}
+.panel .ck{position:absolute;width:var(--bracket);height:var(--bracket);pointer-events:none;z-index:3}
+.panel .ck::before,.panel .ck::after{content:"";position:absolute;background:var(--amber)}
+.panel .ck::before{width:100%;height:1px}
+.panel .ck::after{width:1px;height:100%}
+.ck.tl{top:-1px;left:-1px}.ck.tl::before{top:0;left:0}.ck.tl::after{top:0;left:0}
+.ck.tr{top:-1px;right:-1px}.ck.tr::before{top:0;right:0}.ck.tr::after{top:0;right:0}
+.ck.bl{bottom:-1px;left:-1px}.ck.bl::before{bottom:0;left:0}.ck.bl::after{bottom:0;left:0}
+.ck.br{bottom:-1px;right:-1px}.ck.br::before{bottom:0;right:0}.ck.br::after{bottom:0;right:0}
+.panel.teal .ck::before,.panel.teal .ck::after{background:var(--teal)}
+
+.panel-head{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;border-bottom:1px solid var(--seam);
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--txt-dim);
+  background:rgba(255,255,255,.012);
+}
+.panel-head .pid{color:var(--amber);font-weight:500}
+.panel-head .pst{margin-left:auto;display:inline-flex;align-items:center;gap:6px;color:var(--ok);letter-spacing:.16em}
+
+.sect-label{
+  display:flex;align-items:center;gap:16px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--txt-dim);
+  margin-bottom:26px;
+}
+.sect-label::before{content:"";width:26px;height:1px;background:var(--amber)}
+.sect-label::after{content:"";flex:1;height:1px;background:var(--seam)}
+.sect-label .n{color:var(--amber)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding:84px 0 64px;position:relative}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:48px;align-items:start}
+.hero-meta{
+  font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--txt-dim);display:flex;flex-wrap:wrap;gap:10px 28px;margin-bottom:30px;
+}
+.hero-meta .hl{color:var(--amber)}
+.hero h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(46px,7.2vw,96px);line-height:.98;letter-spacing:.005em;
+  text-transform:uppercase;color:#eef2f1;
+}
+.hero h1 .row{display:block}
+.hero h1 .amber{color:var(--amber);text-shadow:0 0 28px var(--amber-glow),0 0 60px rgba(255,176,0,.10)}
+.hero-sub{
+  margin-top:26px;max-width:560px;
+  font-size:16.5px;font-weight:300;color:var(--txt-dim);line-height:1.7;
+}
+.hero-sub b{color:var(--txt);font-weight:500}
+.hero-cta{margin-top:40px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  text-decoration:none;padding:15px 26px;transition:.18s;
+}
+.btn-amber{
+  color:#0a0a0a;background:var(--amber);font-weight:700;
+  box-shadow:0 0 22px rgba(255,176,0,.22),inset 0 0 0 1px rgba(0,0,0,.2);
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+}
+.btn-amber:hover{background:#ffc233;box-shadow:0 0 34px rgba(255,176,0,.38)}
+.btn-ghost{color:var(--teal);border:1px solid var(--teal-dim)}
+.btn-ghost:hover{background:var(--teal-glow);border-color:var(--teal);box-shadow:0 0 18px var(--teal-glow)}
+.hero-readout{font-family:var(--mono);font-size:11px;color:var(--txt-faint);letter-spacing:.12em}
+
+/* hero side instrument — attitude/ops card */
+.hero-side{padding:0}
+.hero-side .body{padding:20px 18px 22px;display:grid;gap:14px}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-family:var(--mono);font-size:11.5px}
+.kv .k{color:var(--txt-faint);letter-spacing:.14em;text-transform:uppercase}
+.kv .v{color:var(--txt);letter-spacing:.06em;text-align:right}
+.kv .v.t{color:var(--teal);text-shadow:0 0 8px var(--teal-glow)}
+.kv .v.a{color:var(--amber);text-shadow:0 0 8px var(--amber-glow)}
+.sparkline{
+  height:42px;border:1px solid var(--seam);position:relative;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 10px);
+}
+.sparkline svg{position:absolute;inset:0;width:100%;height:100%}
+.sparkline polyline{fill:none;stroke:var(--teal);stroke-width:1.5;filter:drop-shadow(0 0 3px var(--teal))}
+.sweep{
+  position:absolute;top:0;bottom:0;width:36px;
+  background:linear-gradient(90deg,transparent,rgba(55,214,197,.14));
+  border-right:1px solid rgba(55,214,197,.5);
+  animation:sweep 4.5s linear infinite;
+}
+@keyframes sweep{from{left:-40px}to{left:103%}}
+@media(max-width:980px){
+  .hero{padding:60px 0 48px}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-side{max-width:440px}
+}
+
+/* ============================================================
+   INSTRUMENT CLUSTER — stats
+   ============================================================ */
+.cluster{padding:30px 0 74px}
+.cluster-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.inst{padding:0;display:flex;flex-direction:column}
+.inst .body{padding:20px 18px 22px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
+.g-dial{grid-column:span 4}
+.g-bar{grid-column:span 4}
+.g-sm{grid-column:span 4}
+.g-q{grid-column:span 3}
+@media(max-width:1080px){.g-dial,.g-bar,.g-sm{grid-column:span 6}.g-q{grid-column:span 6}}
+@media(max-width:640px){.g-dial,.g-bar,.g-sm,.g-q{grid-column:span 12}}
+
+/* segmented LED numeral */
+.led{
+  font-family:var(--mono);font-weight:700;color:var(--amber);
+  font-size:clamp(34px,3.4vw,44px);line-height:1;letter-spacing:.04em;
+  text-shadow:0 0 12px var(--amber-glow),0 0 30px rgba(255,176,0,.12);
+  font-variant-numeric:tabular-nums;
+}
+.led .unit{font-size:.42em;font-weight:400;color:var(--amber-dim);letter-spacing:.1em;margin-left:6px;text-shadow:none}
+.led.teal{color:var(--teal);text-shadow:0 0 12px var(--teal-glow),0 0 30px rgba(55,214,197,.10)}
+.led.teal .unit{color:var(--teal-dim)}
+.inst-cap{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt-dim)}
+.inst-note{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--txt-faint)}
+
+/* --- circular dial gauge (CSS-only, 270° arc) --- */
+.dial-row{display:flex;align-items:center;gap:20px}
+.dial{--p:0;width:128px;height:128px;flex-shrink:0;position:relative}
+.dial .arc,.dial .arc-bg,.dial .ticks{
+  position:absolute;inset:0;border-radius:50%;
+  -webkit-mask:radial-gradient(closest-side, transparent calc(100% - 11px), #000 calc(100% - 10px));
+          mask:radial-gradient(closest-side, transparent calc(100% - 11px), #000 calc(100% - 10px));
+}
+.dial .arc-bg{background:conic-gradient(from 225deg, var(--carbon-3) 0deg 270deg, transparent 270deg 360deg)}
+.dial .ticks{
+  -webkit-mask:radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+          mask:radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  background:repeating-conic-gradient(from 225deg, var(--txt-faint) 0deg .8deg, transparent .8deg 27deg);
+}
+.dial .arc{
+  background:conic-gradient(from 225deg, var(--amber-dim), var(--amber) calc(var(--p)*270deg), transparent calc(var(--p)*270deg) 360deg);
+  filter:drop-shadow(0 0 6px rgba(255,176,0,.35));
+  transition:--p 1.6s cubic-bezier(.3,.9,.3,1);
+}
+@property --p{syntax:'<number>';inherits:false;initial-value:0}
+.dial .core{
+  position:absolute;inset:24px;border-radius:50%;
+  display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle at 38% 32%, var(--carbon-3), var(--carbon-1) 70%);
+  border:1px solid var(--seam-lit);
+}
+.dial .core .led{font-size:30px}
+.dial .core small{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--txt-faint);text-transform:uppercase;margin-top:3px}
+.dial-info{display:grid;gap:8px}
+
+/* --- segmented bar meter --- */
+.meter{height:20px;border:1px solid var(--seam-lit);position:relative;background:var(--carbon-0);overflow:hidden}
+.meter .fill{
+  position:absolute;inset:2px auto 2px 2px;width:0%;
+  background:linear-gradient(90deg,var(--teal-dim),var(--teal));
+  box-shadow:0 0 10px var(--teal-glow);
+  transition:width 1.6s cubic-bezier(.3,.9,.3,1) .2s;
+}
+.meter .segs{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg, transparent 0 8px, var(--carbon-0) 8px 11px);
+}
+.meter.amber .fill{background:linear-gradient(90deg,var(--amber-dim),var(--amber));box-shadow:0 0 10px var(--amber-glow)}
+.meter-scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--txt-faint);letter-spacing:.1em;margin-top:6px}
+
+/* ============================================================
+   WORK — mission modules
+   ============================================================ */
+.work{padding:0 0 74px}
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:980px){.work-grid{grid-template-columns:1fr}}
+.mission{display:flex;flex-direction:column;transition:.2s}
+.mission:hover{border-color:var(--seam-lit);transform:translateY(-3px)}
+.mission:hover .panel-head .pid{text-shadow:0 0 10px var(--amber-glow)}
+.mission .body{padding:24px 20px 26px;flex:1;display:flex;flex-direction:column}
+.mission h3{
+  font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:.02em;
+  text-transform:uppercase;color:#e9eeec;line-height:1.12;
+}
+.mission .tagline{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);margin-top:8px;
+}
+.mission p{font-size:13.5px;font-weight:300;color:var(--txt-dim);line-height:1.7;margin-top:14px;flex:1}
+.mreads{
+  margin-top:22px;border-top:1px solid var(--seam);padding-top:14px;
+  display:grid;grid-template-columns:repeat(3,auto);justify-content:space-between;gap:10px;
+}
+.mread .mv{
+  font-family:var(--mono);font-weight:700;font-size:17px;color:var(--amber);
+  text-shadow:0 0 10px var(--amber-glow);font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.mread .mk{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-faint);margin-top:4px}
+
+/* ============================================================
+   CAPABILITIES — systems board
+   ============================================================ */
+.systems{padding:0 0 74px}
+.sys-panel .body{padding:0}
+.sys-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+@media(max-width:980px){.sys-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.sys-grid{grid-template-columns:1fr}}
+.sys{
+  padding:22px 20px;border-right:1px solid var(--seam);border-bottom:1px solid var(--seam);
+  display:flex;align-items:center;gap:14px;transition:.18s;position:relative;
+}
+.sys:hover{background:rgba(255,176,0,.035)}
+.sys:hover .sys-name{color:var(--amber)}
+.sys-grid .sys:nth-child(3n){border-right:0}
+.sys-grid .sys:nth-last-child(-n+3){border-bottom:0}
+@media(max-width:980px){
+  .sys-grid .sys:nth-child(3n){border-right:1px solid var(--seam)}
+  .sys-grid .sys:nth-child(2n){border-right:0}
+  .sys-grid .sys:nth-last-child(-n+3){border-bottom:1px solid var(--seam)}
+  .sys-grid .sys:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:620px){
+  .sys-grid .sys{border-right:0 !important;border-bottom:1px solid var(--seam) !important}
+  .sys-grid .sys:last-child{border-bottom:0 !important}
+}
+.sys-idx{font-family:var(--mono);font-size:10px;color:var(--txt-faint);letter-spacing:.1em}
+.sys-name{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--txt);transition:.18s}
+.sys .dot{margin-left:auto;flex-shrink:0}
+
+/* ============================================================
+   CTA — engage
+   ============================================================ */
+.engage{padding:0 0 84px}
+.engage .panel{overflow:hidden}
+.engage .body{
+  padding:64px 28px 60px;text-align:center;position:relative;
+  background:
+    radial-gradient(620px 240px at 50% 115%, rgba(255,176,0,.07), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 60px);
+}
+.engage .eyebrow{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--teal);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.engage h2{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(34px,4.6vw,58px);line-height:1.04;color:#eef2f1;margin-top:18px;
+}
+.engage h2 b{color:var(--amber);text-shadow:0 0 26px var(--amber-glow)}
+.engage p{font-weight:300;color:var(--txt-dim);max-width:520px;margin:18px auto 0;font-size:15px}
+.engage .hero-cta{justify-content:center;margin-top:36px}
+.engage .mail{
+  display:block;margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.18em;
+  color:var(--txt-faint);text-decoration:none;transition:.18s;
+}
+.engage .mail:hover{color:var(--teal)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--seam);background:var(--carbon-1)}
+footer .wrap{
+  display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;
+  padding:20px 28px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--txt-faint);
+}
+footer .right{margin-left:auto;display:flex;gap:24px;align-items:center}
+footer a{color:var(--txt-dim);text-decoration:none;transition:.18s}
+footer a:hover{color:var(--amber)}
+@media(max-width:680px){footer .right{margin-left:0}}
+
+/* ---------- reveal on scroll ---------- */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="sheen" aria-hidden="true"></div>
+
+<!-- ================= STATUS BAR ================= -->
+<header class="statusbar">
+  <div class="wrap">
+    <div class="sb-id">
+      <div class="sb-mark" aria-hidden="true">AB</div>
+      <div class="sb-name"><b>AHMAD BASHEER</b> · SYSTEMS BUILDER &amp; OPERATOR</div>
+    </div>
+    <div class="sb-sys">
+      <span class="lamp"><i class="dot" aria-hidden="true"></i><span>SYSTEMS&nbsp;NOMINAL</span></span>
+      <span class="lamp"><i class="dot d2" aria-hidden="true"></i><span>OPS&nbsp;LIVE</span></span>
+      <span class="sb-clock" id="clock" aria-label="UTC time">--:--:-- UTC</span>
+    </div>
+    <nav class="sb-nav" aria-label="Primary">
+      <a href="#instruments">Instruments</a>
+      <a href="#work">Work</a>
+      <a href="#systems">Systems</a>
+      <a href="#engage">Engage</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker">
+    <!-- duplicated by JS for seamless loop -->
+    <span>OPS FEED <b>LIVE</b></span>
+    <span>100+ CONTAINERS <b>IN PRODUCTION</b></span>
+    <span>43+ VENUES <b>REPORTING</b></span>
+    <span>150 FIELD TECHNICIANS <b>DISPATCHED</b></span>
+    <span>PROPOSAL TURNAROUND <b>&lt;1 HR</b></span>
+    <span>30,000+ CRM RECORDS <b>RECONCILED</b></span>
+    <span>250+ EVENTS / SEASON <b>COVERED</b></span>
+    <span>15 MARKETS <b>ONLINE</b></span>
+    <span>ALL SYSTEMS <b>NOMINAL</b></span>
+  </div>
+</div>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="hero-meta rv">
+          <span>CALLSIGN <span class="hl">AB-01</span></span>
+          <span>MODE <span class="hl">OPERATOR</span></span>
+          <span>SCOPE <span class="hl">END-TO-END</span></span>
+        </div>
+        <h1 class="rv d1">
+          <span class="row">I build systems</span>
+          <span class="row">that <span class="amber">run</span></span>
+          <span class="row">companies.</span>
+        </h1>
+        <p class="hero-sub rv d2">
+          Custom platforms for <b>operations</b>, <b>sales</b>, and <b>service</b> —
+          designed, built, and operated end-to-end. One operator, one cockpit,
+          a national operation on the instruments.
+        </p>
+        <div class="hero-cta rv d3">
+          <a class="btn btn-amber" href="mailto:ahmad@basheer.app">Start a project ▸</a>
+          <a class="btn btn-ghost" href="#work">Review the work</a>
+          <span class="hero-readout">// RESPONSE WINDOW: SAME DAY</span>
+        </div>
+      </div>
+
+      <aside class="hero-side panel teal rv d2" aria-label="Operations summary">
+        <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+        <div class="panel-head"><span class="pid">PNL-00</span> OPS SUMMARY <span class="pst"><i class="dot" aria-hidden="true"></i>OK</span></div>
+        <div class="body">
+          <div class="kv"><span class="k">Role</span><span class="v">Builder / Operator</span></div>
+          <div class="kv"><span class="k">Build model</span><span class="v t">Design → Ship → Run</span></div>
+          <div class="kv"><span class="k">Platforms live</span><span class="v a">CRM · OPS · PROPOSALS</span></div>
+          <div class="kv"><span class="k">Uptime posture</span><span class="v t">OPERATED, NOT HANDED OFF</span></div>
+          <div class="sparkline" aria-hidden="true">
+            <svg viewBox="0 0 300 42" preserveAspectRatio="none">
+              <polyline points="0,34 22,33 40,28 58,30 76,22 96,24 114,17 134,20 152,13 172,15 192,10 212,13 232,8 252,10 272,5 300,7"/>
+            </svg>
+            <div class="sweep"></div>
+          </div>
+          <div class="kv"><span class="k">Throughput trend</span><span class="v t">▲ CLIMBING</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= INSTRUMENT CLUSTER ================= -->
+  <section class="cluster" id="instruments">
+    <div class="wrap">
+      <div class="sect-label rv"><span class="n">01</span> INSTRUMENT CLUSTER — LIVE NUMBERS</div>
+      <div class="cluster-grid">
+
+        <!-- Dial: containers -->
+        <div class="inst panel g-dial rv" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">GAU-01</span> PRODUCTION LOAD <span class="pst"><i class="dot" aria-hidden="true"></i>OK</span></div>
+          <div class="body">
+            <div class="dial-row">
+              <div class="dial" data-dial="0.82" role="img" aria-label="Gauge: 100+ containers in production">
+                <div class="ticks"></div>
+                <div class="arc-bg"></div>
+                <div class="arc"></div>
+                <div class="core">
+                  <div>
+                    <span class="led"><span data-count="100" data-suffix="+">0</span></span>
+                    <small>CONTAINERS</small>
+                  </div>
+                </div>
+              </div>
+              <div class="dial-info">
+                <div class="inst-cap">Containers in production</div>
+                <div class="inst-note">// every service built, shipped,<br>// and kept running by one operator</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar: venues -->
+        <div class="inst panel g-bar rv d1" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">GAU-02</span> VENUE NETWORK <span class="pst"><i class="dot d2" aria-hidden="true"></i>OK</span></div>
+          <div class="body">
+            <div class="led teal"><span data-count="43" data-suffix="+">0</span><span class="unit">VENUES LIVE</span></div>
+            <div class="meter" role="img" aria-label="Meter: 43+ venues live across 15 markets">
+              <div class="fill" data-fill="86%"></div>
+              <div class="segs"></div>
+            </div>
+            <div class="meter-scale"><span>0</span><span>15 MARKETS</span><span>50</span></div>
+            <div class="inst-note">// one screen replaced four reports</div>
+          </div>
+        </div>
+
+        <!-- Bar: technicians -->
+        <div class="inst panel g-sm rv d2" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">GAU-03</span> FIELD FORCE <span class="pst"><i class="dot d3" aria-hidden="true"></i>OK</span></div>
+          <div class="body">
+            <div class="led"><span data-count="150">0</span><span class="unit">TECHNICIANS</span></div>
+            <div class="meter amber" role="img" aria-label="Meter: 150 field technicians coordinated">
+              <div class="fill" data-fill="75%"></div>
+              <div class="segs"></div>
+            </div>
+            <div class="meter-scale"><span>0</span><span>COORDINATED DAILY</span><span>200</span></div>
+            <div class="inst-note">// schedules, check-ins, coverage</div>
+          </div>
+        </div>
+
+        <!-- Quick readouts -->
+        <div class="inst panel g-q rv" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">RDO-04</span> TURNAROUND</div>
+          <div class="body">
+            <div class="led teal">&lt;1<span class="unit">HR</span></div>
+            <div class="inst-cap">Proposal turnaround</div>
+            <div class="inst-note">// was: days. now: under an hour.</div>
+          </div>
+        </div>
+
+        <div class="inst panel g-q rv d1" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">RDO-05</span> DATA CORE</div>
+          <div class="body">
+            <div class="led"><span data-count="30000" data-suffix="+" data-format="comma">0</span></div>
+            <div class="inst-cap">CRM records</div>
+            <div class="inst-note">// migrated and reconciled</div>
+          </div>
+        </div>
+
+        <div class="inst panel g-q rv d2" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">RDO-06</span> EVENT TEMPO</div>
+          <div class="body">
+            <div class="led teal"><span data-count="250" data-suffix="+">0</span></div>
+            <div class="inst-cap">Events per season</div>
+            <div class="inst-note">// staffed, tracked, reported</div>
+          </div>
+        </div>
+
+        <div class="inst panel g-q rv d3" data-gauge>
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">RDO-07</span> COVERAGE</div>
+          <div class="body">
+            <div class="led"><span data-count="15">0</span><span class="unit">MARKETS</span></div>
+            <div class="inst-cap">Markets online</div>
+            <div class="inst-note">// one cockpit, national reach</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WORK / MISSION MODULES ================= -->
+  <section class="work" id="work">
+    <div class="wrap">
+      <div class="sect-label rv"><span class="n">02</span> MISSION MODULES — SELECTED WORK</div>
+      <div class="work-grid">
+
+        <article class="mission panel rv">
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">MOD-01</span> PROPOSAL ENGINE <span class="pst"><i class="dot" aria-hidden="true"></i>LIVE</span></div>
+          <div class="body">
+            <h3>Proposal Engine</h3>
+            <div class="tagline">DAYS → UNDER AN HOUR</div>
+            <p>A pricing and proposal system for a national sports-venue
+            company. Versioned pricing, reproducible proposals, every quote
+            traceable to the formula that produced it. The sales team stopped
+            rebuilding spreadsheets and started shipping numbers.</p>
+            <div class="mreads">
+              <div class="mread"><div class="mv">&lt;1HR</div><div class="mk">Turnaround</div></div>
+              <div class="mread"><div class="mv">VERSIONED</div><div class="mk">Pricing</div></div>
+              <div class="mread"><div class="mv">100%</div><div class="mk">Reproducible</div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="mission panel rv d1">
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">MOD-02</span> VENUE OPERATIONS <span class="pst"><i class="dot d2" aria-hidden="true"></i>LIVE</span></div>
+          <div class="body">
+            <h3>Venue Operations Platform</h3>
+            <div class="tagline">FOUR REPORTS → ONE SCREEN</div>
+            <p>Live operations across 43+ venues and 15 markets — events,
+            schedules, coverage, and 150 field technicians on one screen.
+            Replaced four separate reports with a single source of truth that
+            ops leadership actually opens every morning.</p>
+            <div class="mreads">
+              <div class="mread"><div class="mv">43+</div><div class="mk">Venues</div></div>
+              <div class="mread"><div class="mv">150</div><div class="mk">Techs</div></div>
+              <div class="mread"><div class="mv">15</div><div class="mk">Markets</div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="mission panel rv d2">
+          <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+          <div class="panel-head"><span class="pid">MOD-03</span> CRM EXTENSION <span class="pst"><i class="dot d3" aria-hidden="true"></i>LIVE</span></div>
+          <div class="body">
+            <h3>CRM Platform Extension</h3>
+            <div class="tagline">30,000+ RECORDS, RECONCILED</div>
+            <p>Extended a CRM platform with 13 custom objects built around how
+            the business actually sells. Migrated and reconciled 30,000+
+            records, then wired 16 live dashboards on top — so the answer to
+            "what's in the pipeline" is a glance, not a meeting.</p>
+            <div class="mreads">
+              <div class="mread"><div class="mv">13</div><div class="mk">Objects</div></div>
+              <div class="mread"><div class="mv">30K+</div><div class="mk">Records</div></div>
+              <div class="mread"><div class="mv">16</div><div class="mk">Dashboards</div></div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CAPABILITIES / SYSTEMS BOARD ================= -->
+  <section class="systems" id="systems">
+    <div class="wrap">
+      <div class="sect-label rv"><span class="n">03</span> SYSTEMS BOARD — CAPABILITIES</div>
+      <div class="sys-panel panel rv">
+        <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+        <div class="panel-head"><span class="pid">SYS-CHK</span> ALL SYSTEMS GO <span class="pst"><i class="dot" aria-hidden="true"></i>6/6</span></div>
+        <div class="body">
+          <div class="sys-grid">
+            <div class="sys"><span class="sys-idx">S1</span><span class="sys-name">CRM Platforms</span><i class="dot" aria-hidden="true"></i></div>
+            <div class="sys"><span class="sys-idx">S2</span><span class="sys-name">Proposal Engines</span><i class="dot d2" aria-hidden="true"></i></div>
+            <div class="sys"><span class="sys-idx">S3</span><span class="sys-name">Operations Platforms</span><i class="dot d3" aria-hidden="true"></i></div>
+            <div class="sys"><span class="sys-idx">S4</span><span class="sys-name">Automation Systems</span><i class="dot d2" aria-hidden="true"></i></div>
+            <div class="sys"><span class="sys-idx">S5</span><span class="sys-name">Platform Integrations</span><i class="dot" aria-hidden="true"></i></div>
+            <div class="sys"><span class="sys-idx">S6</span><span class="sys-name">AI Inside the Workflow</span><i class="dot d3" aria-hidden="true"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA / ENGAGE ================= -->
+  <section class="engage" id="engage">
+    <div class="wrap">
+      <div class="panel rv">
+        <i class="ck tl"></i><i class="ck tr"></i><i class="ck bl"></i><i class="ck br"></i>
+        <div class="panel-head"><span class="pid">ENG-01</span> ENGAGEMENT CHANNEL <span class="pst"><i class="dot" aria-hidden="true"></i>OPEN</span></div>
+        <div class="body">
+          <span class="eyebrow">CHANNEL OPEN — ACCEPTING MISSIONS</span>
+          <h2>Your operation,<br>on <b>instruments</b>.</h2>
+          <p>If your company runs on spreadsheets, inboxes, and tribal knowledge,
+          there's a system that should be doing that work. I design it, build it,
+          and stay in the seat to run it.</p>
+          <div class="hero-cta">
+            <a class="btn btn-amber" href="mailto:ahmad@basheer.app">Start a project ▸</a>
+          </div>
+          <a class="mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <span>AB-01 / AHMAD BASHEER</span>
+    <span>SYSTEMS BUILDER &amp; OPERATOR</span>
+    <div class="right">
+      <span id="footyear">© 2026</span>
+      <a href="mailto:ahmad@basheer.app">AHMAD@BASHEER.APP</a>
+      <span>CONCEPT 05 — COCKPIT</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- UTC clock ---- */
+  var clock=document.getElementById('clock');
+  function pad(n){return n<10?'0'+n:''+n}
+  function tickClock(){
+    var d=new Date();
+    clock.textContent=pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC';
+  }
+  tickClock();setInterval(tickClock,1000);
+
+  /* ---- footer year ---- */
+  document.getElementById('footyear').textContent='© '+new Date().getFullYear();
+
+  /* ---- seamless ticker: duplicate content once ---- */
+  var ticker=document.getElementById('ticker');
+  ticker.innerHTML+=ticker.innerHTML;
+
+  /* ---- count-up ---- */
+  function countUp(el){
+    var target=parseInt(el.getAttribute('data-count'),10);
+    var suffix=el.getAttribute('data-suffix')||'';
+    var comma=el.getAttribute('data-format')==='comma';
+    var dur=1500,t0=null;
+    function fmt(v){return comma?v.toLocaleString('en-US'):''+v}
+    function step(ts){
+      if(!t0)t0=ts;
+      var p=Math.min((ts-t0)/dur,1);
+      var eased=1-Math.pow(1-p,3);
+      el.textContent=fmt(Math.round(target*eased))+(p===1?suffix:'');
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---- reveal + gauge arming on scroll ---- */
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function arm(panel){
+    panel.querySelectorAll('[data-dial]').forEach(function(d){
+      d.style.setProperty('--p',d.getAttribute('data-dial'));
+    });
+    panel.querySelectorAll('[data-fill]').forEach(function(f){
+      f.style.width=f.getAttribute('data-fill');
+    });
+    panel.querySelectorAll('[data-count]').forEach(function(c){
+      if(reduced){
+        var t=parseInt(c.getAttribute('data-count'),10);
+        var comma=c.getAttribute('data-format')==='comma';
+        c.textContent=(comma?t.toLocaleString('en-US'):t)+(c.getAttribute('data-suffix')||'');
+      }else{countUp(c);}
+    });
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          if(e.target.hasAttribute('data-gauge'))arm(e.target);
+          io.unobserve(e.target);
+        }
+      });
+    },{threshold:.18});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+  }else{
+    document.querySelectorAll('.rv').forEach(function(el){
+      el.classList.add('in');
+      if(el.hasAttribute('data-gauge'))arm(el);
+    });
+  }
+})();
+</script>
+</body>
+</html>

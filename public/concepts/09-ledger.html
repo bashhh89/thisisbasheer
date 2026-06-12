@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 09 — Ledger · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — systems builder & operator. Custom platforms for operations, sales, and service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,800;0,900;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FBFAF6;
+    --ink: #131210;
+    --ink-soft: #2c2a26;
+    --ink-faint: #5b574f;
+    --rule: #1312101f;
+    --rule-strong: #131210;
+    --oxblood: #7a1f1f;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --display: "Playfair Display", Georgia, serif;
+    --condensed: "Oswald", "Arial Narrow", sans-serif;
+    --blackletter: "UnifrakturCook", "Playfair Display", serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    background-image:
+      radial-gradient(ellipse at 18% 8%, rgba(19,18,16,0.025), transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(19,18,16,0.03), transparent 50%);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--oxblood); color: var(--paper); }
+
+  a { color: inherit; }
+
+  .sheet {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px 64px;
+  }
+
+  /* ---------- Top hairline strip ---------- */
+  .topstrip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 10px 2px 8px;
+    font-family: var(--condensed);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    gap: 16px;
+  }
+  .topstrip .mid { text-align: center; flex: 1; }
+  .topstrip a { text-decoration: none; }
+  .topstrip a:hover { color: var(--oxblood); }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    text-align: center;
+    padding: 34px 0 18px;
+    position: relative;
+  }
+  .masthead .ear {
+    position: absolute;
+    top: 38px;
+    font-family: var(--serif);
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-faint);
+    line-height: 1.45;
+    max-width: 150px;
+  }
+  .masthead .ear.left { left: 0; text-align: left; }
+  .masthead .ear.right { right: 0; text-align: right; }
+  .masthead h1 {
+    font-family: var(--blackletter);
+    font-weight: 700;
+    font-size: clamp(44px, 7.8vw, 96px);
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .masthead .motto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    margin-top: 10px;
+  }
+
+  .dateline {
+    border-top: 2px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+    margin-top: 16px;
+    padding: 7px 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--condensed);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    gap: 14px;
+  }
+  .dateline .edition { font-weight: 600; }
+  .dateline-sub {
+    border-bottom: 4px double var(--rule-strong);
+    padding: 6px 2px 7px;
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Generic newspaper bits ---------- */
+  .kicker {
+    font-family: var(--condensed);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 10px;
+  }
+  .byline {
+    font-family: var(--condensed);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 12px 0 14px;
+  }
+  .byline b { color: var(--ink-soft); font-weight: 600; }
+
+  .dropcap::first-letter {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 3.5em;
+    line-height: 0.78;
+    float: left;
+    padding: 6px 8px 0 0;
+    color: var(--ink);
+  }
+
+  p.body, .cols p {
+    font-size: 15.5px;
+    line-height: 1.62;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    color: var(--ink-soft);
+  }
+  .cols p + p { margin-top: 0.85em; text-indent: 1.4em; }
+
+  .end-mark::after {
+    content: " ■";
+    color: var(--oxblood);
+    font-size: 0.75em;
+  }
+
+  /* ---------- Lead section grid ---------- */
+  .front {
+    display: grid;
+    grid-template-columns: minmax(0, 7.2fr) minmax(0, 3.4fr);
+    gap: 0;
+    padding-top: 30px;
+  }
+  .front .lead { padding-right: 30px; border-right: 1px solid var(--rule-strong); }
+  .front .rail { padding-left: 26px; }
+
+  .headline {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(38px, 5.6vw, 68px);
+    line-height: 1.0;
+    letter-spacing: -0.012em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .subdeck {
+    font-family: var(--display);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(17px, 2.1vw, 22px);
+    line-height: 1.4;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .lead .cols {
+    margin-top: 18px;
+    column-count: 2;
+    column-gap: 30px;
+    column-rule: 1px solid var(--rule);
+  }
+
+  .pullquote {
+    break-inside: avoid;
+    border-top: 3px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+    margin: 16px 0;
+    padding: 14px 4px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.35;
+    text-align: left;
+    text-indent: 0 !important;
+    color: var(--ink);
+    hyphens: none;
+  }
+  .pullquote small {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--condensed);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Stamp ---------- */
+  .stamp {
+    display: inline-block;
+    font-family: var(--condensed);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    border: 2.5px solid var(--oxblood);
+    border-radius: 3px;
+    padding: 7px 14px 6px 16px;
+    transform: rotate(-3.5deg);
+    position: relative;
+    margin: 18px 0 6px;
+    user-select: none;
+    box-shadow: inset 0 0 0 1px rgba(122,31,31,0.25);
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2'/><feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.92 0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0.55 0.7 0.85 1 1 1 1 1 1 1'/></feComponentTransfer></filter><rect width='160' height='48' filter='url(%23n)' fill='black'/></svg>");
+    -webkit-mask-size: cover;
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='48'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2'/><feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.92 0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0.55 0.7 0.85 1 1 1 1 1 1 1'/></feComponentTransfer></filter><rect width='160' height='48' filter='url(%23n)' fill='black'/></svg>");
+    mask-size: cover;
+  }
+
+  /* ---------- Stock-table stats box ---------- */
+  .marketbox {
+    border: 1px solid var(--rule-strong);
+    margin-bottom: 24px;
+  }
+  .marketbox .mb-head {
+    border-bottom: 2px solid var(--rule-strong);
+    padding: 9px 12px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--condensed);
+    text-transform: uppercase;
+  }
+  .marketbox .mb-head .t { font-size: 12.5px; font-weight: 700; letter-spacing: 0.2em; }
+  .marketbox .mb-head .d { font-size: 9.5px; letter-spacing: 0.14em; color: var(--ink-faint); }
+  .marketbox table { width: 100%; border-collapse: collapse; }
+  .marketbox td, .marketbox th {
+    padding: 8px 12px 7px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: baseline;
+  }
+  .marketbox tr:last-child td { border-bottom: none; }
+  .marketbox th {
+    font-family: var(--condensed);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: left;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .marketbox th:last-child, .marketbox td:last-child { text-align: right; }
+  .marketbox td.label {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .marketbox td.fig {
+    font-family: var(--condensed);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .marketbox td.fig .dir { color: var(--oxblood); font-size: 12px; margin-left: 5px; }
+  .marketbox .mb-foot {
+    border-top: 1px solid var(--rule-strong);
+    padding: 7px 12px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Rail: index / weather-style ---------- */
+  .railbox { border: 1px solid var(--rule-strong); padding: 14px 14px 12px; margin-bottom: 24px; }
+  .railbox .rb-title {
+    font-family: var(--condensed);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--rule-strong);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .railbox ul { list-style: none; }
+  .railbox li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 13.5px;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .railbox li:last-child { border-bottom: none; }
+  .railbox li .pg {
+    font-family: var(--condensed);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .railbox li a { text-decoration: none; }
+  .railbox li a:hover { color: var(--oxblood); }
+
+  .ticker-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  /* ---------- Section bars ---------- */
+  .section-bar {
+    margin-top: 44px;
+    border-top: 4px double var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 8px 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .section-bar h2 {
+    font-family: var(--condensed);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .section-bar .note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Stories (case studies) ---------- */
+  .stories {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding-top: 26px;
+  }
+  .story { padding: 0 26px; border-right: 1px solid var(--rule); }
+  .story:first-child { padding-left: 2px; }
+  .story:last-child { border-right: none; padding-right: 2px; }
+
+  .story h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 25px;
+    line-height: 1.12;
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+  }
+  .story .deck {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .story p { margin-top: 12px; }
+  .story .figrow {
+    margin-top: 14px;
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 0 7px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .story .figrow div { text-align: center; flex: 1; }
+  .story .figrow .n {
+    font-family: var(--condensed);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: 0.02em;
+  }
+  .story .figrow .l {
+    font-family: var(--condensed);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+  .story .cont {
+    margin-top: 12px;
+    font-family: var(--condensed);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .story .cont a { text-decoration: none; color: var(--oxblood); }
+  .story .cont a:hover { text-decoration: underline; }
+
+  /* ---------- Classifieds (capabilities) ---------- */
+  .classified-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 6.8fr) minmax(0, 3.8fr);
+    gap: 30px;
+    padding-top: 26px;
+    align-items: start;
+  }
+  .classifieds { border: 2px solid var(--rule-strong); padding: 4px; }
+  .classifieds .inner { border: 1px solid var(--rule-strong); padding: 18px 20px 16px; }
+  .classifieds h3 {
+    font-family: var(--condensed);
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule-strong);
+    margin-bottom: 4px;
+  }
+  .classifieds .ads {
+    column-count: 2;
+    column-gap: 26px;
+    column-rule: 1px solid var(--rule);
+    padding-top: 10px;
+  }
+  .ad { break-inside: avoid; padding: 10px 0 12px; border-bottom: 1px dotted var(--rule); }
+  .ad:last-child { border-bottom: none; }
+  .ad .ad-head {
+    font-family: var(--condensed);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .ad .ad-body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .ad .ad-ref {
+    font-family: var(--condensed);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    margin-top: 5px;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Notices / CTA ---------- */
+  .notice {
+    border-top: 4px double var(--rule-strong);
+    border-bottom: 4px double var(--rule-strong);
+    padding: 26px 18px 28px;
+    text-align: center;
+  }
+  .notice .kicker { margin-bottom: 12px; }
+  .notice h3 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(26px, 3.6vw, 40px);
+    line-height: 1.08;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+  .notice p {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 14px auto 0;
+    max-width: 46ch;
+  }
+  .notice .cta {
+    display: inline-block;
+    margin-top: 22px;
+    font-family: var(--condensed);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background: var(--ink);
+    text-decoration: none;
+    padding: 14px 30px 13px;
+    border: 1px solid var(--ink);
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .notice .cta:hover { background: var(--oxblood); border-color: var(--oxblood); }
+  .notice .alt {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--condensed);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .notice .alt a { color: var(--oxblood); text-decoration: none; }
+  .notice .alt a:hover { text-decoration: underline; }
+
+  /* ---------- Footer / colophon ---------- */
+  .colophon {
+    margin-top: 40px;
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-family: var(--condensed);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+  }
+  .colophon a { text-decoration: none; }
+  .colophon a:hover { color: var(--oxblood); }
+
+  /* ---------- Reveal animation (subtle, print-like) ---------- */
+  .reveal { opacity: 0; transform: translateY(8px); transition: opacity 540ms ease, transform 540ms ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px) {
+    .masthead .ear { display: none; }
+    .front { grid-template-columns: 1fr; }
+    .front .lead { padding-right: 0; border-right: none; }
+    .front .rail {
+      padding-left: 0;
+      margin-top: 34px;
+      border-top: 4px double var(--rule-strong);
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .front .rail .marketbox, .front .rail .railbox { margin-bottom: 0; }
+    .stories { grid-template-columns: 1fr; }
+    .story { border-right: none; padding: 0 2px 26px; border-bottom: 1px solid var(--rule); margin-bottom: 26px; }
+    .story:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .classified-wrap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 680px) {
+    .sheet { padding: 0 18px 48px; }
+    .lead .cols { column-count: 1; }
+    .classifieds .ads { column-count: 1; }
+    .front .rail { grid-template-columns: 1fr; }
+    .topstrip { font-size: 9.5px; letter-spacing: 0.12em; }
+    .topstrip .mid { display: none; }
+    .dateline { flex-wrap: wrap; row-gap: 4px; font-size: 10px; }
+    .headline { font-size: clamp(34px, 10vw, 48px); }
+    .colophon { flex-direction: column; gap: 6px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .notice .cta { color: var(--ink); background: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <!-- Top strip -->
+  <div class="topstrip">
+    <span>basheer.app</span>
+    <span class="mid">All the Systems Fit to Ship</span>
+    <a href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+  </div>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="ear left">Inside: three platforms in daily production use, fully operated end-to-end. Page&nbsp;1.</div>
+    <div class="ear right">Classifieds: six capabilities offered. Inquiries answered same day. Page&nbsp;1, below the fold.</div>
+    <h1>The Basheer Ledger</h1>
+    <p class="motto">Designed, built, and operated by one pair of hands.</p>
+    <div class="dateline">
+      <span class="edition">Vol. I — Systems Edition</span>
+      <span id="dateline-date">Thursday Morning</span>
+      <span>Single Copy: One Conversation</span>
+    </div>
+    <div class="dateline-sub">Published wherever the work runs — operations, sales, and service desks across fifteen markets.</div>
+  </header>
+
+  <!-- Front page -->
+  <main class="front">
+
+    <!-- Lead story -->
+    <article class="lead reveal">
+      <p class="kicker">The Lead Story · Operations</p>
+      <h2 class="headline">I Build Systems That Run Companies</h2>
+      <p class="subdeck">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end by Ahmad Basheer, systems builder &amp; operator.</p>
+      <p class="byline">By <b>Ahmad Basheer</b> · Writing From Production</p>
+
+      <div class="cols">
+        <p class="dropcap">Most software is handed over and abandoned. The Ledger reports a different practice: platforms that are designed, built, deployed, and then operated by the same person who wrote them — every day, in production, under real load.</p>
+        <p>The portfolio is not speculative. More than one hundred containers run in production at the time of printing. Forty-three venues and counting operate on platforms covered in this edition. One hundred fifty field technicians check in through them. Thirty thousand customer records were migrated, reconciled, and now live inside them.</p>
+        <div class="pullquote">
+          “Shipped is not a demo. Shipped is the thing running on a Tuesday with nobody watching it.”
+          <small>— From the Operator's Notes</small>
+        </div>
+        <p>The method is consistent across every story on this page: find the slowest, most manual process in the business; replace it with a system the team actually uses; then stay accountable for that system after launch. No handoff, no maintenance vacuum, no quiet decay.</p>
+        <p>What follows is the record. Proposals that took days now take under an hour. Four separate reports were retired in favor of one screen. Sixteen dashboards report live numbers instead of last month's spreadsheet. The details are filed below, with figures.<span class="end-mark"></span></p>
+      </div>
+
+      <div class="stamp" aria-label="Live in production">Live in Production</div>
+    </article>
+
+    <!-- Right rail -->
+    <aside class="rail">
+
+      <!-- Stats: stock table -->
+      <div class="marketbox reveal">
+        <div class="mb-head">
+          <span class="t">Production Figures</span>
+          <span class="d">At Close of Business</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Listing</th><th>Last</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="label">Containers in production</td><td class="fig">100+<span class="dir">▲</span></td></tr>
+            <tr><td class="label">Venues live</td><td class="fig">43+<span class="dir">▲</span></td></tr>
+            <tr><td class="label">Field technicians</td><td class="fig">150</td></tr>
+            <tr><td class="label">Proposal turnaround</td><td class="fig">&lt;1 hr<span class="dir">▼</span></td></tr>
+            <tr><td class="label">CRM records</td><td class="fig">30,000+<span class="dir">▲</span></td></tr>
+            <tr><td class="label">Events per season</td><td class="fig">250+</td></tr>
+          </tbody>
+        </table>
+        <div class="mb-foot">Proposal turnaround down from days. Decline noted with satisfaction.</div>
+      </div>
+
+      <!-- Index -->
+      <div class="railbox reveal">
+        <div class="rb-title">In This Edition</div>
+        <ul>
+          <li><a href="#work">Proposal Engine — days to under an hour</a><span class="pg">A1</span></li>
+          <li><a href="#work">Venue Operations — 43 venues, one screen</a><span class="pg">A1</span></li>
+          <li><a href="#work">CRM Extension — 30,000 records moved</a><span class="pg">A1</span></li>
+          <li><a href="#classifieds">Classifieds — capabilities offered</a><span class="pg">A2</span></li>
+          <li><a href="#notice">Public notice — start a project</a><span class="pg">A2</span></li>
+        </ul>
+      </div>
+
+      <!-- Forecast-style note -->
+      <div class="railbox reveal">
+        <div class="rb-title">Operator's Forecast</div>
+        <p class="ticker-note">Continued uptime expected through the weekend, with a strong chance of new features by Monday. No outages on the horizon. Maintenance handled before anyone notices — as is the custom.</p>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Work section -->
+  <section id="work" aria-label="Selected work">
+    <div class="section-bar">
+      <h2>Front-Page Stories</h2>
+      <span class="note">Three platforms, reported from production.</span>
+    </div>
+
+    <div class="stories">
+
+      <article class="story reveal">
+        <p class="kicker">Sales · Pricing</p>
+        <h3>Proposal Turnaround Falls From Days to Under an Hour</h3>
+        <p class="deck">Purpose-built proposal engine puts versioned pricing and reproducible documents in the hands of a sales team.</p>
+        <p class="byline">By <b>Our Sales Desk Correspondent</b></p>
+        <p class="body">For years, every proposal began as a blank document and an afternoon of copying old numbers. The engine replaces that ritual: pricing is versioned at the source, documents are generated from live data, and any proposal can be reproduced exactly as it was sent — months later, to the line item.</p>
+        <p class="body">The result, confirmed in daily use: what took days now ships in under an hour, with fewer errors and a paper trail the business can stand behind.<span class="end-mark"></span></p>
+        <div class="figrow">
+          <div><div class="n">&lt;1 hr</div><div class="l">Turnaround</div></div>
+          <div><div class="n">Days</div><div class="l">Previous</div></div>
+          <div><div class="n">100%</div><div class="l">Reproducible</div></div>
+        </div>
+        <p class="cont">Continued on <a href="https://basheer.app/work">basheer.app/work</a></p>
+      </article>
+
+      <article class="story reveal">
+        <p class="kicker">Operations · Field Service</p>
+        <h3>One Screen Replaces Four Reports Across 43 Venues</h3>
+        <p class="deck">Operations platform coordinates 150 field technicians in fifteen markets through a single live view.</p>
+        <p class="byline">By <b>Our Operations Correspondent</b></p>
+        <p class="body">Before the platform, the state of the operation lived in four separate reports, each slightly out of date in its own way. Today, schedules, check-ins, coverage, and labor hours for more than 250 events a season resolve onto one screen — current as of right now, not last Friday.</p>
+        <p class="body">Forty-three venues and counting run on it. Dispatchers stopped reconciling spreadsheets and started dispatching.<span class="end-mark"></span></p>
+        <div class="figrow">
+          <div><div class="n">43+</div><div class="l">Venues</div></div>
+          <div><div class="n">150</div><div class="l">Technicians</div></div>
+          <div><div class="n">15</div><div class="l">Markets</div></div>
+        </div>
+        <p class="cont">Continued on <a href="https://basheer.app/work">basheer.app/work</a></p>
+      </article>
+
+      <article class="story reveal">
+        <p class="kicker">Sales · Data</p>
+        <h3>30,000 Records Migrated, Reconciled, and Put to Work</h3>
+        <p class="deck">CRM platform extension adds thirteen custom objects and sixteen live dashboards to a working sales floor.</p>
+        <p class="byline">By <b>Our Records Correspondent</b></p>
+        <p class="body">Migrations usually make the news for going wrong. This one is reported for going right: more than thirty thousand records moved, reconciled against the source, and verified — while the team kept selling.</p>
+        <p class="body">Thirteen custom objects now model the business as it actually operates, and sixteen dashboards report live figures where monthly exports once stood. The sales floor reads today's numbers today.<span class="end-mark"></span></p>
+        <div class="figrow">
+          <div><div class="n">13</div><div class="l">Custom Objects</div></div>
+          <div><div class="n">30K+</div><div class="l">Records</div></div>
+          <div><div class="n">16</div><div class="l">Dashboards</div></div>
+        </div>
+        <p class="cont">Continued on <a href="https://basheer.app/work">basheer.app/work</a></p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Classifieds + Notice -->
+  <section id="classifieds" aria-label="Capabilities">
+    <div class="section-bar">
+      <h2>Classifieds</h2>
+      <span class="note">Capabilities offered. Serious inquiries only.</span>
+    </div>
+
+    <div class="classified-wrap">
+
+      <div class="classifieds reveal">
+        <div class="inner">
+          <h3>Situations Offered</h3>
+          <div class="ads">
+            <div class="ad">
+              <div class="ad-head">CRM Platforms</div>
+              <div class="ad-body">Customer platforms built around how the business actually sells. Custom objects, clean migrations, dashboards that report live numbers. References available on this very page.</div>
+              <div class="ad-ref">Ref. No. 001 — Write ahmad@basheer.app</div>
+            </div>
+            <div class="ad">
+              <div class="ad-head">Proposal Engines</div>
+              <div class="ad-body">Versioned pricing, reproducible documents, turnaround measured in minutes. Suitable for any business still assembling quotes by hand.</div>
+              <div class="ad-ref">Ref. No. 002 — Write ahmad@basheer.app</div>
+            </div>
+            <div class="ad">
+              <div class="ad-head">Operations Platforms</div>
+              <div class="ad-body">Scheduling, field coverage, check-ins, and labor on one live screen. Replaces report stacks of any height. Proven across fifteen markets.</div>
+              <div class="ad-ref">Ref. No. 003 — Write ahmad@basheer.app</div>
+            </div>
+            <div class="ad">
+              <div class="ad-head">Automation Systems</div>
+              <div class="ad-body">The repetitive work your team does every week, done by a system instead — reliably, with logs, without complaint.</div>
+              <div class="ad-ref">Ref. No. 004 — Write ahmad@basheer.app</div>
+            </div>
+            <div class="ad">
+              <div class="ad-head">Platform Integrations</div>
+              <div class="ad-body">Systems that already exist, made to talk to each other. Data flows one way: correctly. No more retyping between tools.</div>
+              <div class="ad-ref">Ref. No. 005 — Write ahmad@basheer.app</div>
+            </div>
+            <div class="ad">
+              <div class="ad-head">AI Inside the Workflow</div>
+              <div class="ad-body">Intelligence placed inside the tools people already use — drafting, classifying, answering — not bolted on beside them. Measured by hours returned.</div>
+              <div class="ad-ref">Ref. No. 006 — Write ahmad@basheer.app</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public notice / CTA -->
+      <div id="notice" class="notice reveal">
+        <p class="kicker">Public Notice</p>
+        <h3>Start a Project</h3>
+        <p>Bring the slowest process in your business. It will return as a system — built properly, run properly, and reported on in a future edition.</p>
+        <a class="cta" href="mailto:ahmad@basheer.app">Write the Editor</a>
+        <span class="alt">Correspondence: <a href="mailto:ahmad@basheer.app">ahmad@basheer.app</a></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Colophon -->
+  <footer class="colophon">
+    <span>© <span id="year">2026</span> Ahmad Basheer — The Basheer Ledger</span>
+    <span>Systems Builder &amp; Operator</span>
+    <span>Set in ink on newsprint · <a href="https://basheer.app">basheer.app</a></span>
+  </footer>
+
+</div>
+
+<script>
+  // Dateline: real date in newspaper style
+  (function () {
+    var d = new Date();
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var el = document.getElementById('dateline-date');
+    if (el) el.textContent = days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    var y = document.getElementById('year');
+    if (y) y.textContent = String(d.getFullYear());
+  })();
+
+  // Reveal on scroll
+  (function () {
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

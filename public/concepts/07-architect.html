@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept 07 — Architect · Ahmad Basheer</title>
+<meta name="description" content="Ahmad Basheer — Systems builder &amp; operator. Custom platforms for operations, sales, and service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ————————————————————————————————————————
+     Concept 07 — Architect
+     Warm-grey monochrome. Hierarchy from scale,
+     weight and space alone. Nothing to prove.
+  ———————————————————————————————————————— */
+
+  :root {
+    --paper: #FAFAF8;
+    --ink:   #1A1A18;
+    --grey:  #6E6E68;   /* mid grey — secondary text */
+    --faint: #B8B8B0;   /* light grey — labels, rules */
+    --rule:  rgba(26, 26, 24, 0.18);
+    --sans: 'Zen Kaku Gothic New', sans-serif;
+    --serif: 'Shippori Mincho', serif;
+    --gutter: clamp(24px, 7vw, 120px);
+    --measure: 60ch;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* ——— primitives ——— */
+
+  .label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  .rule {
+    border: 0;
+    border-top: 0.5px solid var(--rule);
+  }
+
+  .wrap {
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    max-width: 1480px;
+    margin: 0 auto;
+  }
+
+  /* ——— reveal on scroll ——— */
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 1.1s cubic-bezier(.22,.61,.36,1),
+                transform 1.1s cubic-bezier(.22,.61,.36,1);
+    transition-delay: var(--d, 0s);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ——— header ——— */
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .header-inner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  .header-name {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .header-role {
+    display: none;
+  }
+  .header-contact {
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--grey);
+    transition: color 0.4s ease;
+  }
+  .header-contact:hover { color: var(--ink); }
+
+  @media (min-width: 720px) {
+    .header-role {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+  }
+
+  /* ——— hero ——— */
+
+  .hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(64px, 12vh, 140px);
+  }
+  .hero .label { margin-bottom: clamp(32px, 6vh, 64px); }
+  /* header already carries the role on wider screens — say it once */
+  @media (min-width: 720px) {
+    .hero > .label { display: none; }
+  }
+  .hero h1 {
+    font-weight: 300;
+    font-size: clamp(38px, 7.2vw, 104px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    max-width: 16ch;
+  }
+  .hero h1 em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .hero-sub {
+    margin-top: clamp(28px, 5vh, 56px);
+    max-width: 44ch;
+    font-size: 15px;
+    line-height: 2;
+    color: var(--grey);
+  }
+  .hero-foot {
+    margin-top: clamp(48px, 9vh, 96px);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .scroll-cue {
+    width: 0.5px;
+    height: 56px;
+    background: var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-cue::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: var(--ink);
+    animation: cue 2.8s cubic-bezier(.65,0,.35,1) infinite;
+  }
+  @keyframes cue {
+    0%   { top: -40%; }
+    60%  { top: 100%; }
+    100% { top: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue::after { animation: none; display: none; }
+  }
+
+  /* ——— section scaffolding ——— */
+
+  section { padding-top: clamp(96px, 16vh, 200px); }
+  section:last-of-type { padding-bottom: 0; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 0.5px solid var(--rule);
+    margin-bottom: clamp(56px, 9vh, 110px);
+  }
+  .section-head .num {
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    color: var(--faint);
+  }
+
+  /* ——— numbers (stats) ——— */
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: clamp(56px, 9vh, 100px);
+  }
+  @media (min-width: 720px) {
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: clamp(32px, 4vw, 80px);
+    }
+  }
+  .stat-value {
+    font-weight: 300;
+    font-size: clamp(56px, 6.5vw, 96px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .stat-value small {
+    font-size: 0.42em;
+    font-weight: 300;
+    letter-spacing: 0;
+    color: var(--grey);
+    margin-left: 0.18em;
+  }
+  .stat-label {
+    margin-top: 18px;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .stat-note {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--faint);
+  }
+
+  /* ——— work ——— */
+
+  .work-item {
+    padding: clamp(56px, 9vh, 110px) 0;
+    border-bottom: 0.5px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+  }
+  .work-item:first-of-type { padding-top: 0; }
+  .work-item:last-of-type { border-bottom: none; padding-bottom: 0; }
+
+  @media (min-width: 900px) {
+    .work-item {
+      grid-template-columns: 120px 1fr 1fr;
+      column-gap: clamp(32px, 5vw, 96px);
+    }
+  }
+
+  .work-num {
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--faint);
+    letter-spacing: -0.02em;
+  }
+  .work-title h3 {
+    font-weight: 400;
+    font-size: clamp(22px, 2.4vw, 32px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+  }
+  .work-title .label { display: block; margin-top: 14px; }
+  .work-body p {
+    font-size: 14px;
+    line-height: 2.1;
+    color: var(--grey);
+    max-width: 46ch;
+  }
+  .work-facts {
+    margin-top: 26px;
+    list-style: none;
+  }
+  .work-facts li {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink);
+    padding: 9px 0;
+    border-top: 0.5px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .work-facts li span:last-child {
+    color: var(--grey);
+    text-align: right;
+  }
+
+  /* ——— statement interlude ——— */
+
+  .statement {
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+  }
+  .statement p {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(26px, 3.6vw, 52px);
+    line-height: 1.65;
+    letter-spacing: 0.005em;
+    max-width: 26ch;
+  }
+  .statement p .quiet { color: var(--faint); }
+
+  /* ——— capabilities ——— */
+
+  .caps {
+    list-style: none;
+    counter-reset: cap;
+  }
+  .caps li {
+    counter-increment: cap;
+    border-top: 0.5px solid var(--rule);
+    padding: clamp(22px, 3.4vh, 36px) 0;
+    display: flex;
+    align-items: baseline;
+    gap: clamp(24px, 4vw, 72px);
+    transition: padding-left 0.5s cubic-bezier(.22,.61,.36,1);
+  }
+  .caps li:last-child { border-bottom: 0.5px solid var(--rule); }
+  .caps li:hover { padding-left: 12px; }
+  .caps li::before {
+    content: counter(cap, decimal-leading-zero);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    color: var(--faint);
+    flex: 0 0 40px;
+  }
+  .caps .cap-name {
+    font-size: clamp(19px, 2vw, 26px);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .caps .cap-note {
+    display: none;
+    font-size: 12px;
+    color: var(--grey);
+    max-width: 34ch;
+    text-align: right;
+    line-height: 1.8;
+  }
+  @media (min-width: 860px) {
+    .caps .cap-note { display: block; }
+  }
+
+  /* ——— contact ——— */
+
+  .contact {
+    padding-bottom: 0;
+  }
+  .contact-inner {
+    min-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .contact .label { margin-bottom: clamp(36px, 6vh, 64px); }
+  .contact h2 {
+    font-weight: 300;
+    font-size: clamp(34px, 5.4vw, 80px);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 18ch;
+  }
+  .contact h2 em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .contact-mail {
+    display: inline-block;
+    margin-top: clamp(40px, 7vh, 80px);
+    font-size: clamp(17px, 1.8vw, 24px);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    padding-bottom: 8px;
+    border-bottom: 0.5px solid var(--ink);
+    transition: color 0.4s ease, border-color 0.4s ease;
+    align-self: flex-start;
+  }
+  .contact-mail:hover {
+    color: var(--grey);
+    border-color: var(--grey);
+  }
+
+  /* ——— footer ——— */
+
+  footer {
+    margin-top: clamp(96px, 15vh, 180px);
+    border-top: 0.5px solid var(--rule);
+  }
+  .footer-inner {
+    padding-top: 28px;
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-inner .label { color: var(--faint); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="header-name" href="#top">Ahmad Basheer</a>
+    <span class="header-role">Systems Builder &amp; Operator</span>
+    <a class="header-contact" href="mailto:ahmad@basheer.app">Contact</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ——— Hero ——— -->
+  <section class="hero wrap" style="padding-top:0;">
+    <p class="label reveal">Systems Builder &amp; Operator</p>
+    <h1 class="reveal" style="--d:.12s">I build systems that <em>run</em> companies.</h1>
+    <p class="hero-sub reveal" style="--d:.24s">Custom platforms for operations, sales, and service — designed, built, and operated end-to-end.</p>
+    <div class="hero-foot reveal" style="--d:.36s">
+      <span class="label">Selected Work, 2024 —</span>
+      <span class="scroll-cue" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- ——— Numbers ——— -->
+  <section class="wrap" aria-label="In production">
+    <div class="section-head reveal">
+      <span class="label">In Production</span>
+      <span class="num">01</span>
+    </div>
+    <div class="stats">
+      <div class="reveal">
+        <div class="stat-value">100<small>+</small></div>
+        <div class="stat-label">Containers in Production</div>
+        <p class="stat-note">Built, deployed, and operated daily.</p>
+      </div>
+      <div class="reveal" style="--d:.1s">
+        <div class="stat-value">43<small>+</small></div>
+        <div class="stat-label">Venues Live</div>
+        <p class="stat-note">Across fifteen markets.</p>
+      </div>
+      <div class="reveal" style="--d:.2s">
+        <div class="stat-value">150</div>
+        <div class="stat-label">Field Technicians</div>
+        <p class="stat-note">Scheduled and tracked on one platform.</p>
+      </div>
+      <div class="reveal">
+        <div class="stat-value">&lt;1<small>hr</small></div>
+        <div class="stat-label">Proposal Turnaround</div>
+        <p class="stat-note">Down from days.</p>
+      </div>
+      <div class="reveal" style="--d:.1s">
+        <div class="stat-value">30,000<small>+</small></div>
+        <div class="stat-label">CRM Records</div>
+        <p class="stat-note">Migrated and reconciled.</p>
+      </div>
+      <div class="reveal" style="--d:.2s">
+        <div class="stat-value">250<small>+</small></div>
+        <div class="stat-label">Events per Season</div>
+        <p class="stat-note">Staffed, covered, reported.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— Statement ——— -->
+  <section class="wrap" aria-label="Statement">
+    <div class="statement">
+      <p class="reveal">The software a company actually runs on is rarely the software it bought. <span class="quiet">I build the part that runs.</span></p>
+    </div>
+  </section>
+
+  <!-- ——— Work ——— -->
+  <section class="wrap" aria-label="Selected work">
+    <div class="section-head reveal">
+      <span class="label">Selected Work</span>
+      <span class="num">02</span>
+    </div>
+
+    <article class="work-item">
+      <div class="work-num reveal">01</div>
+      <div class="work-title reveal" style="--d:.08s">
+        <h3>Proposal Engine</h3>
+        <span class="label">Sales · Pricing</span>
+      </div>
+      <div class="work-body reveal" style="--d:.16s">
+        <p>A proposal took days. It now takes under an hour. Pricing is versioned, every proposal is reproducible, and the sales team works from one current source of truth instead of last quarter's spreadsheet.</p>
+        <ul class="work-facts">
+          <li><span>Turnaround</span><span>Days → under one hour</span></li>
+          <li><span>Pricing</span><span>Versioned, auditable</span></li>
+          <li><span>Output</span><span>Reproducible proposals</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="work-item">
+      <div class="work-num reveal">02</div>
+      <div class="work-title reveal" style="--d:.08s">
+        <h3>Venue Operations Platform</h3>
+        <span class="label">Operations · Field Service</span>
+      </div>
+      <div class="work-body reveal" style="--d:.16s">
+        <p>Forty-three venues, one hundred fifty technicians, fifteen markets. Scheduling, coverage, check-ins, and reporting on a single screen — replacing four separate reports that never quite agreed.</p>
+        <ul class="work-facts">
+          <li><span>Venues</span><span>43+ live, 15 markets</span></li>
+          <li><span>Field team</span><span>150 technicians</span></li>
+          <li><span>Reporting</span><span>One screen replaced four reports</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="work-item">
+      <div class="work-num reveal">03</div>
+      <div class="work-title reveal" style="--d:.08s">
+        <h3>CRM Platform Extension</h3>
+        <span class="label">Sales · Data</span>
+      </div>
+      <div class="work-body reveal" style="--d:.16s">
+        <p>Thirteen custom objects modeled around how the business actually sells. Over thirty thousand records migrated and reconciled — not just moved. Sixteen live dashboards the team reads every morning.</p>
+        <ul class="work-facts">
+          <li><span>Data model</span><span>13 custom objects</span></li>
+          <li><span>Records</span><span>30,000+ migrated &amp; reconciled</span></li>
+          <li><span>Visibility</span><span>16 live dashboards</span></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ——— Capabilities ——— -->
+  <section class="wrap" aria-label="Capabilities">
+    <div class="section-head reveal">
+      <span class="label">Capabilities</span>
+      <span class="num">03</span>
+    </div>
+    <ul class="caps">
+      <li class="reveal">
+        <span class="cap-name">CRM Platforms</span>
+        <span class="cap-note">Modeled around how the business sells, not how the vendor demos.</span>
+      </li>
+      <li class="reveal" style="--d:.06s">
+        <span class="cap-name">Proposal Engines</span>
+        <span class="cap-note">Versioned pricing, reproducible documents, hours not days.</span>
+      </li>
+      <li class="reveal" style="--d:.12s">
+        <span class="cap-name">Operations Platforms</span>
+        <span class="cap-note">Scheduling, coverage, and reporting on one screen.</span>
+      </li>
+      <li class="reveal" style="--d:.18s">
+        <span class="cap-name">Automation Systems</span>
+        <span class="cap-note">The recurring work, done before anyone asks.</span>
+      </li>
+      <li class="reveal" style="--d:.24s">
+        <span class="cap-name">Platform Integrations</span>
+        <span class="cap-note">Separate systems behaving like one.</span>
+      </li>
+      <li class="reveal" style="--d:.3s">
+        <span class="cap-name">AI Inside the Workflow</span>
+        <span class="cap-note">Where the work happens — never a chatbot bolted on.</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ——— Contact ——— -->
+  <section class="wrap contact" aria-label="Contact">
+    <div class="contact-inner">
+      <p class="label reveal">Start a Project</p>
+      <h2 class="reveal" style="--d:.12s">If a system should exist and doesn't, <em>that is the brief.</em></h2>
+      <a class="contact-mail reveal" style="--d:.24s" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="label">Ahmad Basheer</span>
+    <span class="label">Systems Builder &amp; Operator</span>
+    <span class="label">© 2026</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.reveal');
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

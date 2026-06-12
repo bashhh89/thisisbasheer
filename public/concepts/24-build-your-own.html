@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Concept 24 — Build Your Own · Ahmad Basheer</title>
+<meta name="description" content="Don't read my portfolio. Describe your business and watch a working system blueprint assemble itself in seconds." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   AESTHETIC: LIGHT EDITORIAL-AI BLUEPRINT
+   Near-white studio canvas · one strong accent (ink-violet) ·
+   crisp grotesk type · architectural line-work that snaps in ·
+   a blueprint typeset like a spec sheet that built itself.
+   Re-theme by editing the CONFIG block + the :root tokens only.
+   ============================================================ */
+
+:root{
+  --paper:#f4f3ef;
+  --paper-2:#eceae3;
+  --card:#ffffff;
+  --ink:#15140f;
+  --ink-soft:#5d5a51;
+  --ink-faint:#908c80;
+  --line:#d8d5cc;
+  --line-strong:#bfbcb0;
+  --accent:#3a2cff;
+  --accent-soft:#6a5cff;
+  --accent-wash:rgba(58,44,255,.07);
+  --accent-line:rgba(58,44,255,.22);
+  --grid:rgba(21,20,15,.045);
+  --shadow:0 1px 2px rgba(21,20,15,.04), 0 18px 48px -22px rgba(21,20,15,.20);
+  --r:14px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(120% 90% at 50% 0%,#000 35%,transparent 90%);
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 0%,#000 35%,transparent 90%);
+}
+.glow{
+  position:fixed;z-index:0;pointer-events:none;border-radius:50%;
+  filter:blur(70px);opacity:.5;
+}
+.glow.a{top:-180px;left:50%;transform:translateX(-50%);width:760px;height:520px;
+  background:radial-gradient(circle,rgba(58,44,255,.16),transparent 65%);}
+.glow.b{top:520px;right:-160px;width:480px;height:480px;
+  background:radial-gradient(circle,rgba(106,92,255,.10),transparent 60%);}
+@media(max-width:560px){
+  .glow.a{width:100vw;left:50%}
+  .glow.b{width:70vw;height:70vw;right:-20vw}
+}
+
+a{color:inherit}
+.wrap{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px;overflow:hidden}
+
+/* ---------- top bar ---------- */
+.top{
+  position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;
+  padding:26px 0 0;
+}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk';font-weight:700;letter-spacing:-.02em;font-size:17px}
+.brand .mark{
+  width:26px;height:26px;border:1.5px solid var(--ink);border-radius:7px;position:relative;flex:0 0 auto;
+}
+.brand .mark::before,.brand .mark::after{content:"";position:absolute;background:var(--accent)}
+.brand .mark::before{left:6px;top:6px;width:2px;height:14px}
+.brand .mark::after{left:6px;top:6px;width:14px;height:2px}
+.top .meta{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.04em;color:var(--ink-faint);text-transform:uppercase}
+@media(max-width:620px){.top .meta{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 30px;text-align:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-wash);border:1px solid var(--accent-line);
+  padding:7px 14px;border-radius:100px;margin-bottom:30px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 var(--accent-soft);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(58,44,255,.45)}70%{box-shadow:0 0 0 7px rgba(58,44,255,0)}100%{box-shadow:0 0 0 0 rgba(58,44,255,0)}}
+
+h1.head{
+  font-family:'Space Grotesk';font-weight:700;letter-spacing:-.035em;line-height:.98;
+  font-size:clamp(40px,7.4vw,86px);margin:0 0 22px;
+}
+h1.head .b{display:block;color:var(--accent)}
+.sub{
+  max-width:600px;margin:0 auto 38px;font-size:clamp(16px,1.9vw,19px);line-height:1.55;color:var(--ink-soft);
+}
+
+/* ---------- builder console ---------- */
+.console{
+  max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow);text-align:left;overflow:hidden;
+  transition:transform .5s var(--ease),opacity .5s var(--ease);
+}
+.console .bar{
+  display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--paper-2);
+  min-width:0;
+}
+.console .bar .lights{display:flex;gap:6px}
+.console .bar .lights i{width:10px;height:10px;border-radius:50%;background:var(--line-strong)}
+.console .bar .lights i:nth-child(1){background:#e0ad5a}
+.console .bar .lights i:nth-child(2){background:#c9c6bc}
+.console .bar .lights i:nth-child(3){background:#c9c6bc}
+.console .bar .label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.05em;color:var(--ink-faint);margin-left:6px;min-width:0}
+.console .body{padding:24px}
+
+.field{display:flex;align-items:center;gap:0;border:1px solid var(--line-strong);border-radius:12px;background:#fff;
+  transition:border-color .25s,box-shadow .25s}
+.field:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-wash)}
+.field .pfx{padding:0 4px 0 16px;color:var(--accent);font-family:'JetBrains Mono';font-weight:500;user-select:none}
+#bizInput{
+  flex:1;border:0;outline:0;background:transparent;padding:16px 12px;font-family:'Inter';font-size:17px;color:var(--ink);min-width:0;
+}
+#bizInput::placeholder{color:var(--ink-faint)}
+.go{
+  border:0;cursor:pointer;background:var(--ink);color:#fff;font-family:'Space Grotesk';font-weight:600;font-size:15px;
+  padding:0 22px;margin:6px;border-radius:9px;height:46px;display:flex;align-items:center;gap:8px;
+  transition:background .2s,transform .15s;white-space:nowrap;
+}
+.go:hover{background:var(--accent);transform:translateY(-1px)}
+.go:active{transform:translateY(0)}
+.go svg{width:15px;height:15px}
+
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.chips .lbl{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.04em;color:var(--ink-faint);align-self:center;margin-right:2px;text-transform:uppercase}
+.chip{
+  cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:100px;padding:8px 15px;font-size:13.5px;color:var(--ink-soft);
+  font-weight:500;transition:all .18s var(--ease);
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-wash);transform:translateY(-1px)}
+.hint{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);letter-spacing:.02em;margin:16px 2px 0}
+.concepts-link{position:fixed;bottom:16px;right:16px;z-index:9999;font:11px monospace;padding:8px 14px;background:#000;color:#fff;border:1px solid #555;text-decoration:none;opacity:.75}
+
+@media(max-width:560px){
+  .wrap{padding:0 20px}
+  .hero{padding-top:60px}
+  .eyebrow{font-size:10px;letter-spacing:.13em;margin-bottom:28px;max-width:100%}
+  h1.head{max-width:320px;margin-left:auto;margin-right:auto;font-size:clamp(32px,9.2vw,36px);letter-spacing:-.02em;line-height:1.04;text-wrap:balance}
+  .sub{max-width:315px;font-size:16px}
+  .console{width:calc(100vw - 40px);max-width:calc(100vw - 40px);margin-left:auto;margin-right:auto}
+  .console .body{padding:22px}
+  .field{display:grid;grid-template-columns:auto minmax(0,1fr)}
+  #bizInput{width:auto;font-size:16px}
+  .go{grid-column:1 / -1;width:auto;justify-content:center}
+  .console .bar .label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chips{align-items:flex-start}
+  .chip{font-size:13px;padding:8px 12px}
+  .concepts-link{right:10px;bottom:10px;padding:8px 10px;font-size:10px}
+}
+
+/* ---------- assembling stage ---------- */
+.stage{display:none;max-width:920px;margin:42px auto 0}
+.stage.live{display:block}
+.stage-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;align-items:stretch}
+@media(max-width:780px){.stage-grid{grid-template-columns:1fr}}
+
+.reasoning{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 22px 16px;box-shadow:var(--shadow);
+}
+.reasoning .h{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.reasoning .h .spin{width:13px;height:13px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rline{display:flex;align-items:flex-start;gap:11px;padding:8px 0;opacity:.25;transition:opacity .4s;font-size:14.5px;color:var(--ink-soft);line-height:1.4}
+.rline.on{opacity:1}
+.rline.done{opacity:.85}
+.rline .ic{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--line-strong);border-radius:5px;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.rline.on .ic{border-color:var(--accent)}
+.rline.done .ic{border-color:var(--accent);background:var(--accent)}
+.rline .ic svg{width:11px;height:11px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transition:opacity .3s}
+.rline.done .ic svg{opacity:1}
+.rline b{color:var(--ink);font-weight:500}
+.cursor{display:inline-block;width:2px;height:1.05em;background:var(--accent);margin-left:1px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.canvas-wrap{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:240px;
+}
+.canvas-wrap .ch{position:absolute;top:14px;left:18px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);z-index:3}
+#meshCanvas{position:absolute;inset:0;z-index:1;width:100%;height:100%;opacity:.85;pointer-events:none}
+#buildSvg{position:relative;z-index:2;width:100%;height:100%;display:block}
+.bnode{opacity:0}
+.bnode rect{fill:#fff;stroke:var(--line-strong);stroke-width:1.5}
+.bnode text{font-family:'JetBrains Mono';font-size:11px;fill:var(--ink-soft);letter-spacing:.02em}
+.bedge{stroke:var(--accent-line);stroke-width:1.5;fill:none;stroke-dasharray:5 5}
+.bedge.draw{animation:dashflow 1s linear infinite}
+@keyframes dashflow{to{stroke-dashoffset:-20}}
+
+.skip{display:inline-flex;align-items:center;gap:6px;margin:18px auto 0;cursor:pointer;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.05em;color:var(--ink-faint);border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:100px;transition:all .2s}
+.skip:hover{color:var(--ink);border-color:var(--line-strong)}
+.skip-row{text-align:center}
+
+/* ---------- blueprint output ---------- */
+.blueprint{display:none;max-width:1060px;margin:46px auto 0}
+.blueprint.live{display:block;animation:rise .6s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.bp-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:26px;flex-wrap:wrap}
+.bp-head .l .tag{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.bp-head .l h2{font-family:'Space Grotesk';font-weight:700;letter-spacing:-.03em;font-size:clamp(26px,3.4vw,38px);margin:0;line-height:1.04}
+.bp-head .l h2 .for{color:var(--ink-faint);font-weight:500}
+.bp-head .r{text-align:right;font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);line-height:1.7}
+.bp-head .r b{color:var(--ink);display:block;font-size:13px}
+@media(max-width:560px){.bp-head .r{text-align:left}}
+
+.bp-sub{font-size:15.5px;color:var(--ink-soft);line-height:1.6;max-width:680px;margin:-10px 0 28px}
+
+.restart{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.04em;color:var(--ink-faint);border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:100px;transition:all .2s;margin-bottom:26px}
+.restart:hover{color:var(--ink);border-color:var(--line-strong)}
+
+.section-k{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 16px;display:flex;align-items:center;gap:12px}
+.section-k::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.modules{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:14px;margin-bottom:38px}
+.mod{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;position:relative;overflow:hidden;
+  transition:transform .3s var(--ease),border-color .3s,box-shadow .3s;
+  opacity:0;transform:translateY(14px);
+}
+.blueprint.live .mod{animation:modin .5s var(--ease) forwards}
+@keyframes modin{to{opacity:1;transform:none}}
+.mod:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+.mod::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .35s var(--ease)}
+.mod:hover::before{transform:scaleY(1)}
+.mod .num{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.mod .num .ico{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.mod .num .ico svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none}
+.mod h3{font-family:'Space Grotesk';font-weight:600;letter-spacing:-.02em;font-size:18px;margin:0 0 7px;line-height:1.15}
+.mod p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 13px}
+.mod .feats{display:flex;flex-wrap:wrap;gap:6px}
+.mod .feats span{font-family:'JetBrains Mono';font-size:10.5px;color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);padding:4px 8px;border-radius:6px}
+
+/* architecture diagram */
+.arch{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:38px;box-shadow:var(--shadow);overflow:hidden}
+.arch svg{width:100%;height:auto;display:block}
+.arch .an rect{fill:#fff;stroke:var(--line-strong);stroke-width:1.4}
+.arch .an.acc rect{fill:var(--accent-wash);stroke:var(--accent-line)}
+.arch .an text{font-family:'JetBrains Mono';font-size:11.5px;fill:var(--ink);letter-spacing:.01em}
+.arch .an text.s{font-size:9.5px;fill:var(--ink-faint)}
+.arch .ae{stroke:var(--line-strong);stroke-width:1.4;fill:none}
+.arch .ae.flow{stroke:var(--accent);stroke-dasharray:4 4;animation:dashflow 1.1s linear infinite}
+
+/* stats */
+.bp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:30px}
+.bp-stats .st{background:var(--card);padding:22px 20px}
+.bp-stats .st .v{font-family:'Space Grotesk';font-weight:700;letter-spacing:-.02em;font-size:clamp(22px,2.6vw,28px);line-height:1;margin-bottom:8px}
+.bp-stats .st .v em{color:var(--accent);font-style:normal}
+.bp-stats .st .k{font-size:12.5px;color:var(--ink-soft);line-height:1.4}
+
+.disclaimer{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-faint);background:var(--paper-2);border:1px dashed var(--line-strong);border-radius:10px;padding:13px 16px;margin-bottom:6px}
+.disclaimer svg{flex:0 0 auto;width:16px;height:16px;stroke:var(--accent);stroke-width:1.7;fill:none}
+
+/* ---------- the turn / conversion ---------- */
+.turn{max-width:1060px;margin:64px auto 0;display:none}
+.turn.live{display:block;animation:rise .7s var(--ease) both;animation-delay:.15s}
+.turn-line{text-align:center;font-family:'Space Grotesk';font-weight:600;letter-spacing:-.025em;font-size:clamp(22px,3.4vw,32px);line-height:1.2;margin:0 auto 8px;max-width:760px}
+.turn-line .em{color:var(--accent)}
+.turn-sub{text-align:center;color:var(--ink-soft);font-size:15.5px;margin:0 auto 34px;max-width:600px;line-height:1.55}
+
+.proof{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:46px}
+@media(max-width:720px){.proof{grid-template-columns:1fr}}
+.pcard{
+  display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:22px;position:relative;overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s,border-color .3s;
+}
+.pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--line-strong)}
+.pcard .live-dot{position:absolute;top:18px;right:18px;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10px;letter-spacing:.08em;color:#1a9e63;text-transform:uppercase}
+.pcard .live-dot i{width:7px;height:7px;border-radius:50%;background:#1fbf78;box-shadow:0 0 0 0 rgba(31,191,120,.5);animation:pulse2 2s infinite}
+@keyframes pulse2{0%{box-shadow:0 0 0 0 rgba(31,191,120,.5)}70%{box-shadow:0 0 0 6px rgba(31,191,120,0)}100%{box-shadow:0 0 0 0 rgba(31,191,120,0)}}
+.pcard .ptag{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:34px}
+.pcard h4{font-family:'Space Grotesk';font-weight:600;letter-spacing:-.02em;font-size:19px;margin:0 0 6px;display:flex;align-items:center;gap:7px}
+.pcard h4 .arr{transition:transform .25s}
+.pcard:hover h4 .arr{transform:translate(3px,-3px)}
+.pcard p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 14px}
+.pcard .url{font-family:'JetBrains Mono';font-size:12px;color:var(--accent);word-break:break-all}
+
+.kicker{text-align:center;max-width:760px;margin:0 auto}
+.kicker h3{font-family:'Space Grotesk';font-weight:700;letter-spacing:-.03em;font-size:clamp(28px,4.4vw,46px);line-height:1.04;margin:0 0 26px}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta{
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-family:'Space Grotesk';font-weight:600;font-size:16px;
+  padding:16px 28px;border-radius:11px;transition:transform .2s,background .2s,box-shadow .2s;
+}
+.cta.prim{background:var(--ink);color:#fff}
+.cta.prim:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 14px 30px -12px rgba(58,44,255,.6)}
+.cta.sec{background:transparent;color:var(--ink);border:1px solid var(--line-strong)}
+.cta.sec:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.cta svg{width:16px;height:16px}
+
+/* ---------- scroll sections (for non-typers) ---------- */
+.fold{max-width:1060px;margin:120px auto 0;padding-top:60px;border-top:1px solid var(--line)}
+.fold .section-k{justify-content:flex-start}
+.build-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:64px}
+.build-strip .b{
+  font-family:'Space Grotesk';font-weight:500;font-size:15px;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-radius:10px;padding:13px 17px;transition:all .22s var(--ease);
+}
+.build-strip .b:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.build-strip .b span{color:var(--ink-faint);margin-right:9px;font-family:'JetBrains Mono';font-size:12px}
+
+.work-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:30px}
+@media(max-width:720px){.work-stats{grid-template-columns:repeat(2,1fr)}}
+.work-stats .ws{background:var(--card);padding:30px 24px}
+.work-stats .ws .v{font-family:'Space Grotesk';font-weight:700;letter-spacing:-.025em;font-size:clamp(30px,4vw,42px);line-height:1;margin-bottom:11px}
+.work-stats .ws .v em{color:var(--accent);font-style:normal}
+.work-stats .ws .k{font-size:13.5px;color:var(--ink-soft);line-height:1.45}
+
+footer{max-width:1060px;margin:90px auto 0;padding:40px 28px 60px;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .f-brand{font-family:'Space Grotesk';font-weight:700;letter-spacing:-.02em;font-size:16px}
+footer .f-mail{font-family:'JetBrains Mono';font-size:13px;color:var(--accent);text-decoration:none}
+footer .f-mail:hover{text-decoration:underline}
+footer .f-note{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);letter-spacing:.03em}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .glow{display:none}
+  #meshCanvas{display:none}
+}
+</style>
+</head>
+<body>
+<div class="glow a"></div>
+<div class="glow b"></div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><span class="mark"></span>BASHEER</div>
+    <div class="meta">SYSTEMS BUILDER · EST. PRODUCTION</div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="eyebrow"><span class="dot"></span>Live system generator</div>
+    <h1 class="head">Don't read my portfolio.<span class="b">Build something.</span></h1>
+    <p class="sub">Describe your business in one line. Watch a working system blueprint assemble itself in seconds — then see the real ones already running in production.</p>
+
+    <div class="console" id="console">
+      <div class="bar">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <div class="label">system-generator — describe your operation</div>
+      </div>
+      <div class="body">
+        <form class="field" id="bizForm" autocomplete="off">
+          <span class="pfx">&gt;</span>
+          <input id="bizInput" type="text" spellcheck="false" placeholder="A multi-location dental clinic…" aria-label="Describe your business in one line" />
+          <button class="go" type="submit">
+            Build my system
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+        <div class="chips">
+          <span class="lbl">Try</span>
+          <button class="chip" type="button" data-fill="A sports venue operator with events across multiple cities">A sports venue operator</button>
+          <button class="chip" type="button" data-fill="A law firm handling client cases and intake">A law firm</button>
+          <button class="chip" type="button" data-fill="A multi-location medical clinic with patient scheduling">A multi-location clinic</button>
+          <button class="chip" type="button" data-fill="An e-commerce brand selling products online">An e-commerce brand</button>
+        </div>
+        <p class="hint">No sign-up. Nothing saved. Type anything — it routes to a tailored blueprint.</p>
+      </div>
+    </div>
+
+    <!-- assembling stage -->
+    <div class="stage" id="stage" aria-live="polite">
+      <div class="stage-grid">
+        <div class="reasoning">
+          <div class="h"><span class="spin"></span><span id="reasonHead">Assembling</span></div>
+          <div id="reasonLines"></div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="ch">Architecture · forming</div>
+          <canvas id="meshCanvas"></canvas>
+          <svg id="buildSvg" viewBox="0 0 460 300" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+      <div class="skip-row"><button class="skip" id="skipBtn" type="button">Skip animation →</button></div>
+    </div>
+  </header>
+
+  <!-- ===== BLUEPRINT OUTPUT ===== -->
+  <section class="blueprint" id="blueprint" aria-live="polite"></section>
+
+  <!-- ===== THE TURN ===== -->
+  <section class="turn" id="turn">
+    <p class="turn-line">That took <span class="em" id="turnSecs">8 seconds</span> and it's a sketch.<br/>Here are real ones, in production —</p>
+    <p class="turn-sub">Three systems running right now. Built the same way — start from the operation, end with software people actually use every day.</p>
+
+    <div class="proof">
+      <a class="pcard" href="https://proposals.anc.com" target="_blank" rel="noopener">
+        <div class="live-dot"><i></i>Live</div>
+        <div class="ptag">Proposal Engine</div>
+        <h4>Quote in under an hour <span class="arr">↗</span></h4>
+        <p>Reads a requirements doc, prices it against a master formula library, returns a client-ready proposal. Days of estimating, collapsed.</p>
+        <div class="url">proposals.anc.com</div>
+      </a>
+      <a class="pcard" href="https://services.ancsports.net" target="_blank" rel="noopener">
+        <div class="live-dot"><i></i>Live</div>
+        <div class="ptag">Operations Platform</div>
+        <h4>Every venue, one screen <span class="arr">↗</span></h4>
+        <p>Events, staffing, tickets, coverage and labor across a national field operation — reconciled live in a single cockpit.</p>
+        <div class="url">services.ancsports.net</div>
+      </a>
+      <a class="pcard" href="https://presentation.basheer.app" target="_blank" rel="noopener">
+        <div class="live-dot"><i></i>Live</div>
+        <div class="ptag">AI Presentation System</div>
+        <h4>Decks that build themselves <span class="arr">↗</span></h4>
+        <p>Describe the story, get a structured, on-brand presentation. The same generative engine you just watched — productionized.</p>
+        <div class="url">presentation.basheer.app</div>
+      </a>
+    </div>
+
+    <div class="kicker">
+      <h3>Imagine what we build <span style="color:var(--accent)">after we actually talk.</span></h3>
+      <div class="cta-row">
+        <a class="cta prim" href="mailto:ahmad@basheer.app?subject=Start%20a%20project&body=Here's%20my%20business%20in%20one%20line%3A%20">
+          Start a project
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="cta sec" href="https://presentation.basheer.app" target="_blank" rel="noopener">
+          Open the live AI builder ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCROLL FOLD (for non-typers) ===== -->
+  <section class="fold">
+    <div class="section-k">What I build</div>
+    <div class="build-strip">
+      <div class="b"><span>01</span>CRM Platforms</div>
+      <div class="b"><span>02</span>Proposal Engines</div>
+      <div class="b"><span>03</span>Operations Platforms</div>
+      <div class="b"><span>04</span>Automation Systems</div>
+      <div class="b"><span>05</span>Platform Integrations</div>
+      <div class="b"><span>06</span>Knowledge Bases</div>
+      <div class="b"><span>07</span>Presentation Systems</div>
+      <div class="b"><span>08</span>AI Inside the Workflow</div>
+    </div>
+
+    <div class="section-k">The work, in numbers</div>
+    <div class="work-stats">
+      <div class="ws"><div class="v"><em>100+</em></div><div class="k">containers in production</div></div>
+      <div class="ws"><div class="v"><em>30,000+</em></div><div class="k">records reconciled across systems</div></div>
+      <div class="ws"><div class="v">&lt;<em>1</em> hr</div><div class="k">proposal turnaround, down from days</div></div>
+      <div class="ws"><div class="v"><em>Multiple</em></div><div class="k">platforms live and in daily use</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="f-brand">Basheer</div>
+    <a class="f-mail" href="mailto:ahmad@basheer.app">ahmad@basheer.app</a>
+    <div class="f-note">CAPABILITY-FIRST · MULTI-SYSTEM · BUILT TO RUN</div>
+  </footer>
+</div>
+
+<script>
+/* ================================================================
+   THEME / CONTENT CONFIG  ← edit DATA ONLY to re-theme or re-brand.
+   The ENGINE below this block never needs to change. Swap the brand
+   tokens + industry profiles and the same generator produces a
+   different branded pitch (e.g. for one company's tailored deck).
+   Add an industry = add a profile + a router entry. No engine edits.
+   ================================================================ */
+const CONFIG = {
+  brand: {
+    name: "Basheer",
+    contactEmail: "ahmad@basheer.app",
+    accent: "#3a2cff"            // visual accent (also set in CSS :root)
+  },
+
+  // staged "reasoning" lines shown while the system assembles.
+  // {tpl} is replaced with the matched industry's noun.
+  reasoning: [
+    "Reading your operation…",
+    "Mapping where the spreadsheets live in a {tpl}…",
+    "Designing the data model…",
+    "Wiring the workflows…",
+    "Placing the AI inside the loop…",
+    "Typesetting the blueprint…"
+  ],
+
+  // architecture diagram node labels (generic spine, same every time)
+  archSpine: ["Source data", "Data model", "Workflows", "One dashboard", "AI layer"],
+
+  // ---- KEYWORD ROUTER --------------------------------------------
+  // input text → profile key. First match wins; order = priority.
+  // ORDER MATTERS: put the more specific / commercial intents ahead of
+  // broad ones so e.g. "skincare brand" routes to ecommerce, not clinic.
+  router: [
+    { key:"sports",     words:["sport","venue","stadium","arena","athletic","ballpark","fan","concert","game day","matchday","league","ticketing"] },
+    { key:"legal",      words:["law","legal","attorney","lawyer","law firm","counsel","litigation","paralegal","solicitor","barrister"] },
+    { key:"ecommerce",  words:["e-commerce","ecommerce","commerce","shop","store","retail","dtc","online store","selling products","sell products","skincare","apparel","cosmetics","merch","sku","checkout","brand selling"] },
+    { key:"clinic",     words:["clinic","dental","dentist","patient","hospital","physio","physiotherapy","chiropractic","veterinary","vet ","medical practice","health practice","wellness center","therapy practice","doctor"] },
+    { key:"realestate", words:["real estate","property","realtor","listing","tenant","landlord","lease","brokerage","rental","realty"] },
+    { key:"restaurant", words:["restaurant","cafe","café","food","kitchen","menu","dining","catering","bar ","hospitality","bakery","coffee shop"] },
+    { key:"logistics",  words:["logistics","shipping","fleet","warehouse","delivery","supply chain","freight","trucking","distribution","courier","dispatch"] },
+    { key:"agency",     words:["agency","marketing","creative","studio","consult","freelance","client work","campaign","design firm","saas","software","startup","app ","platform","product team"] }
+  ],
+
+  // Fallback when nothing matches. Generic but honest — never embarrassing.
+  defaultProfile: "default",
+
+  // ---- INDUSTRY PROFILES -----------------------------------------
+  // Each profile is fully self-contained content. icon keys map to the
+  // ICONS set in the engine. Add a profile = add an industry.
+  profiles: {
+    sports: {
+      noun: "venue operation",
+      label: "Sports & Venue Operations",
+      subtitle: "A national field operation run from one screen — events, crews, tickets and labor reconciled live instead of chased across spreadsheets.",
+      modules: [
+        {icon:"calendar", h:"Event & Game Cockpit", p:"Every event across every venue on a single board — who's working, what's covered, what's at risk tonight.", feats:["live coverage","multi-venue"]},
+        {icon:"users", h:"Crew & Staffing Engine", p:"Assign, schedule and balance field staff. Flags overloaded techs and unstaffed events before the doors open.", feats:["auto-balance","labor hours"]},
+        {icon:"ticket", h:"Service Ticket Flow", p:"Issues raised in the field route, escalate and close with a full audit trail — nothing lost between shifts.", feats:["escalation","audit trail"]},
+        {icon:"chart", h:"Coverage & Labor Reporting", p:"Coverage rate, contracted vs actual hours and utilization, computed live for any venue or league.", feats:["live KPIs","exports"]},
+        {icon:"spark", h:"Ops AI Briefing", p:"Ask 'what's at risk tonight' in plain language and get the answer pulled straight from live operations.", feats:["natural language","grounded"]}
+      ],
+      stats: [
+        {v:"<em>days → minutes</em>", k:"event setup and staffing"},
+        {v:"<em>one</em> screen", k:"every venue, every shift"},
+        {v:"<em>100%</em>", k:"tickets tracked to close"}
+      ]
+    },
+
+    legal: {
+      noun: "law practice",
+      label: "Legal Practice Operations",
+      subtitle: "Intake, matters, documents and billing on one rail — so the practice runs on a system instead of on someone's memory and a stack of folders.",
+      modules: [
+        {icon:"inbox", h:"Client Intake Engine", p:"New-matter forms, conflict checks and engagement routing — qualified clients land structured, not in an inbox.", feats:["conflict check","routing"]},
+        {icon:"folder", h:"Matter Management", p:"Every case with its deadlines, parties, documents and status in one timeline the whole firm can see.", feats:["deadlines","timeline"]},
+        {icon:"doc", h:"Document Assembly", p:"Generate engagement letters, filings and standard agreements from your own templates in seconds.", feats:["templates","versioned"]},
+        {icon:"chart", h:"Time & Billing Cockpit", p:"Track billable hours against matters and turn them into clean, defensible invoices automatically.", feats:["billable hrs","invoices"]},
+        {icon:"spark", h:"AI Case Assistant", p:"Search across every matter and document in plain language — surface the precedent or clause you need instantly.", feats:["semantic search","grounded"]}
+      ],
+      stats: [
+        {v:"<em>days → minutes</em>", k:"client intake to open matter"},
+        {v:"<em>one</em> source", k:"every matter and document"},
+        {v:"<em>zero</em>", k:"missed deadlines slipping through"}
+      ]
+    },
+
+    clinic: {
+      noun: "clinic group",
+      label: "Multi-Location Clinic Operations",
+      subtitle: "Patients, schedules, records and reminders across every location on one platform — front-desk chaos turned into a system that runs itself.",
+      modules: [
+        {icon:"inbox", h:"Patient Intake Engine", p:"Digital intake, history and insurance captured before the visit — clean records, no clipboard, no re-keying.", feats:["digital forms","pre-visit"]},
+        {icon:"calendar", h:"Scheduling & Ops Cockpit", p:"Every location's calendar, room and provider in one view. Spot gaps and double-bookings instantly.", feats:["multi-location","real-time"]},
+        {icon:"folder", h:"Records CRM", p:"A single patient record that follows them across locations — visits, notes and treatment plans in one place.", feats:["unified record","cross-site"]},
+        {icon:"bell", h:"Reminder Automations", p:"Appointment, recall and follow-up reminders fire on their own — fewer no-shows, fuller schedules.", feats:["auto-send","recall"]},
+        {icon:"spark", h:"AI Front Desk", p:"Answers patient questions, books appointments and triages requests around the clock in plain language.", feats:["24/7","natural language"]}
+      ],
+      stats: [
+        {v:"<em>days → minutes</em>", k:"patient intake to ready"},
+        {v:"<em>one</em> screen", k:"every location's schedule"},
+        {v:"<em>~30%</em> fewer", k:"no-shows with auto-reminders"}
+      ]
+    },
+
+    ecommerce: {
+      noun: "commerce brand",
+      label: "E-Commerce Operations",
+      subtitle: "Orders, inventory, customers and support stitched into one operating layer — so the brand scales without the back office breaking.",
+      modules: [
+        {icon:"box", h:"Order & Fulfillment Hub", p:"Every order from every channel in one pipeline — routed, tracked and reconciled through to delivery.", feats:["omni-channel","tracking"]},
+        {icon:"layers", h:"Inventory Control", p:"Live stock across warehouses and storefronts, with low-stock alerts and reorder triggers built in.", feats:["live stock","reorder"]},
+        {icon:"users", h:"Customer CRM", p:"One profile per customer — orders, value, segments and lifecycle — driving retention instead of guesswork.", feats:["segments","LTV"]},
+        {icon:"chart", h:"Revenue & Ops Dashboard", p:"Sales, margin, returns and channel performance reconciled in one place, updated live.", feats:["live KPIs","margin"]},
+        {icon:"spark", h:"AI Support & Concierge", p:"Handles order status, returns and product questions automatically — and recommends what to buy next.", feats:["24/7","upsell"]}
+      ],
+      stats: [
+        {v:"<em>days → minutes</em>", k:"order-to-fulfillment visibility"},
+        {v:"<em>one</em> source", k:"orders across every channel"},
+        {v:"<em>live</em>", k:"inventory, no overselling"}
+      ]
+    },
+
+    realestate: {
+      noun: "real estate operation",
+      label: "Real Estate Operations",
+      subtitle: "Listings, leads, tenants and documents in one system — so deals and renewals never fall through the cracks.",
+      modules: [
+        {icon:"layers", h:"Listing & Deal Cockpit", p:"Every listing and deal stage on one board — what's active, what's stuck and what closes this month.", feats:["pipeline","stages"]},
+        {icon:"inbox", h:"Lead Intake Engine", p:"Inbound leads captured, scored and routed to the right agent — no inquiry left sitting in an inbox.", feats:["routing","scoring"]},
+        {icon:"users", h:"Tenant & Owner CRM", p:"Tenants, owners and contacts in one record system with lease terms and history attached.", feats:["leases","history"]},
+        {icon:"bell", h:"Renewal Automations", p:"Lease renewals, rent reminders and document expiries tracked and triggered automatically.", feats:["renewals","reminders"]},
+        {icon:"chart", h:"Portfolio Reporting", p:"Occupancy, revenue and pipeline value rolled into the reports owners and partners want to see.", feats:["occupancy","revenue"]}
+      ],
+      stats: [
+        {v:"<em>hours → instant</em>", k:"lead routing to agent"},
+        {v:"<em>zero</em>", k:"missed lease renewals"},
+        {v:"<em>one</em> view", k:"of the whole portfolio"}
+      ]
+    },
+
+    restaurant: {
+      noun: "hospitality business",
+      label: "Hospitality Operations",
+      subtitle: "Reservations, staff, suppliers and service unified — so the floor and the back office finally agree.",
+      modules: [
+        {icon:"calendar", h:"Service Ops Cockpit", p:"Covers, shifts and floor status on one board — every service planned and staffed before doors open.", feats:["reservations","floor"]},
+        {icon:"users", h:"Staff & Labor Engine", p:"Rosters, hours and coverage tracked against demand — no understaffed Saturdays, no over-paid Tuesdays.", feats:["rostering","coverage"]},
+        {icon:"folder", h:"Guest & Supplier CRM", p:"Regulars, bookings and suppliers in one record system — relationships that drive repeat business.", feats:["loyalty","suppliers"]},
+        {icon:"bell", h:"Booking Automations", p:"Confirmations, reminders and waitlist flows that cut no-shows and fill empty tables automatically.", feats:["reminders","waitlist"]},
+        {icon:"chart", h:"Performance Reporting", p:"Covers, labor cost and revenue per service rolled into the numbers an operator runs on.", feats:["revenue","labor"]}
+      ],
+      stats: [
+        {v:"<em>guesswork → data</em>", k:"staffing every service"},
+        {v:"<em>↓</em> no-shows", k:"with booking automation"},
+        {v:"<em>one</em> view", k:"of the whole operation"}
+      ]
+    },
+
+    logistics: {
+      noun: "logistics operation",
+      label: "Logistics Operations",
+      subtitle: "Fleet, inventory, deliveries and clients in one control surface — visibility from warehouse to doorstep.",
+      modules: [
+        {icon:"box", h:"Dispatch Cockpit", p:"Every shipment and route in one live board — what's moving, what's stuck and what needs a decision now.", feats:["routes","live status"]},
+        {icon:"layers", h:"Inventory Engine", p:"Stock and warehouse levels reconciled in real time — no phantom inventory, no surprise shortages.", feats:["warehouse","sync"]},
+        {icon:"users", h:"Client & Account CRM", p:"Shippers and accounts in one record system with shipment history and SLAs attached.", feats:["accounts","SLAs"]},
+        {icon:"bell", h:"Delivery Automations", p:"Status updates, exception alerts and proof-of-delivery flows that run without manual follow-up.", feats:["alerts","POD"]},
+        {icon:"chart", h:"Ops Reporting Layer", p:"On-time rate, cost per delivery and fleet utilization in the reports leadership runs on.", feats:["on-time","utilization"]}
+      ],
+      stats: [
+        {v:"<em>blind → tracked</em>", k:"every shipment, end to end"},
+        {v:"<em>live</em>", k:"inventory and fleet status"},
+        {v:"<em>↑</em> on-time", k:"with exception automation"}
+      ]
+    },
+
+    agency: {
+      noun: "client-services business",
+      label: "Agency & Client-Services Operations",
+      subtitle: "Projects, clients and delivery in one place — replacing the spreadsheet-and-chat patchwork that runs most teams.",
+      modules: [
+        {icon:"layers", h:"Project Ops Cockpit", p:"Every client project with status, owner and next milestone — the whole book of work in one live view.", feats:["status","milestones"]},
+        {icon:"inbox", h:"Client Intake Engine", p:"Structured intake and onboarding that turns a new client into a running project without the chaos.", feats:["onboarding","scope"]},
+        {icon:"users", h:"Client CRM", p:"Clients, contacts and deal history in one record system — pipeline and active work side by side.", feats:["pipeline","history"]},
+        {icon:"flow", h:"Delivery Automations", p:"Status nudges, deadline reminders and handoff flows that keep delivery moving without manual chasing.", feats:["reminders","handoffs"]},
+        {icon:"spark", h:"AI Inside the Workflow", p:"Draft scopes, triage requests and answer questions in plain language — grounded in your live project data.", feats:["natural language","grounded"]}
+      ],
+      stats: [
+        {v:"<em>scattered → one</em>", k:"projects, clients, delivery"},
+        {v:"<em>live</em>", k:"status on every engagement"},
+        {v:"<em>visible</em>", k:"margin on every project"}
+      ]
+    },
+
+    // -------- DEFAULT (any unmatched / low-confidence input) --------
+    default: {
+      noun: "operation",
+      label: "Operations System",
+      subtitle: "Your data, your workflows and your team's daily screen — pulled out of scattered spreadsheets and into one system built around how you actually run.",
+      modules: [
+        {icon:"inbox", h:"Intake & Capture Engine", p:"Every inbound — leads, requests, jobs — captured structured and routed, instead of landing in an inbox to chase.", feats:["structured","routing"]},
+        {icon:"layers", h:"Core Data Model", p:"One clean source of truth for your people, jobs and records — replacing the tangle of disconnected sheets.", feats:["single source","relational"]},
+        {icon:"flow", h:"Workflow Automations", p:"The repetitive steps your team does by hand — assignments, follow-ups, status updates — run on their own.", feats:["triggers","hands-off"]},
+        {icon:"chart", h:"Operations Dashboard", p:"The numbers that actually matter to your business, reconciled live on one screen for the whole team.", feats:["live KPIs","exports"]},
+        {icon:"spark", h:"AI Inside the Workflow", p:"Ask questions, draft documents and triage work in plain language — grounded in your live data, not a generic bot.", feats:["natural language","grounded"]}
+      ],
+      stats: [
+        {v:"<em>days → minutes</em>", k:"manual work, automated"},
+        {v:"<em>one</em> screen", k:"the whole operation"},
+        {v:"<em>0</em>", k:"spreadsheets to reconcile by hand"}
+      ]
+    }
+  }
+};
+
+/* ================================================================
+   ENGINE  ← generic. Knows nothing about any specific industry.
+   Routes input → profile, runs the assemble sequence (live particle
+   mesh + typing reasoning + architecture drawing node-by-node), then
+   renders the blueprint from CONFIG data. Re-themeable by editing
+   CONFIG only. All echoed user input is HTML-escaped (no XSS).
+   ================================================================ */
+(function(){
+  "use strict";
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const $ = (s,r=document)=>r.querySelector(s);
+  const el = (t,c)=>{const n=document.createElement(t); if(c) n.className=c; return n;};
+
+  const form   = $("#bizForm");
+  const input  = $("#bizInput");
+  const stage  = $("#stage");
+  const consoleEl = $("#console");
+  const bp     = $("#blueprint");
+  const turn   = $("#turn");
+  const skipBtn= $("#skipBtn");
+  const reasonLines = $("#reasonLines");
+  const buildSvg = $("#buildSvg");
+  const mesh   = $("#meshCanvas");
+
+  // --- icon set (inline SVG paths, stroke) ---
+  const ICONS = {
+    calendar:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
+    users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0M16.5 5.5a3 3 0 0 1 0 5M21 20a5.5 5.5 0 0 0-4-5.3"/>',
+    ticket:'<path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4z"/><path d="M14 5v14" stroke-dasharray="2 2"/>',
+    chart:'<path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-7"/>',
+    spark:'<path d="M12 3l1.8 5L19 9.8 14 12l-2 5-2-5L5 9.8 10.2 8z"/>',
+    inbox:'<path d="M4 13l2-8h12l2 8M4 13v6h16v-6M4 13h5l1.5 3h3L18 13h2"/>',
+    folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    doc:'<path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v4h4M8 13h8M8 17h6"/>',
+    bell:'<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 21a2 2 0 0 0 4 0"/>',
+    box:'<path d="M3 8l9-5 9 5-9 5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>',
+    layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5M3 16l9 5 9-5"/>',
+    flow:'<rect x="3" y="4" width="6" height="5" rx="1"/><rect x="15" y="15" width="6" height="5" rx="1"/><path d="M9 6.5h4a2 2 0 0 1 2 2v9"/>'
+  };
+
+  // --- ROUTER: input text → industry profile (keyword router) ---
+  function routeKey(text){
+    const q = (" "+(text||"").toLowerCase()+" ");
+    for(const r of CONFIG.router){
+      if(r.words.some(w => q.includes(w))) return r.key;
+    }
+    return CONFIG.defaultProfile;
+  }
+  function route(text){
+    return CONFIG.profiles[routeKey(text)] || CONFIG.profiles[CONFIG.defaultProfile];
+  }
+
+  // --- EXTRACT NOUN: echo the visitor's own phrasing back, safely ---
+  // Returns a clean lowercase noun phrase, or null when the input is a
+  // bare token / non-Latin / unparseable (so we never emit "a bob" /
+  // "a asdfghjkl" / "a 我的公司"). When null, the header falls back to
+  // the verbatim escaped input or "your operation".
+  function extractNoun(text){
+    let clean = (text||"").trim().replace(/\s+/g," ");
+    if(!clean) return null;
+    // require enough Latin letters to be a real English phrase
+    const letters = clean.replace(/[^a-z]/gi,"");
+    if(letters.length < 4) return null;
+    if(letters.length / clean.replace(/\s/g,"").length < 0.55) return null; // mostly non-letters → bail
+    // take the first clause; drop trailing verb/prepositional tails
+    let n = clean.split(/[.,;:]|—| with | that | which | handling | selling | running | doing | managing | offering | providing | based | located | across | serving | for /i)[0].trim();
+    // strip leading first-person framing
+    n = n.replace(/^(i (run|own|have|am building|operate|manage)|we (are|run|own|operate|build|manage)|it'?s|this is|my)\s+/i,"").trim();
+    if(!n) return null;
+    // must contain at least one multi-letter word → kills single gibberish tokens
+    const words = n.split(" ").filter(w => /[a-z]{2,}/i.test(w));
+    if(words.length === 0) return null;
+    if(words.length === 1 && words[0].length < 4) return null; // "bob" / "xyz" → bail
+    // tighten length for a headline
+    if(n.length > 46){ n = n.slice(0,46).replace(/\s\S*$/,"") + "…"; }
+    n = n.toLowerCase();
+    // add an article only when it reads like a noun phrase and lacks one
+    if(!/^(a |an |the |your |our |my )/i.test(n)){
+      // skip the auto-article for plurals / mass nouns to avoid "a logistics"
+      if(!/s$/.test(n.split(" ")[0])){
+        n = (/^[aeiou]/.test(n) ? "an " : "a ") + n;
+      }
+    }
+    return n;
+  }
+
+  // ---------- LIVE PARTICLE MESH (behind the architecture pane) ----------
+  let mCtx, mParticles=[], mAnim=null, mActive=false;
+  function meshSize(){
+    if(!mesh) return;
+    const r = mesh.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    mesh.width = Math.max(1, r.width*dpr); mesh.height = Math.max(1, r.height*dpr);
+    mesh.style.width=r.width+"px"; mesh.style.height=r.height+"px";
+    mCtx && mCtx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function meshStart(){
+    if(reduced || !mesh) return;
+    mCtx = mesh.getContext("2d");
+    meshSize();
+    const w = mesh.width/(window.devicePixelRatio||1), h = mesh.height/(window.devicePixelRatio||1);
+    mParticles = Array.from({length:38}, ()=>({
+      x:Math.random()*w, y:Math.random()*h,
+      vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+      r:Math.random()*1.4+.5
+    }));
+    mActive = true;
+    (function loop(){
+      if(!mActive) return;
+      const W=mesh.width/(window.devicePixelRatio||1), H=mesh.height/(window.devicePixelRatio||1);
+      mCtx.clearRect(0,0,W,H);
+      for(const a of mParticles){
+        a.x+=a.vx; a.y+=a.vy;
+        if(a.x<0||a.x>W)a.vx*=-1; if(a.y<0||a.y>H)a.vy*=-1;
+        mCtx.beginPath(); mCtx.arc(a.x,a.y,a.r,0,6.283);
+        mCtx.fillStyle="rgba(58,44,255,.45)"; mCtx.fill();
+      }
+      for(let i=0;i<mParticles.length;i++)for(let j=i+1;j<mParticles.length;j++){
+        const a=mParticles[i],b=mParticles[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+        if(d<110){mCtx.beginPath();mCtx.moveTo(a.x,a.y);mCtx.lineTo(b.x,b.y);
+          mCtx.strokeStyle="rgba(58,44,255,"+(.14*(1-d/110))+")";mCtx.lineWidth=1;mCtx.stroke();}
+      }
+      mAnim = requestAnimationFrame(loop);
+    })();
+  }
+  function meshStop(){ mActive=false; if(mAnim)cancelAnimationFrame(mAnim); if(mCtx&&mesh)mCtx.clearRect(0,0,mesh.width,mesh.height); }
+  window.addEventListener("resize", ()=>{ if(mActive) meshSize(); });
+
+  // ---------- ASSEMBLE SEQUENCE ----------
+  let seqTimers = [];
+  function clearSeq(){ seqTimers.forEach(t=>{ if(typeof t==="number") clearTimeout(t); else if(t&&t.clear) t.clear(); }); seqTimers=[]; }
+
+  function buildReasoningDOM(profile){
+    reasonLines.innerHTML="";
+    const lines = CONFIG.reasoning.map(t=>t.replace("{tpl}", profile.noun));
+    return lines.map((txt)=>{
+      const row = el("div","rline");
+      row.innerHTML = '<span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 7"/></svg></span><span class="txt"></span>';
+      reasonLines.appendChild(row);
+      row._txt = row.querySelector(".txt");
+      row._full = txt;
+      return row;
+    });
+  }
+
+  function typeLine(row, done){
+    row.classList.add("on");
+    const cur = el("span","cursor");
+    row._txt.textContent="";
+    row._txt.appendChild(cur);
+    const full = row._full; let i=0;
+    (function step(){
+      if(i<=full.length){
+        row._txt.textContent = full.slice(0,i);
+        row._txt.appendChild(cur);
+        i++;
+        seqTimers.push(setTimeout(step, 16 + Math.random()*22));
+      } else {
+        cur.remove();
+        row.classList.remove("on"); row.classList.add("done");
+        done && done();
+      }
+    })();
+  }
+
+  // architecture build-up in the canvas (draws node-by-node)
+  function buildCanvas(){
+    const spine = CONFIG.archSpine;
+    buildSvg.innerHTML="";
+    const NS="http://www.w3.org/2000/svg";
+    const positions=[[60,60],[230,60],[60,170],[230,170],[370,115]];
+    const nodes=[];
+    const edgeDefs=[[0,1],[0,2],[1,3],[2,3],[3,4],[1,4]];
+    edgeDefs.forEach((e,idx)=>{
+      const [a,b]=e;
+      const p1=positions[a], p2=positions[b];
+      const path=document.createElementNS(NS,"path");
+      const x1=p1[0]+50,y1=p1[1]+18,x2=p2[0]+50,y2=p2[1]+18;
+      const mx=(x1+x2)/2;
+      path.setAttribute("d",`M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`);
+      path.setAttribute("class","bedge");
+      path.style.opacity="0";
+      buildSvg.appendChild(path);
+      nodes.push({type:"edge",elm:path,delay:200+idx*120});
+    });
+    spine.forEach((label,i)=>{
+      const [x,y]=positions[i];
+      const g=document.createElementNS(NS,"g");
+      g.setAttribute("class","bnode");
+      const r=document.createElementNS(NS,"rect");
+      r.setAttribute("x",x);r.setAttribute("y",y);r.setAttribute("width",100);r.setAttribute("height",36);r.setAttribute("rx",8);
+      const t=document.createElementNS(NS,"text");
+      t.setAttribute("x",x+50);t.setAttribute("y",y+22);t.setAttribute("text-anchor","middle");
+      t.textContent=label;
+      g.appendChild(r);g.appendChild(t);
+      buildSvg.appendChild(g);
+      nodes.push({type:"node",elm:g,delay:120+i*140});
+    });
+    nodes.forEach(n=>{
+      seqTimers.push(setTimeout(()=>{
+        n.elm.style.transition="opacity .5s ease, transform .5s ease";
+        n.elm.style.opacity = n.type==="edge" ? ".9":"1";
+        if(n.type==="edge") n.elm.classList.add("draw");
+      }, n.delay));
+    });
+  }
+
+  // ---------- RENDER BLUEPRINT ----------
+  function renderBlueprint(profile, rawInput){
+    const noun = extractNoun(rawInput);
+    const verbatim = (rawInput && rawInput.trim()) ? rawInput.trim() : "";
+    // header echo: prefer clean noun, else verbatim escaped input, else generic
+    const display = noun || verbatim || "your operation";
+
+    const mods = profile.modules.map((m,i)=>`
+      <div class="mod" style="animation-delay:${0.05*i+0.1}s">
+        <div class="num">SYS·${String(i+1).padStart(2,"0")}
+          <span class="ico"><svg viewBox="0 0 24 24">${ICONS[m.icon]||ICONS.spark}</svg></span>
+        </div>
+        <h3>${escapeHtml(m.h)}</h3>
+        <p>${escapeHtml(m.p)}</p>
+        <div class="feats">${m.feats.map(f=>`<span>${escapeHtml(f)}</span>`).join("")}</div>
+      </div>`).join("");
+
+    // stats: profile-authored, contains intentional <em> markup → not escaped
+    const stats = profile.stats.map(s=>`
+      <div class="st"><div class="v">${s.v}</div><div class="k">${escapeHtml(s.k)}</div></div>`).join("");
+
+    // architecture diagram (final, static)
+    const archSvg = `
+      <svg viewBox="0 0 900 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="System architecture">
+        <g class="ae-group">
+          <path class="ae flow" d="M155 60 H250"/>
+          <path class="ae flow" d="M385 60 H480"/>
+          <path class="ae flow" d="M615 60 H710"/>
+          <path class="ae" d="M65 78 V150 H825 V78"/>
+          <path class="ae flow" d="M825 78 V60 H745"/>
+        </g>
+        <g class="an"><rect x="20" y="42" width="135" height="38" rx="9"/><text x="34" y="60">Source data</text><text class="s" x="34" y="73">spreadsheets · forms</text></g>
+        <g class="an"><rect x="250" y="42" width="135" height="38" rx="9"/><text x="264" y="60">Data model</text><text class="s" x="264" y="73">single source of truth</text></g>
+        <g class="an"><rect x="480" y="42" width="135" height="38" rx="9"/><text x="494" y="60">Workflows</text><text class="s" x="494" y="73">automated · routed</text></g>
+        <g class="an acc"><rect x="710" y="42" width="170" height="38" rx="9"/><text x="724" y="60">One dashboard</text><text class="s" x="724" y="73">every screen, every role</text></g>
+        <g class="an acc"><rect x="380" y="132" width="140" height="36" rx="9"/><text x="394" y="154">AI layer</text></g>
+      </svg>`;
+
+    bp.innerHTML = `
+      <button class="restart" id="restartBtn" type="button">↺ Try another business</button>
+      <div class="bp-head">
+        <div class="l">
+          <div class="tag">System Blueprint · generated</div>
+          <h2><span class="for">For:</span> ${escapeHtml(display)}</h2>
+        </div>
+        <div class="r"><b>${escapeHtml(profile.label)}</b>ID ${refId()}<br/>~8s · concept build</div>
+      </div>
+      <p class="bp-sub">${escapeHtml(profile.subtitle)}</p>
+
+      <div class="section-k">Modules</div>
+      <div class="modules">${mods}</div>
+
+      <div class="section-k">Architecture</div>
+      <div class="arch">${archSvg}</div>
+
+      <div class="section-k">Projected outcomes</div>
+      <div class="bp-stats">${stats}</div>
+
+      <div class="disclaimer">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        This is a concept generated from your one line — a directional sketch, not a spec. The real build starts when we map your actual operation.
+      </div>`;
+
+    bp.classList.add("live");
+    turn.classList.add("live");
+
+    // wire restart (re-bound each render since markup is replaced)
+    const rb = $("#restartBtn");
+    rb && rb.addEventListener("click", restart);
+  }
+
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function refId(){return "BP-"+Math.random().toString(36).slice(2,6).toUpperCase()+"-"+(new Date().getFullYear());}
+
+  // ---------- ORCHESTRATION ----------
+  let running=false;
+  function generate(text){
+    if(running) return;
+    running=true;
+    const profile = route(text);
+    bp.classList.remove("live"); turn.classList.remove("live");
+
+    if(reduced){
+      stage.classList.remove("live");
+      renderBlueprint(profile, text);
+      running=false;
+      requestAnimationFrame(()=>bp.scrollIntoView({behavior:"auto",block:"start"}));
+      return;
+    }
+
+    stage.classList.add("live");
+    requestAnimationFrame(()=>stage.scrollIntoView({behavior:"smooth",block:"center"}));
+    const rows = buildReasoningDOM(profile);
+    meshStart();
+    buildCanvas();
+
+    let idx=0;
+    function nextLine(){
+      if(idx>=rows.length){ finish(profile,text); return; }
+      typeLine(rows[idx], ()=>{ idx++; seqTimers.push(setTimeout(nextLine, 120)); });
+    }
+    nextLine();
+  }
+
+  function finish(profile,text){
+    clearSeq();
+    meshStop();
+    stage.classList.remove("live");
+    renderBlueprint(profile,text);
+    running=false;
+    requestAnimationFrame(()=>bp.scrollIntoView({behavior:"smooth",block:"start"}));
+  }
+
+  function restart(){
+    clearSeq(); meshStop(); running=false;
+    bp.classList.remove("live"); turn.classList.remove("live"); stage.classList.remove("live");
+    bp.innerHTML="";
+    input.value="";
+    requestAnimationFrame(()=>{ consoleEl.scrollIntoView({behavior:"smooth",block:"center"}); input.focus(); });
+  }
+
+  skipBtn.addEventListener("click", ()=>{
+    if(!running) return;
+    clearSeq();
+    finish(route(input.value), input.value);
+  });
+
+  form.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    generate(input.value.trim()); // empty => default profile, still works
+  });
+
+  document.querySelectorAll(".chip").forEach(c=>{
+    c.addEventListener("click", ()=>{
+      input.value = c.dataset.fill;
+      input.focus();
+      generate(c.dataset.fill);
+    });
+  });
+})();
+</script>
+<a href="/concepts/" class="concepts-link">all concepts</a>
+</body>
+</html>

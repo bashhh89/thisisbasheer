@@ -28,6 +28,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    // Serve the static concepts gallery index on the clean folder URL —
+    // Next.js standalone doesn't auto-resolve /public/<dir>/index.html.
+    return [
+      { source: "/concepts", destination: "/concepts/index.html" },
+      { source: "/concepts/", destination: "/concepts/index.html" },
+    ];
+  },
 };
 
 export default nextConfig;
