@@ -93,6 +93,7 @@ html.kinetic #sc-title{height:330vh}
 html.kinetic #sc-act1{height:300vh}
 html.kinetic #sc-act2{height:470vh}
 html.kinetic #sc-act3{height:980vh}
+html.kinetic #sc-projects{height:640vh}
 html.kinetic #sc-credits{height:340vh}
 html.kinetic #sc-stinger{height:360vh}
 html.kinetic .sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
@@ -197,7 +198,40 @@ html.kinetic .visual-shot{will-change:transform,opacity,filter;opacity:0}
 .focus-ring::before,.focus-ring::after{content:'';position:absolute;inset:14%;border:1px solid rgba(241,237,227,.14);border-radius:50%}
 .focus-ring::after{inset:33%;background:rgba(255,62,0,.18)}
 
-/* ---------- end credits ---------- */
+/* ---------- project search ---------- */
+.project-search{width:min(1180px,92vw);display:grid;grid-template-columns:360px 1fr;gap:26px;text-align:left}
+html.kinetic .project-search{will-change:transform,opacity}
+.ps-copy{padding-top:1vh}
+.ps-k{color:var(--acc);font-size:11px;letter-spacing:.34em;text-transform:uppercase;font-variation-settings:'wght' 760,'wdth' 100;margin-bottom:2.4vh}
+.ps-title{font-size:clamp(3rem,6.2vw,5rem);line-height:.9;text-transform:uppercase;font-variation-settings:'wght' 900,'wdth' 78;margin-bottom:2.6vh}
+.ps-sub{font-size:clamp(.9rem,1.2vw,1.04rem);line-height:1.55;color:rgba(241,237,227,.68);max-width:33ch;margin-bottom:20px}
+.ps-input{width:100%;border:1px solid rgba(241,237,227,.2);background:rgba(241,237,227,.06);color:var(--paper);font:inherit;font-size:13px;padding:13px 14px;outline:0;margin-bottom:12px}
+.ps-input::placeholder{color:rgba(241,237,227,.42)}
+.ps-list{display:grid;gap:7px}
+.ps-item{border:1px solid rgba(241,237,227,.14);background:rgba(241,237,227,.045);color:inherit;text-align:left;padding:11px 14px;cursor:pointer;font:inherit;transition:border-color .2s,background .2s,transform .2s}
+.ps-item:hover,.ps-item.active{border-color:rgba(255,62,0,.65);background:rgba(255,62,0,.08);transform:translateX(4px)}
+.ps-item b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.12em;font-variation-settings:'wght' 800,'wdth' 88;color:#fff;margin-bottom:5px}
+.ps-item span{display:block;font-size:11px;line-height:1.42;color:rgba(241,237,227,.62)}
+.ps-stage{min-width:0}
+.browser-shell{border:1px solid rgba(241,237,227,.2);background:#050505;box-shadow:0 34px 100px rgba(0,0,0,.42);overflow:hidden}
+.browser-top{height:44px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid rgba(241,237,227,.13);background:rgba(241,237,227,.045)}
+.browser-dots{display:flex;gap:6px}
+.browser-dots i{width:9px;height:9px;border-radius:50%;background:rgba(241,237,227,.24)}
+.browser-dots i:first-child{background:var(--acc)}
+.browser-url{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid rgba(241,237,227,.12);background:rgba(0,0,0,.35);padding:7px 10px;font-size:11px;color:rgba(241,237,227,.64)}
+.browser-open{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#fff;text-decoration:none;border-bottom:2px solid var(--acc);padding-bottom:3px}
+.iframe-wrap{position:relative;height:min(58vh,560px);background:
+  radial-gradient(circle at 20% 0%,rgba(255,62,0,.16),transparent 38%),
+  #070708}
+.iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.iframe-fallback{display:none}
+.iframe-fallback b{color:#fff;text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+.ps-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(241,237,227,.14);border:1px solid rgba(241,237,227,.14);border-top:0}
+.ps-meta div{background:#080809;padding:14px}
+.ps-meta b{display:block;color:var(--acc);font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.ps-meta span{display:block;font-size:13px;color:rgba(241,237,227,.72);line-height:1.35}
+
+/* ---------- pattern bridge ---------- */
 html.kinetic #sc-credits .sticky{display:block}
 .credits{max-width:min(88vw,980px);margin:0 auto;text-align:center}
 html.kinetic .credits{position:absolute;left:50%;top:0;width:min(86vw,900px);margin:0;transform:translate3d(-50%,100vh,0);will-change:transform}
@@ -268,6 +302,17 @@ html.kinetic .build-lab{opacity:0;pointer-events:none;will-change:transform,opac
   .visual-shot{width:82vw;height:310px}
   .dash-grid{grid-template-columns:1fr;padding:10px}
   .dash-panel:nth-child(n+3){display:none}
+  .project-search{grid-template-columns:1fr;width:min(92vw,720px);gap:16px}
+  .ps-title{font-size:clamp(3rem,14vw,5.8rem)}
+  .ps-sub{max-width:100%;margin-bottom:14px}
+  .ps-list{grid-template-columns:1fr 1fr;max-height:none;overflow:visible}
+  .ps-item{padding:11px}
+  .ps-item b{font-size:11px}
+  .ps-item span{display:none}
+  .browser-top{grid-template-columns:auto 1fr}
+  .browser-open{display:none}
+  .iframe-wrap{height:42vh}
+  .ps-meta{grid-template-columns:1fr}
   .pattern-grid{grid-template-columns:1fr 1fr}
   .pattern-step{min-height:120px;padding:16px}
   .final-scene{grid-template-columns:1fr;gap:18px}
@@ -498,6 +543,49 @@ html.kinetic .build-lab{opacity:0;pointer-events:none;will-change:transform,opac
             <p class="w-copy">Private assistants, knowledge bases, OCR, routing, drafting, and approval loops shaped around the actual operating system.</p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT SEARCH — live surfaces -->
+  <section class="track sec-d" id="sc-projects">
+    <div class="sticky stage">
+      <div class="project-search" id="projectSearch">
+        <div class="ps-copy">
+          <p class="ps-k">Project search</p>
+          <h2 class="ps-title">Live<br>surfaces.</h2>
+          <p class="ps-sub">After the portfolio, the work should stop being a screenshot. Scroll the shipped systems like a control room.</p>
+          <input class="ps-input" id="projectFilter" type="search" autocomplete="off" placeholder="Filter projects..." aria-label="Filter projects">
+          <div class="ps-list" id="projectList">
+            <button class="ps-item active" type="button" data-project="0"><b>AI Deck Builder</b><span>Prompt to structured presentation surface.</span></button>
+            <button class="ps-item" type="button" data-project="1"><b>Brand Film Engine</b><span>Cinematic proposal and story reel system.</span></button>
+            <button class="ps-item" type="button" data-project="2"><b>Command CRM</b><span>Personal operating database and workflow surface.</span></button>
+            <button class="ps-item" type="button" data-project="3"><b>AI Workspace</b><span>Creative generation and operator tools.</span></button>
+            <button class="ps-item" type="button" data-project="4"><b>Proposal Engine</b><span>Estimating, pricing, documents, approvals.</span></button>
+            <button class="ps-item" type="button" data-project="5"><b>Operations Dashboard</b><span>Service work, tickets, staffing, delivery state.</span></button>
+          </div>
+        </div>
+        <div class="ps-stage">
+          <div class="browser-shell">
+            <div class="browser-top">
+              <div class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="browser-url" id="projectUrl">deck-builder.live</div>
+              <a class="browser-open" id="projectOpen" href="https://presentation.basheer.app" target="_blank" rel="noopener">Open live</a>
+            </div>
+            <div class="iframe-wrap">
+              <iframe id="projectFrame" title="Interactive project preview" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="/project-previews/surface.html?project=deck"></iframe>
+              <div class="iframe-fallback">
+                <b id="projectFallbackTitle">AI Deck Builder</b>
+                <span>Interactive preview. Open live launches the production surface.</span>
+              </div>
+            </div>
+            <div class="ps-meta">
+              <div><b>Surface</b><span id="projectSurface">Presentation builder</span></div>
+              <div><b>Pattern</b><span id="projectPattern">Prompt becomes structured client-facing output.</span></div>
+              <div><b>State</b><span id="projectState">Live system</span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -853,6 +941,115 @@ html.kinetic .build-lab{opacity:0;pointer-events:none;will-change:transform,opac
     return 'ACT III — THE WORK';
   }
 
+  /* ---- project search · scroll selects live project iframe ---- */
+  const projectData = [
+    {
+      title: 'AI Deck Builder',
+      preview: '/project-previews/surface.html?project=deck',
+      url: 'https://presentation.basheer.app',
+      display: 'deck-builder.live',
+      surface: 'Presentation builder',
+      pattern: 'Prompt becomes structured client-facing output.',
+      state: 'Live system'
+    },
+    {
+      title: 'Brand Film Engine',
+      preview: '/project-previews/surface.html?project=film',
+      url: 'https://film.basheer.app',
+      display: 'film-engine.live',
+      surface: 'Cinematic story surface',
+      pattern: 'Static proposal becomes a scrollable film.',
+      state: 'Live system'
+    },
+    {
+      title: 'Command CRM',
+      preview: '/project-previews/surface.html?project=crm',
+      url: 'https://manage.basheer.app',
+      display: 'command-crm.live',
+      surface: 'Operating database',
+      pattern: 'Records become a managed workflow surface.',
+      state: 'Live system'
+    },
+    {
+      title: 'AI Workspace',
+      preview: '/project-previews/surface.html?project=ai',
+      url: 'https://ai.basheer.app',
+      display: 'ai-workspace.live',
+      surface: 'Creative AI tools',
+      pattern: 'Generation, media, and workflow tools in one workspace.',
+      state: 'Live system'
+    },
+    {
+      title: 'Proposal Engine',
+      preview: '/project-previews/surface.html?project=proposal',
+      url: 'https://proposals.anc.com',
+      display: 'proposal-engine.private',
+      surface: 'Pricing and proposal engine',
+      pattern: 'Requirements become priced documents and approvals.',
+      state: 'Protected app'
+    },
+    {
+      title: 'Operations Dashboard',
+      preview: '/project-previews/surface.html?project=ops',
+      url: 'https://services.ancsports.net/login',
+      display: 'operations-dashboard.private',
+      surface: 'Service operations dashboard',
+      pattern: 'Tickets, staffing, work, and delivery state in one view.',
+      state: 'Protected app'
+    }
+  ];
+  const projectFrame = $('#projectFrame');
+  const projectUrl = $('#projectUrl');
+  const projectOpen = $('#projectOpen');
+  const projectFallbackTitle = $('#projectFallbackTitle');
+  const projectSurface = $('#projectSurface');
+  const projectPattern = $('#projectPattern');
+  const projectState = $('#projectState');
+  const projectItems = $$('#projectList .ps-item');
+  const projectFilter = $('#projectFilter');
+  let activeProject = -1;
+
+  function setProject(i) {
+    const idx = Math.max(0, Math.min(projectData.length - 1, i));
+    if (idx === activeProject) return;
+    activeProject = idx;
+    const p = projectData[idx];
+    projectItems.forEach((item, n) => item.classList.toggle('active', n === idx));
+    projectUrl.textContent = p.display;
+    projectOpen.href = p.url;
+    projectFallbackTitle.textContent = p.title;
+    projectSurface.textContent = p.surface;
+    projectPattern.textContent = p.pattern;
+    projectState.textContent = p.state;
+    const nextSrc = new URL(p.preview, location.origin).href;
+    if (projectFrame.src !== nextSrc) projectFrame.src = p.preview;
+  }
+
+  function upProjects(p) {
+    const idx = Math.min(projectData.length - 1, Math.floor(clamp01((p - 0.06) / 0.88) * projectData.length));
+    setProject(idx);
+  }
+
+  projectItems.forEach((item, i) => {
+    item.addEventListener('click', () => {
+      const sc = $('#sc-projects');
+      const start = sc.offsetTop;
+      const end = start + Math.max(1, sc.offsetHeight - VH);
+      const target = start + (0.08 + (i + 0.5) / projectData.length * 0.84) * (end - start);
+      scrollTo({ top: target, behavior: 'smooth' });
+      setProject(i);
+    });
+  });
+
+  projectFilter.addEventListener('input', () => {
+    const q = projectFilter.value.trim().toLowerCase();
+    projectItems.forEach((item, i) => {
+      const hay = `${projectData[i].title} ${projectData[i].surface} ${projectData[i].pattern}`.toLowerCase();
+      item.style.display = hay.includes(q) ? '' : 'none';
+    });
+  });
+  setProject(0);
+
   /* ---- pattern bridge · slow scroll-driven roll with focus falloff ---- */
   const credits = $('#credits');
   const crLines = $$('.cr-f').map(el => ({ el, mid: 0 }));
@@ -906,6 +1103,7 @@ html.kinetic .build-lab{opacity:0;pointer-events:none;will-change:transform,opac
     { el: $('#sc-act1'),    fn: upAct1,    theme: 'light', label: 'ACT I — THE CLAIM' },
     { el: $('#sc-act2'),    fn: upAct2,    theme: 'dark',  label: 'ACT II — THE NUMBERS' },
     sc3,
+    { el: $('#sc-projects'), fn: upProjects, theme: 'dark', label: 'PROJECT SEARCH' },
     { el: $('#sc-credits'), fn: upCredits, theme: 'dark',  label: 'THE PATTERN' },
     { el: $('#sc-stinger'), fn: upStinger, theme: 'void',  label: 'FINAL FRAME' }
   ];
