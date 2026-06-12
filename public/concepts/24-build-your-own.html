@@ -92,7 +92,7 @@ body::before{
 }
 
 a{color:inherit}
-.wrap{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px;overflow:hidden}
+.wrap{position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px;overflow:visible}
 
 /* ---------- top bar ---------- */
 .top{
@@ -239,6 +239,38 @@ h1.head .b{display:block;color:var(--accent);font-variation-settings:'wght' 920,
 .skip{display:inline-flex;align-items:center;gap:6px;margin:18px auto 0;cursor:pointer;font-family:'JetBrains Mono';font-size:12px;letter-spacing:.05em;color:var(--ink-faint);border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:100px;transition:all .2s}
 .skip:hover{color:var(--ink);border-color:var(--line-strong)}
 .skip-row{text-align:center}
+
+/* ---------- movie map: scroll-revealed project constellation ---------- */
+.movie-map{position:relative;min-height:310vh;margin:0 calc(50% - 50vw);padding:0;background:#020203;color:var(--ink);overflow:visible}
+.map-sticky{position:fixed;inset:0;height:auto;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:none;z-index:30;transition:opacity .35s var(--ease)}
+.movie-map.is-active .map-sticky{opacity:1}
+.map-stage{position:absolute;inset:0;background:
+  radial-gradient(circle at var(--spot-x,50%) var(--spot-y,48%),rgba(255,62,0,.22),transparent 14%),
+  radial-gradient(circle at var(--spot-x,50%) var(--spot-y,48%),rgba(241,237,227,.16),transparent 24%),
+  linear-gradient(180deg,#050506,#000);
+}
+.map-stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(241,237,227,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(241,237,227,.04) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at var(--spot-x,50%) var(--spot-y,48%),#000 0 28%,transparent 68%)}
+.portrait-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Anybody';font-size:clamp(13rem,34vw,31rem);line-height:.8;letter-spacing:-.08em;font-variation-settings:'wght' 900,'wdth' 76;color:transparent;-webkit-text-stroke:1px rgba(241,237,227,.11);opacity:.9}
+.portrait-mark::after{content:"";position:absolute;inset:8% 20%;border-radius:48% 52% 44% 56%;background:radial-gradient(circle at var(--spot-x,50%) var(--spot-y,48%),rgba(241,237,227,.18),transparent 38%);filter:blur(18px)}
+.map-copy{position:absolute;left:6vw;top:11vh;max-width:33rem;z-index:3}
+.map-copy .k{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.map-copy h2{font-family:'Anybody';font-size:clamp(2.8rem,7vw,7.8rem);line-height:.9;text-transform:uppercase;font-variation-settings:'wght' 900,'wdth' 78;margin:0}
+.map-copy p{color:var(--ink-soft);font-size:clamp(15px,1.35vw,18px);line-height:1.6;margin:22px 0 0;max-width:34rem}
+.map-lines{position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.72}
+.map-lines path{fill:none;stroke:rgba(255,62,0,.36);stroke-width:1.2;stroke-dasharray:6 9;stroke-dashoffset:calc((1 - var(--map-p,0)) * 220);filter:drop-shadow(0 0 10px rgba(255,62,0,.18))}
+.map-node{position:absolute;z-index:4;width:min(22rem,42vw);padding:16px 17px;border:1px solid var(--line);border-radius:14px;background:rgba(12,12,14,.72);backdrop-filter:blur(18px);box-shadow:var(--shadow);opacity:.34;transform:translate3d(0,18px,0) scale(.96);transition:opacity .45s var(--ease),transform .45s var(--ease),border-color .45s}
+.map-node.active{opacity:1;transform:translate3d(0,0,0) scale(1);border-color:var(--accent-line)}
+.map-node .n{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:11px}
+.map-node h3{font-family:'Space Grotesk';font-size:20px;line-height:1.05;margin:0 0 7px;letter-spacing:-.02em}
+.map-node p{font-size:13.5px;line-height:1.45;color:var(--ink-soft);margin:0}
+.map-node.one{left:11vw;bottom:15vh}.map-node.two{right:10vw;top:21vh}.map-node.three{right:13vw;bottom:14vh}.map-node.four{left:42vw;top:57vh}
+@media(max-width:760px){
+  .movie-map{min-height:360vh}
+  .map-copy{left:24px;right:24px;top:9vh}
+  .map-copy h2{font-size:clamp(2.6rem,14vw,4.4rem)}
+  .map-node{width:calc(100vw - 48px);left:24px!important;right:auto!important}
+  .map-node.one{top:48vh;bottom:auto}.map-node.two{top:58vh}.map-node.three{top:68vh}.map-node.four{top:78vh}
+}
 
 /* ---------- blueprint output ---------- */
 .blueprint{display:none;max-width:1060px;margin:46px auto 0}
@@ -456,6 +488,43 @@ footer .f-note{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint
       <div class="skip-row"><button class="skip" id="skipBtn" type="button">Skip animation →</button></div>
     </div>
   </header>
+
+  <!-- ===== MOVIE MAP ===== -->
+  <section class="movie-map" id="movieMap" aria-label="Scroll-revealed project map">
+    <div class="map-sticky">
+      <div class="map-stage" id="mapStage">
+        <div class="portrait-mark" aria-hidden="true">AB</div>
+        <svg class="map-lines" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M165 575 C 320 360, 535 270, 845 170 S 790 520, 730 585 C 620 690, 520 440, 485 430" />
+        </svg>
+        <div class="map-copy">
+          <div class="k">Scroll map · real systems</div>
+          <h2>The proof is the path.</h2>
+          <p>Each reveal is one kind of thing I build: engines, cockpits, AI rooms, presentation systems. Dark until the light hits the work.</p>
+        </div>
+        <article class="map-node one" data-map-node data-x="22" data-y="78">
+          <div class="n">Project 01</div>
+          <h3>Proposal Engine</h3>
+          <p>Requirements in, priced proposal out. Estimating, formulas, documents and approvals collapsed into one running system.</p>
+        </article>
+        <article class="map-node two" data-map-node data-x="78" data-y="24">
+          <div class="n">Project 02</div>
+          <h3>Operations Cockpit</h3>
+          <p>Field work, tickets, staffing, coverage and service state surfaced as one control room instead of scattered status chasing.</p>
+        </article>
+        <article class="map-node three" data-map-node data-x="74" data-y="76">
+          <div class="n">Project 03</div>
+          <h3>AI Deck Builder</h3>
+          <p>A presentation canvas that turns a rough idea into a structured deck, then becomes a client-facing pitch tool.</p>
+        </article>
+        <article class="map-node four" data-map-node data-x="49" data-y="58">
+          <div class="n">Project 04</div>
+          <h3>Agent Room</h3>
+          <p>Multi-agent workflows, knowledge bases, OCR and approval loops working behind the scenes so the interface feels simple.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== BLUEPRINT OUTPUT ===== -->
   <section class="blueprint" id="blueprint" aria-live="polite"></section>
@@ -1162,6 +1231,9 @@ const CONFIG = {
   const label = document.getElementById("reelLabel");
   const title = document.querySelector(".head");
   const consoleEl = document.querySelector(".console");
+  const movieMap = document.getElementById("movieMap");
+  const mapStage = document.getElementById("mapStage");
+  const mapNodes = Array.from(document.querySelectorAll("[data-map-node]"));
   const driftEls = Array.from(document.querySelectorAll(".pcard,.mod,.build-strip .b,.work-stats .ws"));
   let lastY = scrollY, vel = 0, raf = 0;
 
@@ -1171,8 +1243,25 @@ const CONFIG = {
     const turn = document.getElementById("turn");
     if(turn && turn.classList.contains("live") && y > turn.offsetTop - innerHeight * .65) return "Reel 04 — Proof";
     if(bp && bp.classList.contains("live") && y > bp.offsetTop - innerHeight * .65) return "Reel 03 — Blueprint";
+    if(movieMap && y > movieMap.offsetTop - innerHeight * .3 && y < movieMap.offsetTop + movieMap.offsetHeight - innerHeight * .35) return "Reel 02 — Project Map";
     if(y > innerHeight * .45) return "Reel 02 — Assembly";
     return "Reel 01 — Build Something";
+  }
+  function updateMovieMap(y){
+    if(!movieMap || !mapStage || !mapNodes.length) return;
+    const start = movieMap.offsetTop;
+    const span = Math.max(1, movieMap.offsetHeight - innerHeight);
+    const p = clamp((y - start) / span, 0, 1);
+    const activeSection = y >= start && y <= start + span;
+    movieMap.classList.toggle("is-active", activeSection);
+    const idx = clamp(Math.floor(p * mapNodes.length), 0, mapNodes.length - 1);
+    const active = mapNodes[idx];
+    const x = active?.dataset.x || 50;
+    const yy = active?.dataset.y || 50;
+    mapStage.style.setProperty("--spot-x", `${x}%`);
+    mapStage.style.setProperty("--spot-y", `${yy}%`);
+    mapStage.style.setProperty("--map-p", p.toFixed(3));
+    mapNodes.forEach((n,i)=>n.classList.toggle("active", i === idx));
   }
 
   function tick(){
@@ -1185,6 +1274,7 @@ const CONFIG = {
     progress && (progress.style.transform = `scaleX(${p})`);
     pct && (pct.textContent = String(Math.round(p * 100)).padStart(3,"0") + "%");
     label && (label.textContent = sceneName(y));
+    updateMovieMap(y);
     if(!reduced && title){
       const pressure = clamp(Math.abs(vel) / 42, 0, 1);
       const wght = Math.round(840 + pressure * 80);
