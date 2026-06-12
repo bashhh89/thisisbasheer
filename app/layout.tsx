@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import Script from "next/script";
 import { buildMetadata } from "@/lib/seo";
 import "./globals.css";
 
@@ -35,7 +36,14 @@ export default function RootLayout({
       lang="en"
       className={`${sans.variable} ${mono.variable} ${serif.variable}`}
     >
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        {children}
+        <Script
+          src="https://abc-umami.izcgmb.easypanel.host/script.js"
+          data-website-id="6517ae52-fc41-450b-941f-c848d9a188ae"
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   );
 }
