@@ -43,6 +43,14 @@ export default function RootLayout({
           data-website-id="6517ae52-fc41-450b-941f-c848d9a188ae"
           strategy="afterInteractive"
         />
+        <Script
+          src="https://abc-umami.izcgmb.easypanel.host/recorder.js"
+          data-website-id="6517ae52-fc41-450b-941f-c848d9a188ae"
+          data-sample-rate="0.5"
+          data-mask-level="moderate"
+          data-max-duration="900000"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
