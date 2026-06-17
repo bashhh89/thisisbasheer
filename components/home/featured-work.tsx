@@ -2,40 +2,43 @@ import { Container } from "@/components/layout/container";
 import { Section, SectionHeader } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/work/project-card";
-import { getFeaturedProjects, getAllProjects } from "@/lib/content/projects";
+import { FadeReveal, StaggerContainer, StaggerItem } from "@/components/motion/primitives";
+import type { Project } from "@/lib/content/projects";
 
-export async function FeaturedWork() {
-  let projects = await getFeaturedProjects(4);
-  if (projects.length === 0) {
-    projects = (await getAllProjects()).slice(0, 4);
-  }
-
+export function FeaturedWork({ projects }: { projects: Project[] }) {
   return (
-    <Section bordered>
+    <Section bordered className="relative">
       <Container>
         <div className="flex items-end justify-between flex-wrap gap-8 mb-16">
-          <SectionHeader
-            number="02"
-            eyebrow="Selected work"
-            title={
-              <>
-                Systems built
-                <br />
-                <span className="text-ink-500">for the long run.</span>
-              </>
-            }
-          />
-          <Button href="/work" variant="ghost">
-            All work →
-          </Button>
+          <FadeReveal>
+            <SectionHeader
+              number="02"
+              eyebrow="Selected work"
+              title={
+                <>
+                  Systems built
+                  <br />
+                  <span className="text-ink-500">for the long run.</span>
+                </>
+              }
+            />
+          </FadeReveal>
+          <FadeReveal delay={0.2}>
+            <Button href="/work" variant="ghost">
+              All work →
+            </Button>
+          </FadeReveal>
         </div>
 
-        <div>
+        <StaggerContainer stagger={0.1} delay={0.1}>
+          <div className="border-t border-ink-800/80" />
           {projects.map((project, i) => (
-            <ProjectCard key={project.slug} project={project} index={i} />
+            <StaggerItem key={project.slug}>
+              <ProjectCard project={project} index={i} animated />
+            </StaggerItem>
           ))}
           <div className="border-t border-ink-800/80" />
-        </div>
+        </StaggerContainer>
       </Container>
     </Section>
   );

@@ -1,6 +1,6 @@
 import { Container } from "@/components/layout/container";
-import { Section } from "@/components/layout/section";
-import { Reveal } from "@/components/common/reveal";
+import { AnimatedLines, FadeReveal } from "@/components/motion/primitives";
+import { CinematicSection, SectionEyebrow } from "@/components/motion/section";
 
 const principles = [
   {
@@ -23,27 +23,29 @@ const principles = [
 
 export function Approach() {
   return (
-    <Section bordered>
+    <CinematicSection>
       <Container>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 md:col-span-5 mb-12 md:mb-0">
-            <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-eyebrow text-ink-400 mb-8">
-              <span className="text-accent">05</span>
-              <span className="h-px w-8 bg-ink-700" />
-              <span>Approach</span>
-            </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink-50">
+            <SectionEyebrow number="05" label="Approach" className="mb-8" />
+            <AnimatedLines
+              as="h2"
+              className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-ink-50"
+              delay={0.1}
+              stagger={0.1}
+              duration={0.9}
+            >
               I don&apos;t take on volume.
-              <br />
-              <span className="text-ink-500">I take on systems.</span>
-            </h2>
+              {"\n"}
+              I take on systems.
+            </AnimatedLines>
           </div>
 
           <div className="col-span-12 md:col-span-7 md:pl-12">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-ink-800/80">
               {principles.map((p, i) => (
-                <Reveal key={p.title} delay={i * 0.05}>
-                  <div className="bg-ink-950 p-8 h-full">
+                <FadeReveal key={p.title} delay={0.15 + i * 0.08} direction="up" distance={30}>
+                  <div className="bg-ink-950 p-8 h-full transition-colors duration-500 hover:bg-ink-900/30">
                     <div className="font-mono text-[10px] uppercase tracking-eyebrow text-accent mb-5">
                       {(i + 1).toString().padStart(2, "0")}
                     </div>
@@ -54,12 +56,12 @@ export function Approach() {
                       {p.body}
                     </p>
                   </div>
-                </Reveal>
+                </FadeReveal>
               ))}
             </div>
           </div>
         </div>
       </Container>
-    </Section>
+    </CinematicSection>
   );
 }

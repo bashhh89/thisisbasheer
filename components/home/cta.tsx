@@ -1,37 +1,49 @@
 import { Container } from "@/components/layout/container";
-import { Section } from "@/components/layout/section";
+import { AnimatedLines, FadeReveal } from "@/components/motion/primitives";
+import { CinematicSection, SectionEyebrow } from "@/components/motion/section";
 import { Button } from "@/components/ui/button";
+import { MagneticButton } from "@/components/motion/effects";
 
 export function CTA() {
   return (
-    <Section bordered spacing="loose">
+    <CinematicSection spacing="loose">
       <Container>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 md:col-span-2">
-            <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-eyebrow text-ink-400">
-              <span className="text-accent">07</span>
-            </div>
+            <SectionEyebrow number="07" label="Next" />
           </div>
           <div className="col-span-12 md:col-span-10">
-            <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1] tracking-tight text-ink-50 max-w-4xl">
+            <AnimatedLines
+              as="h2"
+              className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[1] tracking-tight text-ink-50 max-w-4xl"
+              delay={0.1}
+              stagger={0.1}
+              duration={0.95}
+            >
               Have a system in mind?
-              <br />
-              <span className="text-ink-500">Let&apos;s build it properly.</span>
-            </h2>
-            <p className="mt-10 max-w-xl text-lg text-ink-300 leading-relaxed">
-              I take on a small number of engagements at a time. If the
-              operation is held together with spreadsheets and goodwill,
-              that&apos;s the conversation I&apos;m built for.
-            </p>
-            <div className="mt-12 flex flex-wrap items-center gap-6">
-              <Button href="/contact">Start a project</Button>
+              {"\n"}
+              Let&apos;s build it properly.
+            </AnimatedLines>
+
+            <FadeReveal delay={0.5} className="mt-10 max-w-xl">
+              <p className="text-lg text-ink-300 leading-relaxed">
+                I take on a small number of engagements at a time. If the
+                operation is held together with spreadsheets and goodwill,
+                that&apos;s the conversation I&apos;m built for.
+              </p>
+            </FadeReveal>
+
+            <FadeReveal delay={0.65} className="mt-12 flex flex-wrap items-center gap-6">
+              <MagneticButton href="/contact">
+                <Button>Start a project</Button>
+              </MagneticButton>
               <Button href="/work" variant="ghost">
                 View selected work →
               </Button>
-            </div>
+            </FadeReveal>
           </div>
         </div>
       </Container>
-    </Section>
+    </CinematicSection>
   );
 }

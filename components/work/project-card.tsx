@@ -9,7 +9,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   return (
     <Link
       href={`/work/${project.slug}`}
-      className="group block border-t border-ink-800/80 py-12 md:py-14 transition-colors duration-300 hover:border-ink-600"
+      className="group block border-t border-ink-800/80 py-12 md:py-14 transition-all duration-300 hover:border-ink-600 motion-safe:hover:translate-x-1"
     >
       <div className="grid grid-cols-12 gap-6 items-start">
         <div className="col-span-12 md:col-span-1 font-mono text-[10px] uppercase tracking-eyebrow text-ink-500 pt-2">
