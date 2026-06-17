@@ -34,7 +34,7 @@ export function FeaturedWork({ projects }: { projects: Project[] }) {
           <div className="border-t border-ink-800/80" />
           {projects.map((project, i) => (
             <StaggerItem key={project.slug}>
-              <ProjectCard project={project} index={i} animated />
+              <ProjectCard project={project} index={i} />
             </StaggerItem>
           ))}
           <div className="border-t border-ink-800/80" />
